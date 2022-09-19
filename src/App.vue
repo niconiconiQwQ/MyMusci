@@ -1,30 +1,44 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="body">
+    <div class="content">
+      <Header></Header>
+      <Main></Main>
+      <Footer></Footer>
+    </div>
+  </div>
 </template>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
+import Main from "@/components/main/Main";
+export default {
+  components: {
+    Header,
+    Footer,
+    Main,
+  },
+};
+</script>
+<style lang="scss" scoped>
+.body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+  // 背景图片
+  background: transparent url("@/assets/images/adv2.png") no-repeat fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  .content {
+    height: 87vh;
+    width: 68vw;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    // overflow: hidden;
+    box-shadow: 6px 6px 9px #9d9db6, -18px -18px 37px #ffffed;
   }
 }
 </style>

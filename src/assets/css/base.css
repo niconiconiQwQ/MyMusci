@@ -1,0 +1,19 @@
+@import url("http://at.alicdn.com/t/c/font_3651087_d9aeia34vg5.css");
+@font-face {
+  font-family: "iconfont"; /* Project id 3651087 */
+  src: url("http://at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.woff2?t=1663286512218")
+      format("woff2"),
+    url("http:///at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.woff?t=1663286512218")
+      format("woff"),
+    url("http:///at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.ttf?t=1663286512218")
+      format("truetype");
+}
+.iconfont {
+  cursor: pointer;
+}
+:root {
+  --header-font-color: #d7ebf0;
+  --sidebar-hover: #f6f6f7;
+  --sidebar-color: #373737;
+  --sidebar-title: #c3c3c3;
+}
