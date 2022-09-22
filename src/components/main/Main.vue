@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="center">
     <SideBar></SideBar>
-    <Container></Container>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.center {
   display: flex;
   height: 682px;
   border-bottom: 1px solid #e0e0e0;

@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <!-- 左侧三个点 -->
-    <div class="logo">
+    <div class="logo" @click="gohome">
       <div class="circle one"></div>
       <div class="circle two"></div>
       <div class="circle three"></div>
@@ -19,9 +19,9 @@
     <div class="listen iconfont icon-microphone"></div>
     <!-- 我的头像 -->
     <div class="avatar">
-      <a href="">
+      <router-link to="/user">
         <img src="@/assets/images/avatar2.png" alt="" />
-      </a>
+      </router-link>
     </div>
     <!-- 昵称，会员 -->
     <div class="info" @click.stop="infoShow">
@@ -75,6 +75,10 @@ export default {
     },
     emailShow() {
       this.isEmailShow = !this.isEmailShow;
+    },
+    gohome() {
+      this.$router.push("/");
+      // console.log()
     },
   },
   mounted() {
@@ -172,7 +176,6 @@ export default {
       padding-left: 6px;
       background-color: transparent;
       &::-webkit-input-placeholder {
-        /* WebKit browsers */
         color: var(--header-font-color);
       }
     }

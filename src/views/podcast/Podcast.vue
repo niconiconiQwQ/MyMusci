@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-
-  </div>
+  <div class="container">我是播客</div>
 </template>
 
 <script>
