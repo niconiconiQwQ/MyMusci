@@ -8,7 +8,7 @@
       <span>根据你的红心收藏为你推荐更多宝藏歌曲</span>
     </div>
     <ul class="ul-mode">
-      <li class="item" v-for="index in 40" :key="index.id">
+      <li class="item" v-for="index in 60" :key="index.id">
         <a href="" class="a-mode1">
           <div class="num-mode">
             <span class="iconfont icon-play"></span><span>222万</span>
@@ -25,43 +25,39 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { nextTick, onMounted, onBeforeUnmount, ref } from "vue";
 import TopNav from "@/views/container/topNav/TopNav";
-export default defineComponent({
-  components: {
-    TopNav,
-  },
-  methods: {
-    backTop() {
-      this.$refs.cus.scrollTop = 0;
-    },
-    //监听回到顶部按钮距浏览器顶部的距离
-    scrollToTop() {
-      let scrollLen = this.$refs.cus.scrollTop;
-      // 断距离顶部多少显示回到顶部图标
-      console.log(scrollLen);
-      if (scrollLen > 600) {
-        this.$refs.scr.style.display = "block";
-      } else if (scrollLen < 600) {
-        this.$refs.scr.style.display = "none";
-      }
-    },
-  },
-  mounted() {
-    // 获取DOM元素
-    const srollView = this.$refs.cus;
-    //监听它的滚动事件
-    this.$refs.cus.addEventListener("scroll", this.scrollToTop);
-    this.$refs.cur.scrollIntoView({
-      behavior: "smooth", // 平滑过渡
-      // block: "start", // 上边框与视窗顶部平齐。默认值
-    });
-  },
-  unmounted() {
-    // 移除cus元素的监听的滚动事件
-    // this.$refs.cus.removeEventListener("scroll", this.scrollToTop);
-  },
+// 点击事件，点击返回顶部
+const backTop = () => {
+  let step = 30;
+  const timeTop = setInterval(() => {
+    step += 5;
+    cus.value.scrollTop = cus.value.scrollTop - step;
+    if (cus.value.scrollTop <= 0) {
+      clearInterval(timeTop);
+    }
+  }, 20);
+};
+//监听回到顶部按钮距浏览器顶部的距离
+const scrollToTop = () => {
+  let scrollLen = cus.value.scrollTop;
+  console.log(scrollLen);
+  // 断距离顶部多少显示回到顶部图标
+  if (scrollLen > 1000) {
+    scr.value.style.display = "block";
+  } else if (scrollLen < 1000) {
+    scr.value.style.display = "none";
+  }
+};
+const cus = ref(null);
+const scr = ref(null);
+onMounted(() => {
+  cus.value.addEventListener("scroll", scrollToTop);
+});
+onBeforeUnmount(() => {
+  // 移除cus元素的监听的滚动事件
+  cus.value.removeEventListener("scroll", scrollToTop);
 });
 </script>
 
@@ -103,9 +99,6 @@ export default defineComponent({
     bottom: 60px;
     left: 97%;
     transform: translateX(100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     cursor: pointer;
     display: none;
     &::before {
@@ -116,6 +109,7 @@ export default defineComponent({
       position: absolute;
       font-size: 40px;
       bottom: 4px;
+      transform: translateX(10%);
     }
     img {
       width: 50px;

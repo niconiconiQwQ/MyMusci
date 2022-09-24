@@ -19,3 +19,10 @@ export const useCounterStore = defineStore("main", {
   // 类似于method，封装业务逻辑,修改state数据
   actions: {},
 });
+export const homePage = defineStore("home", {
+  state: () => {
+    return {};
+  },
+  actions: {},
+  getters: {},
+});

@@ -2,9 +2,8 @@
   <div class="container">视频</div>
 </template>
 
-<script>
-export default {};
+<script setup>
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>

@@ -53,41 +53,31 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
 import Info from "@/components/header/Info";
 import Email from "@/components/header/Email";
 import Skin from "@/components/header/Skin";
-export default {
-  components: {
-    Info,
-    Email,
-    Skin,
-  },
-  data() {
-    return {
-      isInfoShow: false,
-      isEmailShow: false,
-    };
-  },
-  methods: {
-    infoShow() {
-      this.isInfoShow = !this.isInfoShow;
-    },
-    emailShow() {
-      this.isEmailShow = !this.isEmailShow;
-    },
-    gohome() {
-      this.$router.push("/");
-      // console.log()
-    },
-  },
-  mounted() {
-    document.addEventListener("click", () => {
-      this.isInfoShow = false;
-      this.isEmailShow = false;
-    });
-  },
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+const route = useRoute();
+let isInfoShow = ref(false);
+let isEmailShow = ref(false);
+const infoShow = () => {
+  isInfoShow.value = !isInfoShow.value;
 };
+const emailShow = () => {
+  isEmailShow.value = !isEmailShow.value;
+};
+const gohome = () => {
+  router.push("/");
+};
+onMounted(() => {
+  document.addEventListener("click", () => {
+    isInfoShow.value = false;
+    isEmailShow.value = false;
+  });
+});
 </script>
 
 <style lang="scss" scoped>

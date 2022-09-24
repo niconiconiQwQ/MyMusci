@@ -58,15 +58,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import TopNav from "@/views/container/topNav/TopNav";
 import Pagination from "@/components/pagination/Pagination";
-export default {
-  components: {
-    TopNav,
-    Pagination,
-  },
-};
 </script>
 
 <style lang="scss" scoped>

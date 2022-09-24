@@ -209,74 +209,60 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, reactive, computed } from "vue";
-export default {
-  setup() {
-    // 这里不require，图片
-    let list = reactive([
-      require("@/assets/images/adv1.png"),
-      require("@/assets/images/adv2.png"),
-      require("@/assets/images/adv3.png"),
-      require("@/assets/images/adv4.png"),
-      require("@/assets/images/adv5.png"),
-      require("@/assets/images/adv6.png"),
-    ]);
-    let timer = ref(null);
-    let currentIndex = ref(0);
-    let listLength = computed(() => list.length - 1);
-    function setItemClass(i) {
-      const prev =
-        this.currentIndex == 0 ? this.listLength : this.currentIndex - 1;
-      const next =
-        this.currentIndex == this.listLength ? 0 : this.currentIndex + 1;
-      switch (i) {
-        case this.currentIndex:
-          return "active";
-        case prev:
-          return "prev";
-        case next:
-          return "next";
-        default:
-          return "";
-      }
-    }
-    function prev() {
-      this.currentIndex == 0
-        ? (this.currentIndex = this.listLength)
-        : this.currentIndex--;
-    }
-    function next() {
-      this.currentIndex == this.listLength
-        ? (this.currentIndex = 0)
-        : this.currentIndex++;
-    }
-    function setAutoPlay() {
-      this.timer = setInterval(() => {
-        this.next();
-      }, 5000);
-    }
-    function stopAutoPlay() {
-      clearInterval(this.timer);
-    }
-    function setDotActiveStyl(i) {
-      if (i == this.currentIndex) {
-        return { backgroundColor: "#D33A31" };
-      }
-    }
-    return {
-      list,
-      timer,
-      currentIndex,
-      listLength,
-      prev,
-      next,
-      setItemClass,
-      setAutoPlay,
-      stopAutoPlay,
-      setDotActiveStyl,
-    };
-  },
+// 准备图片列表 这里不require，图片就加载不出来
+let list = reactive([
+  require("@/assets/images/adv1.png"),
+  require("@/assets/images/adv2.png"),
+  require("@/assets/images/adv3.png"),
+  require("@/assets/images/adv4.png"),
+  require("@/assets/images/adv5.png"),
+  require("@/assets/images/adv6.png"),
+]);
+let timer = null;
+// 当前图片索引
+let currentIndex = ref(0);
+let listLength = computed(() => list.length - 1);
+const setItemClass = (i) => {
+  const prev =
+    currentIndex.value == 0 ? listLength.value : currentIndex.value - 1;
+  const next =
+    currentIndex.value == listLength.value ? 0 : currentIndex.value + 1;
+  switch (i) {
+    case currentIndex.value:
+      return "active";
+    case prev:
+      return "prev";
+    case next:
+      return "next";
+    default:
+      return "";
+  }
+};
+const prev = () => {
+  currentIndex.value == 0
+    ? (currentIndex.value = listLength.value)
+    : currentIndex.value--;
+  console.log(currentIndex.value);
+};
+const next = () => {
+  currentIndex.value == listLength.value
+    ? (currentIndex.value = 0)
+    : currentIndex.value++;
+};
+const setAutoPlay = () => {
+  timer = setInterval(() => {
+    next();
+  }, 5000);
+};
+const stopAutoPlay = () => {
+  clearInterval(timer);
+};
+const setDotActiveStyl = (i) => {
+  if (i == currentIndex.value) {
+    return { backgroundColor: "#D33A31" };
+  }
 };
 </script>
 

@@ -79,21 +79,13 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Pagination from "@/components/pagination/Pagination";
-export default {
-  data() {
-    return {
-      pageNo: 5,
-      pageSize: 10,
-      total: 1000,
-      continues: 5,
-    };
-  },
-  components: {
-    Pagination,
-  },
-};
+import { ref } from "vue";
+let pageNo = ref(5);
+let pageSize = ref(10);
+let total = ref(1000);
+let continues = ref(5);
 </script>
 
 <style lang="scss" scoped>

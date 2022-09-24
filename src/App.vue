@@ -7,17 +7,10 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import Main from "@/components/main/Main";
-export default {
-  components: {
-    Header,
-    Footer,
-    Main,
-  },
-};
 </script>
 <style lang="scss" scoped>
 .body {

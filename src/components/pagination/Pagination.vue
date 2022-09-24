@@ -14,10 +14,10 @@
     <button v-if="startNumAndEndNum.start > 2">···</button>
     <!-- 这里v-for和v-if一起，其实是不推荐的，但就这么写了 -->
     <button
-      v-for="(page, index) in startNumAndEndNum.end"
+      v-for="index in startNumAndEndNum.end"
       :key="index"
-      v-if="page <= startNumAndEndNum.end && page > startNumAndEndNum.end - 5"
-      :class="{ active: pageNo == page }"
+      v-if="index <= startNumAndEndNum.end && index > startNumAndEndNum.end - 5"
+      :class="{ active: pageNo == index }"
     >
       {{ page }}
     </button>
@@ -41,47 +41,39 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Pagination",
-  props: ["pageNo", "pageSize", "total", "continues"],
-  computed: {
-    // 总页数
-    totalPage() {
-      return Math.ceil(this.total / this.pageSize);
-    },
-    //计算出连续的页面的起始数字与结束数字【连续页面的数字至少5】
-    startNumAndEndNum() {
-      const { continues, totalPage, pageNo } = this;
-      // 先定义两个变量存储起始数字与结束数字
-      let start = 0,
-        end = 0;
-      // 如果总页数少于5(不正常现象)
-      if (continues > totalPage) {
-        start = 1;
-        end = totalPage;
-      } else {
-        // 正常现象
-        start = pageNo - parseInt(continues / 2);
-        end = pageNo + parseInt(continues / 2);
-        // start 小于等于0，就要纠正
-        if (start <= 0) {
-          start = 1;
-          end = continues;
-        }
-        // end 大于 总页数要纠正
-        if (end > totalPage) {
-          start = totalPage - continues + 1;
-          end = totalPage;
-        }
-      }
-      return { end, start };
-    },
-  },
-  methods: {},
-  onMounted() {
-    console.log(totalPage);
-  },
+<script setup>
+import { computed } from "vue";
+const props = defineProps(["pageNo", "pageSize", "total", "continues"]);
+const totalPage = computed(() => {
+  // 总页数
+  return Math.ceil(props.total / props.pageSize);
+});
+//计算出连续的页面的起始数字与结束数字【连续页面的数字至少5】
+const startNumAndEndNum = () => {
+  const { continues, pageNo } = props;
+  // 先定义两个变量存储起始数字与结束数字
+  let start,
+    end = 0;
+  // 如果总页数少于5(不正常现象)
+  if (continues > totalPage) {
+    start = 1;
+    end = totalPage;
+  } else {
+    // 正常现象
+    start = pageNo - parseInt(continues / 2);
+    end = pageNo + parseInt(continues / 2);
+    // start 小于等于0，就要纠正
+    if (start <= 0) {
+      start = 1;
+      end = continues;
+    }
+    // end 大于 总页数要纠正
+    if (end > totalPage) {
+      start = totalPage - continues + 1;
+      end = totalPage;
+    }
+  }
+  return { end, start };
 };
 </script>
 

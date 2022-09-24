@@ -2,9 +2,8 @@
   <div class="container">我喜欢的音乐列表</div>
 </template>
 
-<script>
-export default {};
+<script setup>
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>

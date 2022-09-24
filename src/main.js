@@ -11,6 +11,4 @@ const pinia = createPinia();
 import "@/assets/css/reset.scss";
 const app = createApp(App);
 // app.use(ElementPlus);
-app.use(router);
-app.use(pinia);
-app.mount("#app");
+app.use(router).use(pinia).mount("#app");

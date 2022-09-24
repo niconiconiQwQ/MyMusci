@@ -72,13 +72,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import TopNav from "@/views/container/topNav/TopNav";
-export default {
-  components: {
-    TopNav,
-  },
-};
 </script>
 
 <style lang="scss" scoped>
