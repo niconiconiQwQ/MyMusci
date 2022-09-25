@@ -6,66 +6,44 @@
     <ul class="attr">
       <li class="language">
         <ul>
-          <li class="title"><div>语种：</div></li>
-          <li><div class="active">全部</div></li>
-          <li><div>华语</div></li>
-          <li><div>欧美</div></li>
-          <li><div>日本</div></li>
-          <li><div>韩国</div></li>
-          <li><div>其他</div></li>
+          <li class="title">
+            <div>语种:</div>
+          </li>
+          <li v-for="(item,index) in areaList" :key="index" @click="choiceArea(item)">
+            <div class="active">{{item}}</div>
+          </li>
         </ul>
       </li>
       <li class="classify">
         <ul>
-          <li class="title"><div>分类：</div></li>
-          <li><div class="active">全部</div></li>
-          <li><div>男歌手</div></li>
-          <li><div>女歌手</div></li>
-          <li><div>乐队组合</div></li>
+          <li class="title">
+            <div>分类:</div>
+          </li>
+          <li v-for="(item, index) in typeList" :key="index" @click="choiceType(item)">
+            <div class="active">{{item}}</div>
+          </li>
         </ul>
       </li>
       <li class="election">
-        <div class="title">筛选：</div>
+        <div class="title">筛选:</div>
         <ul>
-          <li><div class="active">热门</div></li>
-          <li>A</li>
-          <li>B</li>
-          <li>C</li>
-          <li>D</li>
-          <li>E</li>
-          <li>F</li>
-          <li>G</li>
-          <li>H</li>
-          <li>I</li>
-          <li>J</li>
-          <li>K</li>
-          <li>L</li>
-          <li>M</li>
-          <li>N</li>
-          <li>O</li>
-          <li>P</li>
-          <li>Q</li>
-          <li>R</li>
-          <li>S</li>
-          <li>T</li>
-          <li>U</li>
-          <li>V</li>
-          <li>W</li>
-          <li>X</li>
-          <li>Y</li>
-          <li>Z</li>
-          <li>#</li>
+          <li  v-for="item in letterList" @click="choiceInitial(item)">
+            <div class="active">{{ item }}</div>
+          </li>
         </ul>
       </li>
     </ul>
     <!-- 作者列表 -->
     <ul class="ul-mode">
-      <li class="item" v-for="index in 40" :key="index">
-        <a href="" class="a-mode1">
-          <img src="@/assets/images/m3.jpg" alt=""
-        /></a>
+      <li
+        class="item"
+        v-for="item in ArtistListStore.artistsList"
+        :key="item.id"
+      >
+        <a href="" class="a-mode1"> <img :src="item.img1v1Url" alt="" /></a>
         <div class="artist-name">
-          <span>ClariS</span><span class="iconfont icon-yonghu"></span>
+          <span>{{ item.name }}</span
+          ><span class="iconfont icon-yonghu"></span>
         </div>
       </li>
     </ul>
@@ -73,7 +51,60 @@
 </template>
 
 <script setup>
+
 import TopNav from "@/views/container/topNav/TopNav";
+import { ref, onBeforeMount, computed } from "vue";
+import { artistListStore } from "@/store/index";
+const ArtistListStore = artistListStore();
+let areaList = ["全部", "华语", "欧美", "日本", "韩国", "其他"];
+let typeList = ["全部", "男歌手", "女歌手", "乐队组合"];
+let letterList = ['热门', "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"];
+let initial = ref();
+let type = ref();
+let area = ref();
+let query = computed(() => `type=${type.value || -1}&area=${area.value || -1}&initial=${initial.value === 0?0:-1}`);
+// 点击语种的回调
+const choiceArea = (item) => {
+  let areaNum = -1;
+  switch (item) {
+    case '全部': areaNum = -1;break;
+    case '华语': areaNum = 7; break;
+    case '欧美': areaNum = 96; break;
+    case '日本': areaNum = 8; break;
+    case '韩国': areaNum = 16; break;
+    case '其他': areaNum = 0; break;
+  }
+  area.value = areaNum;
+  ArtistListStore.getArtist(query.value);
+}
+// 点击 分类的回调
+const choiceType = (item) => {
+  let typeNum = -1;
+  switch (item) {
+    case '全部': typeNum = -1; break;
+    case '男歌手': typeNum = 1; break;
+    case '女歌手': typeNum = 2; break;
+    case '乐队组合': typeNum = 3; break;
+  }
+  type.value = typeNum;
+  // 发请求
+  ArtistListStore.getArtist(query.value);
+}
+  //点击 筛选的回调
+const choiceInitial = (item) => {
+  let initialNum = -1;// 热门
+  if (item == '热门') {
+    initial.value = -1;
+  } else if (item == '#') {
+    initial.value = 0;
+  } else {
+    initial.value = item.toLowerCase();
+  }
+    ArtistListStore.getArtist(query.value);
+}
+onBeforeMount(() => {
+  ArtistListStore.getArtist(query.value);
+})
 </script>
 
 <style lang="scss" scoped>
@@ -84,20 +115,33 @@ import TopNav from "@/views/container/topNav/TopNav";
     .election {
       margin-bottom: 12px;
       display: flex;
+
       .title {
         color: #737373;
         font-weight: 600;
         border: none;
-        padding: 0px 8px;
+        margin-right: 6px;
+        div{
+          &:hover{
+            background-color: transparent;
+            cursor: default;
+          }
+        }
       }
+
       ul {
         display: flex;
+
         li {
-          padding: 0px 10px;
+          cursor: pointer;
+          margin-right: 20px;
           div {
             height: 100%;
             border-radius: 20px;
-            padding: 1px 6px;
+            padding: 1px 8px;
+            &:hover{
+              background-color: #a7c7c740;
+            }
             &.active {
               background-color: #a7c7c740;
             }
@@ -105,31 +149,43 @@ import TopNav from "@/views/container/topNav/TopNav";
         }
       }
     }
+
     .election {
       .title {
-        padding: 0px 14px;
+        padding: 1px 6px 1px 8px;
+        width: 62px;
+        margin-right: 4px;
       }
       ul {
         li {
           margin-bottom: 6px;
+          div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
         flex-wrap: wrap;
       }
     }
   }
+
   .ul-mode {
     li {
       width: 19%;
       margin-bottom: 30px;
+
       a {
         margin-bottom: 10px;
       }
+
       .artist-name {
         display: flex;
         padding: 0 4px;
         justify-content: space-between;
         align-items: center;
         font-size: 16px;
+
         .iconfont {
           width: 16px;
           height: 16px;

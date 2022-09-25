@@ -3,11 +3,13 @@
     <!-- 顶部标题导航组件 -->
     <TopNav></TopNav>
     <h1>官方榜</h1>
-    <ul class="official">
-      <li class="list-item" v-for="index in 4" :key="index">
+    <ul class="official" >
+      <!-- v-for="item in TopListStore.officialList" :key="item.id" -->
+      <li class="list-item" v-for="item in TopListStore.officialList" :key="item.id">
         <a href="" class="left"
-          ><img src="@/assets/images/top/t1.jpg" alt=""
+          ><img :src="item.coverImgUrl" alt=""
         /></a>
+        <!-- item.coverImgUrl @/assets/images/top/t5.jpg-->
         <ul class="right">
           <li class="odd">
             <div class="song">
@@ -47,15 +49,15 @@
     </ul>
     <h1>全球榜</h1>
     <ul class="ul-mode">
-      <li class="item" v-for="index in 30" :key="index.id">
+      <li class="item" v-for="item in TopListStore.globalList" :key="item.id">
         <a href="" class="a-mode1">
           <div class="num-mode">
-            <span class="iconfont icon-bofang"></span><span>222万</span>
+            <span class="iconfont icon-bofang"></span><span>{{formatNumber(item.playCount)}}</span>
           </div>
           <div class="play-mode iconfont icon-play"></div>
-          <img src="@/assets/images/top/t5.jpg" alt=""
+          <img :src="item.coverImgUrl" alt=""
         /></a>
-        <span>今天从《焰之扉》听起| 私人雷达</span>
+        <span>{{item.name}}</span>
       </li>
     </ul>
     <ul>
@@ -65,7 +67,19 @@
 </template>
 
 <script setup>
+import {formatNumber} from '@/utils/numFormat.js'
+import { onBeforeMount, onMounted, onUpdated } from "vue";
 import TopNav from "@/views/container/topNav/TopNav";
+import { topListStore } from "@/store/index";
+// 调用后，得到实例化小仓库
+const TopListStore = topListStore();
+onBeforeMount(() => {
+  TopListStore.getTopList();
+});
+onMounted(() => {
+})
+onUpdated(() => {
+})
 </script>
 
 <style lang="scss" scoped>
@@ -83,6 +97,7 @@ import TopNav from "@/views/container/topNav/TopNav";
       margin-bottom: 20px;
       .left {
         img {
+          height: 100%;
           border-radius: 4px;
           margin-right: 36px;
         }
@@ -120,8 +135,9 @@ import TopNav from "@/views/container/topNav/TopNav";
   }
   .ul-mode {
     li {
+      width: 19%;
       margin-bottom: 24px;
-      a {
+      .a-mode1 {
         margin-bottom: 10px;
         .play-mode {
           opacity: 0;
@@ -132,6 +148,9 @@ import TopNav from "@/views/container/topNav/TopNav";
         &:hover .play-mode {
           opacity: 1;
           transition: all 0.8s ease;
+        }
+        img{
+          height: 100%;
         }
       }
     }

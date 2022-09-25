@@ -10,7 +10,7 @@
         >
           <img :src="item" />
         </div>
-        <i @click="prev" class="arrow arrow-left"
+        <i @click="prev" class="arrow arrow-left" v-show="isShow"
           ><svg
             t="1598261572608"
             class="icon"
@@ -27,7 +27,7 @@
               fill="#ccc"
             ></path></svg
         ></i>
-        <i @click="next" class="arrow arrow-right"
+        <i @click="next" class="arrow arrow-right" v-show="isShow"
           ><svg
             t="1598261670602"
             class="icon"
@@ -220,6 +220,7 @@ let list = reactive([
   require("@/assets/images/adv5.png"),
   require("@/assets/images/adv6.png"),
 ]);
+let isShow = ref(false);
 let timer = null;
 // 当前图片索引
 let currentIndex = ref(0);
@@ -255,9 +256,11 @@ const setAutoPlay = () => {
   timer = setInterval(() => {
     next();
   }, 5000);
+  isShow.value = false;
 };
 const stopAutoPlay = () => {
   clearInterval(timer);
+  isShow.value = true;
 };
 const setDotActiveStyl = (i) => {
   if (i == currentIndex.value) {
@@ -532,6 +535,7 @@ const setDotActiveStyl = (i) => {
     }
   }
 }
+// 主题播客
 .theme {
   ul {
     li {
@@ -560,6 +564,7 @@ const setDotActiveStyl = (i) => {
     }
   }
 }
+// 推荐MV
 .mv {
   // @extend .exclusive;
   ul {
@@ -576,6 +581,7 @@ const setDotActiveStyl = (i) => {
     }
   }
 }
+// 听听
 .listen {
   ul {
     li {
@@ -590,6 +596,10 @@ const setDotActiveStyl = (i) => {
         div {
           color: #fff;
         }
+        .ing,
+        .num-mode {
+          z-index: 1;
+        }
         .ing {
           position: absolute;
           padding: 1px 6px;
@@ -602,6 +612,12 @@ const setDotActiveStyl = (i) => {
           width: 100%;
         }
         margin-bottom: 4px;
+        &:hover {
+          img {
+            transform: scale(1.15);
+            transition: transform 1s ease;
+          }
+        }
       }
       .msg {
         h5 {

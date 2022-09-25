@@ -1,11 +1,10 @@
 // 对 axios 进行二次封装
 import axios from "axios";
 /* 引入进度条 以及 样式*/
-import nProgress from "nprogress";
 import nProgress from "nprogress"; // 含start / done方法控制进度条开始/结束
 import "nprogress/nprogress.css";
 // 引入全局状态
-import store from '@/store/index';
+import store from "@/store/index";
 // 利用axios对象的方法create，创建一个axios实例
 const requests = axios.create({
   // 配置根路径
@@ -17,16 +16,17 @@ const requests = axios.create({
 requests.interceptors.request.use((config) => {
   nProgress.start();
   // config: 配置对象，对象里包含 headers 请求头属性
-  if (false) { // 做业务逻辑
+  if (false) {
+    // 做业务逻辑
     // 请求头添加一个字段，这个字段是和后台商量好的
-    config.headers.userTempId = store.state.detail.uuid_token;
+    // config.headers.userTempId = store.state.detail.uuid_token;
   }
   // 携带token给服务器
-  if (store.state.user.token) {
-    config.headers.token = store.state.user.token;
-  }
+  // if (store.state.user.token) {
+  //   // config.headers.token = store.state.user.token;
+  // }
   return config;
-})
+});
 // 响应拦截器：包含成功和失败的回调
 requests.interceptors.response.use(
   (res) => {

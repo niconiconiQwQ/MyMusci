@@ -15,25 +15,19 @@
         </div>
       </div>
       <div class="nav">
-        <a class="choice">
+        <a class="choice" @click="showTags">
           <span>全部歌单</span>
           <span class="iconfont icon-right"></span>
+          <div class="tags">我是tag</div>
         </a>
         <ul class="title">
-          <li>华语</li>
-          <li>流行</li>
-          <li>摇滚</li>
-          <li>民谣</li>
-          <li>电子</li>
-          <li>另类/独立</li>
-          <li>轻音乐</li>
-          <li>综艺</li>
-          <li>影视原声</li>
-          <li>ACG</li>
+          <li v-for="item in palyListStore.hotTags" :key="item.id">
+            {{ item.name }}
+          </li>
         </ul>
       </div>
       <ul class="ul-mode">
-        <li class="item" v-for="index in 40" :key="index.id">
+        <li class="item" v-for="index in 40" :key="index">
           <a href="" class="a-mode1">
             <div class="num-mode">
               <span class="iconfont icon-play"></span><span>222万</span>
@@ -61,6 +55,21 @@
 <script setup>
 import TopNav from "@/views/container/topNav/TopNav";
 import Pagination from "@/components/pagination/Pagination";
+import { ref, onMounted, onBeforeMount } from "vue";
+import { palyList } from "@/store/index";
+const palyListStore = palyList();
+let isShowTags = ref(false);
+const showTags = () => {
+  isShowTags.value = !isShowTags;
+};
+onBeforeMount(() => {
+  palyListStore.getHotPlayListTag();
+  palyListStore.getSubPlayListTag();
+});
+onMounted(() => {
+  // console.log(palyListStore.hotTags)
+  console.log(palyListStore.category0);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -128,6 +137,7 @@ import Pagination from "@/components/pagination/Pagination";
         border-radius: 30px;
         color: #373737;
         display: flex;
+        position: relative;
         align-items: center;
         justify-content: center;
         font-size: 14px;
@@ -137,6 +147,15 @@ import Pagination from "@/components/pagination/Pagination";
         }
         &:hover {
           background-color: #f2f2f2;
+        }
+        .tags {
+          height: 746px;
+          width: 580px;
+          background-color: #ccc;
+          position: absolute;
+          top: 36px;
+          left: 0px;
+          z-index: 2;
         }
       }
       .title {

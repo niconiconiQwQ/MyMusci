@@ -13,14 +13,14 @@
     </button>
     <button v-if="startNumAndEndNum.start > 2">···</button>
     <!-- 这里v-for和v-if一起，其实是不推荐的，但就这么写了 -->
-    <button
+    <!-- <button
       v-for="index in startNumAndEndNum.end"
       :key="index"
       v-if="index <= startNumAndEndNum.end && index > startNumAndEndNum.end - 5"
       :class="{ active: pageNo == index }"
     >
       {{ page }}
-    </button>
+    </button> -->
 
     <button v-if="startNumAndEndNum.end < totalPage - 1">···</button>
     <button

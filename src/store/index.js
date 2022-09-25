@@ -1,28 +1,127 @@
-// 1. 引入pinia的 defineStore 函数
 import { defineStore } from "pinia";
-// 2. 定义并导出容器/仓库
-// 参数1：容器的名字或ID,
-// 参数2：配置对象
-export const useCounterStore = defineStore("main", {
+import {
+  reqArtistList,
+  reqTopList,
+  reqHotPlayListTag,
+  reqSubPlayListTag,
+} from "@/api/index";
+// 歌手列表的仓库
+export const artistListStore = defineStore("main", {
   // state 类似组件打data，存储数据/状态
   // 要写成函数且是箭头函数：
   // 好处：1.避免在服务端渲染的时候交叉请求导致的数据状态污染 2.更好的TS类型推断
   state: () => {
     return {
-      count: 0,
-      goods_name: "华为",
-      arr: [1, 2, 3],
+      artistsList: [],
     };
   },
-  //  getters 类似组件的computed，用来封装计算属性，有缓存功能，
   getters: {},
-  // 类似于method，封装业务逻辑,修改state数据
-  actions: {},
+  actions: {
+    async getArtist(query) {
+      try {
+        let { data } = await reqArtistList(query);
+        if (data.code == 200) {
+          this.artistsList = data.artists;
+        }
+      } catch (error) {
+        console.log(error.message, "请求歌手列表error");
+      }
+    },
+  },
 });
-export const homePage = defineStore("home", {
+// 首页仓库
+export const homePageStore = defineStore("home", {
   state: () => {
     return {};
   },
   actions: {},
   getters: {},
+});
+// 排行榜列表数据仓库
+export const topListStore = defineStore("topList", {
+  state: () => {
+    return {
+      list: [],
+    };
+  },
+  actions: {
+    async getTopList() {
+      try {
+        let { data } = await reqTopList();
+        if (data.code == 200) {
+          this.list = data.list || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求歌单排行榜error");
+      }
+    },
+  },
+  getters: {
+    officialList: (state) => state.list.slice(0, 4),
+    globalList: (state) => state.list.slice(4),
+  },
+});
+// 歌单仓库
+export const palyList = defineStore("palyList", {
+  state: () => {
+    return {
+      hotTags: [],
+      sub: [],
+      categories: {},
+    };
+  },
+  getters: {
+    //语种
+    category0: (state) =>
+      state.sub.filter((item) => {
+        return item.category == 0;
+      }),
+    // 风格
+    category1: (state) =>
+      state.sub.filter((item) => {
+        return item.category == 1;
+      }),
+    // 场景
+    category2: (state) =>
+      state.sub.filter((item) => {
+        return item.category == 2;
+      }),
+    // 情感
+    category3: (state) =>
+      state.sub.filter((item) => {
+        return item.category == 3;
+      }),
+    // 主题
+    category4: (state) =>
+      state.sub.filter((item) => {
+        return item.category == 4;
+      }),
+  },
+  actions: {
+    // 获取热门标签
+    async getHotPlayListTag() {
+      try {
+        let { data } = await reqHotPlayListTag();
+        if (data.code == 200) {
+          this.hotTags = data.tags;
+        }
+      } catch (error) {
+        console.log(error.message, "获取热门分类失败了");
+      }
+    },
+    // 获取sub歌单标签
+    async getSubPlayListTag() {
+      try {
+        let { data } = await reqSubPlayListTag();
+        if (data.code == 200) {
+          // 获取categories
+          this.categories = data.categories;
+          this.sub = data.sub;
+          // console.log(this.sub);
+        }
+      } catch (error) {
+        console.log(error.message, "获取所有sub歌单分类失败了");
+      }
+    },
+  },
 });
