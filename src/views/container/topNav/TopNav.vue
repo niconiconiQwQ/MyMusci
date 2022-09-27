@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <router-link to="/" class="active"><div>个性推荐</div></router-link>
+    <router-link to="/"><div>个性推荐</div></router-link>
     <router-link to="/main/customized"><div>专属定制</div></router-link>
     <router-link to="/main/playlists"><div>歌单</div></router-link>
     <router-link to="/main/toplist"><div>排行榜</div></router-link>
@@ -10,6 +10,8 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+// let isActive = ref(true);
 </script>
 
 <style lang="scss" scoped>
@@ -19,7 +21,7 @@
   a {
     font-size: 18px;
     padding-right: 20px;
-    &.active {
+    &.router-link-active {
       font-size: 20px;
       font-weight: 700;
       div {

@@ -4,12 +4,12 @@
     <TopNav></TopNav>
     <h1>官方榜</h1>
     <ul class="official" >
-      <!-- v-for="item in TopListStore.officialList" :key="item.id" -->
       <li class="list-item" v-for="item in TopListStore.officialList" :key="item.id">
-        <a href="" class="left"
+        <a href="" class="a-mode1 left"
           ><img :src="item.coverImgUrl" alt=""
-        /></a>
-        <!-- item.coverImgUrl @/assets/images/top/t5.jpg-->
+        />
+      <div class="play-mode iconfont icon-play"></div>
+      </a>
         <ul class="right">
           <li class="odd">
             <div class="song">
@@ -96,10 +96,24 @@ onUpdated(() => {
       display: flex;
       margin-bottom: 20px;
       .left {
+        // background-color: #000;
         img {
           height: 100%;
           border-radius: 4px;
           margin-right: 36px;
+          background-color: transparent;
+          box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+        }
+        .play-mode{
+          top: 50%;
+          left: 50%;
+          transform: translateX(-50%) translateY(-50%);
+           backdrop-filter: blur(2px);
+           background-color: #B5C7EB60;
+          display: none;
+        }
+        &:hover .play-mode{
+          display: block;
         }
       }
       .right {

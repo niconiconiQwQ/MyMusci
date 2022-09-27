@@ -4,6 +4,9 @@ import {
   reqTopList,
   reqHotPlayListTag,
   reqSubPlayListTag,
+  reqList,
+  reqPersonalized,
+  reqMV,
 } from "@/api/index";
 // 歌手列表的仓库
 export const artistListStore = defineStore("main", {
@@ -65,7 +68,7 @@ export const topListStore = defineStore("topList", {
 export const palyList = defineStore("palyList", {
   state: () => {
     return {
-      hotTags: [],
+      hotTags: [], // 热门分类
       sub: [],
       categories: {},
     };
@@ -121,6 +124,66 @@ export const palyList = defineStore("palyList", {
         }
       } catch (error) {
         console.log(error.message, "获取所有sub歌单分类失败了");
+      }
+    },
+  },
+});
+// 独家放送(入口列表)仓库
+export const Personalized = defineStore("personalized", {
+  state: () => {
+    return {
+      list: ["1", "2", "3"],
+    };
+  },
+  actions: {
+    async getList() {
+      try {
+        let { data } = await reqList();
+        if (data.code == 200) {
+          this.list = data.result || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求独家放送error");
+      }
+    },
+  },
+});
+// 推荐歌单仓库
+export const RecommendPalyList = defineStore("playList", {
+  state: () => {
+    return {
+      list: [],
+    };
+  },
+  actions: {
+    async getPlayList(query) {
+      try {
+        let { data } = await reqPersonalized(query);
+        if (data.code == 200) {
+          this.list = data.result || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求推荐歌单error");
+      }
+    },
+  },
+});
+// 推荐MV仓库
+export const RecommendMV = defineStore("MVList", {
+  state: () => {
+    return {
+      list: [],
+    };
+  },
+  actions: {
+    async getMVList() {
+      try {
+        let { data } = await reqMV();
+        if (data.code == 200) {
+          this.list = data.result || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求MV error");
       }
     },
   },

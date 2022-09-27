@@ -30,3 +30,24 @@ export const reqSubPlayListTag = () => {
     method: "get",
   });
 };
+// 请求 独家放送(入口列表)
+export const reqList = () => {
+  return requests({
+    url: "/personalized/privatecontent",
+    method: "get",
+  });
+};
+// 请求推荐歌单 9个
+export const reqPersonalized = (query) => {
+  return requests({
+    url: `personalized?limit=${query}`,
+    method: "get",
+  });
+};
+// 请求推荐MV列表
+export const reqMV = () => {
+  return requests({
+    url: "/personalized/mv",
+    method: "get",
+  });
+};

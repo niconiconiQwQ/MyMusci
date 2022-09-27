@@ -1,0 +1,203 @@
+<template>
+  <div class="swiper">
+    <div class="slider" @mouseover="stopAutoPlay" @mouseleave="setAutoPlay">
+      <div class="slider-list">
+        <div
+          :class="['slider-item', setItemClass(index)]"
+          v-for="(item, index) of list"
+          :key="index"
+        >
+          <img :src="item" />
+        </div>
+        <i @click="prev" class="arrow arrow-left" v-show="isShow"
+          ><svg
+            t="1598261572608"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="3271"
+            width="100%"
+            height="100%"
+          >
+            <path
+              d="M641.28 278.613333l-45.226667-45.226666-278.634666 278.762666 278.613333 278.485334 45.248-45.269334-233.365333-233.237333z"
+              p-id="3272"
+              fill="#ccc"
+            ></path></svg
+        ></i>
+        <i @click="next" class="arrow arrow-right" v-show="isShow"
+          ><svg
+            t="1598261670602"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="3400"
+            width="100%"
+            height="100%"
+          >
+            <path
+              d="M593.450667 512.128L360.064 278.613333l45.290667-45.226666 278.613333 278.762666L405.333333 790.613333l-45.226666-45.269333z"
+              p-id="3401"
+              fill="#ccc"
+            ></path></svg
+        ></i>
+      </div>
+      <div class="dots">
+        <span
+          v-for="(item, index) of list"
+          :key="index"
+          :style="setDotActiveStyl(index)"
+          @mouseover="currentIndex = index"
+        ></span>
+      </div>
+    </div>
+  </div>
+</template>
+<script setup>
+import { ref, reactive, computed } from "vue";
+// 准备图片列表 这里不require，图片就加载不出来
+let list = reactive([
+  require("@/assets/images/adv1.png"),
+  require("@/assets/images/adv2.png"),
+  require("@/assets/images/adv3.png"),
+  require("@/assets/images/adv4.png"),
+  require("@/assets/images/adv5.png"),
+  require("@/assets/images/adv6.png"),
+]);
+let isShow = ref(false);
+let timer = null;
+// 当前图片索引
+let currentIndex = ref(0);
+let listLength = computed(() => list.length - 1);
+const setItemClass = (i) => {
+  const prev =
+    currentIndex.value == 0 ? listLength.value : currentIndex.value - 1;
+  const next =
+    currentIndex.value == listLength.value ? 0 : currentIndex.value + 1;
+  switch (i) {
+    case currentIndex.value:
+      return "active";
+    case prev:
+      return "prev";
+    case next:
+      return "next";
+    default:
+      return "";
+  }
+};
+const prev = () => {
+  currentIndex.value == 0
+    ? (currentIndex.value = listLength.value)
+    : currentIndex.value--;
+  console.log(currentIndex.value);
+};
+const next = () => {
+  currentIndex.value == listLength.value
+    ? (currentIndex.value = 0)
+    : currentIndex.value++;
+};
+const setAutoPlay = () => {
+  timer = setInterval(() => {
+    next();
+  }, 5000);
+  isShow.value = false;
+};
+const stopAutoPlay = () => {
+  clearInterval(timer);
+  isShow.value = true;
+};
+const setDotActiveStyl = (i) => {
+  if (i == currentIndex.value) {
+    return { backgroundColor: "#D33A31" };
+  }
+};
+</script>
+<style lang="scss" scoped>
+.swiper {
+  margin-bottom: 30px;
+  .slider {
+    width: 100%;
+    height: 200px;
+    user-select: none;
+  }
+  .slider-list {
+    position: relative;
+    margin-top: 20px;
+    height: 100%;
+    transform-style: preserve-3d;
+    // z-index: 1;
+  }
+  .slider-item {
+    position: absolute;
+    margin: 0 50%;
+    width: 500px;
+    height: 100%;
+    transform: translate3d(-50%, 0, -300px) scale(0.8);
+    transition: all 0.6s ease-in-out;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .slider-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-fit: cover;
+  }
+
+  .slider-item.prev {
+    margin: 0;
+    transform: translate3d(0, 0, -200px) scale(0.8);
+    transform-origin: left;
+  }
+  .slider-item.next {
+    margin: 0 100%;
+    transform: translate3d(-100%, 0, -100px) scale(0.8);
+    transform-origin: right;
+  }
+  .slider-item.active {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+  .slider-item::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.7;
+    transition: all 0.6s;
+  }
+  .slider-item.active::after {
+    opacity: 0;
+  }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 30px;
+    cursor: pointer;
+    transform: translate3d(0, -50%, 0);
+  }
+  .arrow.arrow-right {
+    right: 0;
+  }
+  .dots {
+    text-align: center;
+  }
+  .dots span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 10px 5px;
+    cursor: pointer;
+  }
+}
+</style>

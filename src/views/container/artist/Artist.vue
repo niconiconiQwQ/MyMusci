@@ -5,29 +5,33 @@
     <!-- 筛选类型 -->
     <ul class="attr">
       <li class="language">
+        <div class="title">语种:</div>
         <ul>
-          <li class="title">
-            <div>语种:</div>
-          </li>
-          <li v-for="(item,index) in areaList" :key="index" @click="choiceArea(item)">
-            <div class="active">{{item}}</div>
+          <li
+            v-for="(item, index) in areaList"
+            :key="index"
+            @click="choiceArea(item)"
+          >
+            <div class="active">{{ item }}</div>
           </li>
         </ul>
       </li>
       <li class="classify">
+        <div class="title">分类:</div>
         <ul>
-          <li class="title">
-            <div>分类:</div>
-          </li>
-          <li v-for="(item, index) in typeList" :key="index" @click="choiceType(item)">
-            <div class="active">{{item}}</div>
+          <li
+            v-for="(item, index) in typeList"
+            :key="index"
+            @click="choiceType(item)"
+          >
+            <div class="active">{{ item }}</div>
           </li>
         </ul>
       </li>
       <li class="election">
         <div class="title">筛选:</div>
         <ul>
-          <li  v-for="item in letterList" @click="choiceInitial(item)">
+          <li v-for="item in letterList" @click="choiceInitial(item)">
             <div class="active">{{ item }}</div>
           </li>
         </ul>
@@ -51,60 +55,112 @@
 </template>
 
 <script setup>
-
 import TopNav from "@/views/container/topNav/TopNav";
 import { ref, onBeforeMount, computed } from "vue";
 import { artistListStore } from "@/store/index";
 const ArtistListStore = artistListStore();
 let areaList = ["全部", "华语", "欧美", "日本", "韩国", "其他"];
 let typeList = ["全部", "男歌手", "女歌手", "乐队组合"];
-let letterList = ['热门', "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"];
+let letterList = [
+  "热门",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+  "#",
+];
 let initial = ref();
 let type = ref();
 let area = ref();
-let query = computed(() => `type=${type.value || -1}&area=${area.value || -1}&initial=${initial.value === 0?0:-1}`);
+let query = computed(
+  () =>
+    `type=${type.value || -1}&area=${area.value || -1}&initial=${
+      initial.value === 0 ? 0 : -1
+    }`
+);
 // 点击语种的回调
 const choiceArea = (item) => {
   let areaNum = -1;
   switch (item) {
-    case '全部': areaNum = -1;break;
-    case '华语': areaNum = 7; break;
-    case '欧美': areaNum = 96; break;
-    case '日本': areaNum = 8; break;
-    case '韩国': areaNum = 16; break;
-    case '其他': areaNum = 0; break;
+    case "全部":
+      areaNum = -1;
+      break;
+    case "华语":
+      areaNum = 7;
+      break;
+    case "欧美":
+      areaNum = 96;
+      break;
+    case "日本":
+      areaNum = 8;
+      break;
+    case "韩国":
+      areaNum = 16;
+      break;
+    case "其他":
+      areaNum = 0;
+      break;
   }
   area.value = areaNum;
   ArtistListStore.getArtist(query.value);
-}
+};
 // 点击 分类的回调
 const choiceType = (item) => {
   let typeNum = -1;
   switch (item) {
-    case '全部': typeNum = -1; break;
-    case '男歌手': typeNum = 1; break;
-    case '女歌手': typeNum = 2; break;
-    case '乐队组合': typeNum = 3; break;
+    case "全部":
+      typeNum = -1;
+      break;
+    case "男歌手":
+      typeNum = 1;
+      break;
+    case "女歌手":
+      typeNum = 2;
+      break;
+    case "乐队组合":
+      typeNum = 3;
+      break;
   }
   type.value = typeNum;
   // 发请求
   ArtistListStore.getArtist(query.value);
-}
-  //点击 筛选的回调
+};
+//点击 筛选的回调
 const choiceInitial = (item) => {
-  let initialNum = -1;// 热门
-  if (item == '热门') {
+  let initialNum = -1; // 热门
+  if (item == "热门") {
     initial.value = -1;
-  } else if (item == '#') {
+  } else if (item == "#") {
     initial.value = 0;
   } else {
     initial.value = item.toLowerCase();
   }
-    ArtistListStore.getArtist(query.value);
-}
+  ArtistListStore.getArtist(query.value);
+};
 onBeforeMount(() => {
   ArtistListStore.getArtist(query.value);
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -117,29 +173,34 @@ onBeforeMount(() => {
       display: flex;
 
       .title {
+        white-space: nowrap;
         color: #737373;
         font-weight: 600;
         border: none;
-        margin-right: 6px;
-        div{
-          &:hover{
+        margin-right: 16px;
+        div {
+          &:hover {
             background-color: transparent;
             cursor: default;
           }
         }
       }
-
       ul {
         display: flex;
-
+        flex-wrap: wrap;
         li {
           cursor: pointer;
+          margin-bottom: 8px;
           margin-right: 20px;
+
           div {
             height: 100%;
             border-radius: 20px;
             padding: 1px 8px;
-            &:hover{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:hover {
               background-color: #a7c7c740;
             }
             &.active {
@@ -147,25 +208,6 @@ onBeforeMount(() => {
             }
           }
         }
-      }
-    }
-
-    .election {
-      .title {
-        padding: 1px 6px 1px 8px;
-        width: 62px;
-        margin-right: 4px;
-      }
-      ul {
-        li {
-          margin-bottom: 6px;
-          div{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-        }
-        flex-wrap: wrap;
       }
     }
   }
