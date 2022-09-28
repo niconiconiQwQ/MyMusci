@@ -1,37 +1,14 @@
 import { defineStore } from "pinia";
 import {
-  reqArtistList,
   reqTopList,
   reqHotPlayListTag,
   reqSubPlayListTag,
   reqList,
   reqPersonalized,
   reqMV,
+  reqLatestMusic,
+  reqDjRecommend,
 } from "@/api/index";
-// 歌手列表的仓库
-export const artistListStore = defineStore("main", {
-  // state 类似组件打data，存储数据/状态
-  // 要写成函数且是箭头函数：
-  // 好处：1.避免在服务端渲染的时候交叉请求导致的数据状态污染 2.更好的TS类型推断
-  state: () => {
-    return {
-      artistsList: [],
-    };
-  },
-  getters: {},
-  actions: {
-    async getArtist(query) {
-      try {
-        let { data } = await reqArtistList(query);
-        if (data.code == 200) {
-          this.artistsList = data.artists;
-        }
-      } catch (error) {
-        console.log(error.message, "请求歌手列表error");
-      }
-    },
-  },
-});
 // 首页仓库
 export const homePageStore = defineStore("home", {
   state: () => {
@@ -184,6 +161,49 @@ export const RecommendMV = defineStore("MVList", {
         }
       } catch (error) {
         console.log(error.message, "请求MV error");
+      }
+    },
+  },
+});
+// 推荐新音乐仓库
+export const Latest = defineStore("latestMusic", {
+  state: () => {
+    return {
+      list: [],
+    };
+  },
+  actions: {
+    async getLatestList() {
+      try {
+        let { data } = await reqLatestMusic();
+        if (data.code == 200) {
+          this.list = data.result || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求推荐新音乐 error");
+      }
+    },
+  },
+  getters: {
+    nineList: (state) => state.list.slice(0, 9),
+  },
+});
+// 推荐电台仓库
+export const DjRecommend = defineStore("djRecommend", {
+  state: () => {
+    return {
+      DjList: [],
+    };
+  },
+  actions: {
+    async getDjList() {
+      try {
+        let { data } = await reqDjRecommend();
+        if (data.code == 200) {
+          this.DjList = data.data || [];
+        }
+      } catch (error) {
+        console.log(error.message, "请求推荐电台 error");
       }
     },
   },

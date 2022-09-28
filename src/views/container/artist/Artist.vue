@@ -10,9 +10,9 @@
           <li
             v-for="(item, index) in areaList"
             :key="index"
-            @click="choiceArea(item)"
+            @click="choiceArea(item, index)"
           >
-            <div class="active">{{ item }}</div>
+            <div :class="{ active: areaActive == index }">{{ item }}</div>
           </li>
         </ul>
       </li>
@@ -22,17 +22,20 @@
           <li
             v-for="(item, index) in typeList"
             :key="index"
-            @click="choiceType(item)"
+            @click="choiceType(item, index)"
           >
-            <div class="active">{{ item }}</div>
+            <div :class="{ active: typeActive == index }">{{ item }}</div>
           </li>
         </ul>
       </li>
       <li class="election">
         <div class="title">筛选:</div>
         <ul>
-          <li v-for="item in letterList" @click="choiceInitial(item)">
-            <div class="active">{{ item }}</div>
+          <li
+            v-for="(item, index) in letterList"
+            @click="choiceInitial(item, index)"
+          >
+            <div :class="{ active: initialActive == index }">{{ item }}</div>
           </li>
         </ul>
       </li>
@@ -44,7 +47,9 @@
         v-for="item in ArtistListStore.artistsList"
         :key="item.id"
       >
-        <a href="" class="a-mode1"> <img :src="item.img1v1Url" alt="" /></a>
+        <router-link class="a-mode1" :to="`/artist/${item.id}`">
+          <img :src="item.picUrl" alt=""
+        /></router-link>
         <div class="artist-name">
           <span>{{ item.name }}</span
           ><span class="iconfont icon-yonghu"></span>
@@ -57,7 +62,7 @@
 <script setup>
 import TopNav from "@/views/container/topNav/TopNav";
 import { ref, onBeforeMount, computed } from "vue";
-import { artistListStore } from "@/store/index";
+import { artistListStore } from "@/store/artist";
 const ArtistListStore = artistListStore();
 let areaList = ["全部", "华语", "欧美", "日本", "韩国", "其他"];
 let typeList = ["全部", "男歌手", "女歌手", "乐队组合"];
@@ -93,14 +98,18 @@ let letterList = [
 let initial = ref();
 let type = ref();
 let area = ref();
+let initialActive = ref(0);
+let typeActive = ref(0);
+let areaActive = ref(0);
 let query = computed(
   () =>
     `type=${type.value || -1}&area=${area.value || -1}&initial=${
-      initial.value === 0 ? 0 : -1
+      initial.value === 0 ? 0 : initial.value
     }`
 );
 // 点击语种的回调
-const choiceArea = (item) => {
+const choiceArea = (item, index) => {
+  areaActive.value = index;
   let areaNum = -1;
   switch (item) {
     case "全部":
@@ -126,7 +135,8 @@ const choiceArea = (item) => {
   ArtistListStore.getArtist(query.value);
 };
 // 点击 分类的回调
-const choiceType = (item) => {
+const choiceType = (item, index) => {
+  typeActive.value = index;
   let typeNum = -1;
   switch (item) {
     case "全部":
@@ -147,8 +157,8 @@ const choiceType = (item) => {
   ArtistListStore.getArtist(query.value);
 };
 //点击 筛选的回调
-const choiceInitial = (item) => {
-  let initialNum = -1; // 热门
+const choiceInitial = (item, index) => {
+  initialActive.value = index;
   if (item == "热门") {
     initial.value = -1;
   } else if (item == "#") {
@@ -156,6 +166,7 @@ const choiceInitial = (item) => {
   } else {
     initial.value = item.toLowerCase();
   }
+  console.log(query.value);
   ArtistListStore.getArtist(query.value);
 };
 onBeforeMount(() => {

@@ -37,17 +37,38 @@ export const reqList = () => {
     method: "get",
   });
 };
-// 请求推荐歌单 9个
+// 请求 推荐歌单 9个
 export const reqPersonalized = (query) => {
   return requests({
     url: `personalized?limit=${query}`,
     method: "get",
   });
 };
-// 请求推荐MV列表
+// 请求 推荐MV列表
 export const reqMV = () => {
   return requests({
     url: "/personalized/mv",
+    method: "get",
+  });
+};
+// 请求 推荐新音乐
+export const reqLatestMusic = () => {
+  return requests({
+    url: "/personalized/newsong",
+    method: "get",
+  });
+};
+// 请求 推荐电台
+export const reqDjRecommend = () => {
+  return requests({
+    url: "/dj/personalize/recommend",
+    method: "get",
+  });
+};
+// 请求歌手描述
+export const reqArtistDesc = (id) => {
+  return requests({
+    url: `·/artist/desc?id=${id}`,
     method: "get",
   });
 };

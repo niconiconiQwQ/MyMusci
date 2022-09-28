@@ -5,17 +5,25 @@
       <span class="iconfont icon-right"></span
     ></a>
     <ul class="ul-mode">
-      <li class="item" v-for="index in 6" :key="index.id">
+      <li class="item" v-for="item in DjRecommendStore.DjList" :key="item.id">
         <a href="" class="a-mode1">
           <div class="icon iconfont icon-boke"></div>
-          <div class="type">音乐推荐</div>
-          <img src="@/assets/images/m3.jpg" alt=""
+          <div class="type">{{ item.category }}</div>
+          <img :src="item.picUrl" alt=""
         /></a>
       </li>
     </ul>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { onMounted, onBeforeMount } from "vue";
+import { DjRecommend } from "@/store/index";
+const DjRecommendStore = DjRecommend();
+onMounted(() => {});
+onBeforeMount(() => {
+  DjRecommendStore.getDjList();
+});
+</script>
 <style lang="scss" scoped>
 .theme {
   ul {

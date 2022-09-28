@@ -5,23 +5,33 @@
       <span class="iconfont icon-right"></span
     ></a>
     <ul class="ul-mode">
-      <li class="item" v-for="index in 12" :key="index.id">
+      <li class="item" v-for="item in LatestSotre.nineList" :key="item.id">
         <a href="" class="a-mode1">
           <div class="play-mode iconfont icon-play"></div>
-          <img src="@/assets/images/m3.jpg" alt=""
+          <img :src="item.picUrl" alt=""
         /></a>
         <div class="msg">
-          <h5>让世界暂停一分钟</h5>
+          <h5>{{ item.name }}&nbsp;&nbsp;{{ item.song.alias[0] }}</h5>
           <div>
-            <span>SQ</span>
-            <span>林俊杰</span>
+            <span class="tag">SQ</span>
+            <span v-for="art in item.song.artists" :key="art.id">{{
+              art.name
+            }}</span>
           </div>
         </div>
       </li>
     </ul>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { onMounted, onBeforeMount } from "vue";
+import { Latest } from "@/store/index";
+const LatestSotre = Latest();
+onMounted(() => {});
+onBeforeMount(() => {
+  LatestSotre.getLatestList();
+});
+</script>
 <style lang="scss" scoped>
 .msg-mode1 {
   display: flex;
@@ -50,12 +60,20 @@
       }
       .msg {
         @extend .msg-mode1;
+        overflow: hidden;
+        h5 {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         div {
           span {
-            border: 1px solid rgb(130, 183, 211);
-            margin-right: 4px;
-            border-radius: 4px;
-            padding: 0 2px;
+            &.tag {
+              border: 1px solid rgb(130, 183, 211);
+              margin-right: 4px;
+              border-radius: 4px;
+              padding: 0 2px;
+            }
           }
         }
         &:hover {

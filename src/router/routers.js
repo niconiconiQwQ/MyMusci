@@ -67,17 +67,47 @@ export default [
     path: "/live",
     component: () => import("@/views/live/Live.vue"),
   },
+  // 我的粉丝
   {
     path: "/myfollow",
     component: () => import("@/views/myFollow/MyFollow.vue"),
   },
+  // 我的收藏
   {
     path: "/mycollection",
     component: () => import("@/views/MyCollection/MyCollection.vue"),
   },
+  // 我的关注
   {
     path: "/focus",
     component: () => import("@/views/focus/Focus.vue"),
+  },
+  // 歌手首页
+  {
+    path: "/artist/:id",
+    component: () => import("@/views/artistHome/ArtistHome.vue"),
+    children: [
+      // album专辑
+      {
+        path: "", // 默认子路由
+        component: () => import("@/views/artistHome/fragment/Album.vue"),
+      },
+      // MV
+      {
+        path: "mv",
+        component: () => import("@/views/artistHome/fragment/MV.vue"),
+      },
+      // 歌手详情
+      {
+        path: "detail",
+        component: () => import("@/views/artistHome/fragment/Detail.vue"),
+      },
+      // 相似歌手
+      {
+        path: "similar",
+        component: () => import("@/views/artistHome/fragment/Similar.vue"),
+      },
+    ],
   },
   /*   { path: "/", redirect: "/home" },路由重定向
   {
