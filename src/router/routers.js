@@ -1,5 +1,3 @@
-// 导入一级路由组件
-// 导入二级路由组件
 export default [
   // 首页 -个性推荐
   {
@@ -84,12 +82,14 @@ export default [
   },
   // 歌手首页
   {
-    path: "/artist/:id",
+    path: "/artist",
     component: () => import("@/views/artistHome/ArtistHome.vue"),
+    redirect: "/artist/album",
     children: [
       // album专辑
       {
-        path: "", // 默认子路由
+        // path: "", // 默认子路由
+        path: "album",
         component: () => import("@/views/artistHome/fragment/Album.vue"),
       },
       // MV

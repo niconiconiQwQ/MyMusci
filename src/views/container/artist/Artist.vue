@@ -47,7 +47,10 @@
         v-for="item in ArtistListStore.artistsList"
         :key="item.id"
       >
-        <router-link class="a-mode1" :to="`/artist/${item.id}`">
+        <router-link
+          class="a-mode1"
+          :to="{ path: '/artist', query: { id: item.id } }"
+        >
           <img :src="item.picUrl" alt=""
         /></router-link>
         <div class="artist-name">
@@ -104,7 +107,7 @@ let areaActive = ref(0);
 let query = computed(
   () =>
     `type=${type.value || -1}&area=${area.value || -1}&initial=${
-      initial.value === 0 ? 0 : initial.value
+      initial.value === 0 ? 0 : initial.value || -1
     }`
 );
 // 点击语种的回调

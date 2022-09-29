@@ -23,7 +23,7 @@ export const reqHotPlayListTag = () => {
     method: "get",
   });
 };
-// 请求所有/sub歌单分类
+// 请求所有歌单分类
 export const reqSubPlayListTag = () => {
   return requests({
     url: "/playlist/catlist",
@@ -65,10 +65,45 @@ export const reqDjRecommend = () => {
     method: "get",
   });
 };
-// 请求歌手描述
+// 请求歌手描述 desc
 export const reqArtistDesc = (id) => {
   return requests({
-    url: `·/artist/desc?id=${id}`,
+    url: `/artist/desc?id=${id}`,
+    method: "get",
+  });
+};
+// 请求歌手 详情 detail
+export const reqDetail = (id) => {
+  return requests({
+    url: `/artist/detail?id=${id}`,
+    method: "get",
+  });
+};
+// 请求歌手MV
+export const reqArtistMV = (id) => {
+  return requests({
+    url: `/artist/mv?id=${id}`,
+    method: "get",
+  });
+};
+// 请求歌手粉丝数量
+export const reqFans = (id) => {
+  return requests({
+    url: `/artist/follow/count?id=${id}`,
+    method: "get",
+  });
+};
+// 请求歌手热门50首歌曲
+export const reqArtistTopSong = (id) => {
+  return requests({
+    url: `/artist/top/song?id=${id}`,
+    method: "get",
+  });
+};
+// 请求获取歌手专辑
+export const reqArtistAlbum = (id, limit) => {
+  return requests({
+    url: `/artist/album?id=${id}&limit=${limit}`,
     method: "get",
   });
 };

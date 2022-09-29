@@ -19,7 +19,7 @@
   </div>
 </template>
 <script setup>
-import { formatNumber } from "@/utils/numFormat";
+import { formatNumber } from "@/utils/Format/format";
 import { onMounted, onBeforeMount } from "vue";
 import { RecommendMV } from "@/store/index";
 const RecommendMVStore = RecommendMV();
@@ -30,12 +30,12 @@ onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .mv {
-  // @extend .exclusive;
   ul {
     li {
       width: 24%;
       a {
         height: 140px;
+        margin-bottom: 6px;
         .num {
           span {
             margin-right: 2px;

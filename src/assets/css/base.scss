@@ -90,11 +90,18 @@
   opacity: 1;
 }
 // 全局：图片右上角的播放次数
-.num-mode {
+
+.num-mode,
+.time-mode {
   position: absolute;
   display: flex;
   align-items: center;
   color: #fff;
-  top: 2px;
   right: 10px;
+}
+.num-mode {
+  top: 2px;
+}
+.time-mode {
+  bottom: 2px;
 }

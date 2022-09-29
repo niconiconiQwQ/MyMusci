@@ -1,28 +1,54 @@
 <template>
-  <div class="artist">
+  <div class="artist ctn-mode">
     <div class="head">
       <div class="left">
-        <img src="@/assets/images/m3.jpg" alt="" />
+        <img :src="ArtistListStore.cover" alt="" />
       </div>
       <div class="right">
-        <h1>陈奕迅</h1>
+        <h1>{{ ArtistListStore.name }}</h1>
         <div class="nickname">
-          <span>Eason Chan;</span><span>Chan Yick Shun</span>
+          <span>{{ ArtistListStore.imageDesc }}</span>
         </div>
         <a href="#" class="btn">
-          <span class="iconfont icon-yulanshoucang"></span><span>收藏</span></a
+          <span class="iconfont icon-yulanshoucang"></span
+          ><span>{{ ArtistListStore.fans.isFollow ? "已关注" : "关注" }}</span>
+          <span>{{ formatFansNum(ArtistListStore.fans.fansCnt) }}</span></a
         >
         <div class="number">
-          <span>单曲数:123</span><span>专辑数:126</span><span>MV数:123</span>
+          <span>单曲数:{{ ArtistListStore.musicSize }}</span
+          ><span>专辑数:{{ ArtistListStore.albumSize }}</span
+          ><span>MV数:{{ ArtistListStore.mvSize }}</span>
         </div>
       </div>
     </div>
     <div class="nav">
       <ul>
-        <li><router-link to="/artist/album">专辑</router-link></li>
-        <li><router-link to="/artist/mv">MV</router-link></li>
-        <li><router-link to="/artist/detail">歌手详情</router-link></li>
-        <li><router-link to="/artist/similar">相似歌手</router-link></li>
+        <li>
+          <router-link
+            exact
+            :to="{ path: '/artist/album', query: { id: ArtistListStore.id } }"
+            >专辑</router-link
+          >
+        </li>
+        <li>
+          <router-link
+            :to="{ path: '/artist/mv', query: { id: ArtistListStore.id } }"
+            >MV</router-link
+          >
+        </li>
+        <li>
+          <router-link
+            :to="{ path: '/artist/detail', query: { id: ArtistListStore.id } }"
+            >歌手详情</router-link
+          >
+        </li>
+        <li>
+          <router-link
+            exact
+            :to="{ path: '/artist/similar', query: { id: ArtistListStore.id } }"
+            >相似歌手</router-link
+          >
+        </li>
       </ul>
     </div>
     <router-view></router-view>
@@ -31,6 +57,10 @@
 <script setup>
 import { onMounted, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { artistListStore } from "@/store/artist";
+import { formatFansNum } from "@/utils/Format/format";
+const ArtistListStore = artistListStore();
+let id = ref(0);
 const router = useRouter();
 const route = useRoute();
 watch(
@@ -42,19 +72,21 @@ watch(
   }
 );
 onBeforeMount(() => {
-  // 发起请求
+  // 存一下歌手id
+  ArtistListStore.id = route.query.id;
+  // 发起请求获取歌手详情
+  ArtistListStore.getDetail(ArtistListStore.id);
+  // 发起请求获取歌手粉丝数
+  ArtistListStore.getFans(ArtistListStore.id);
 });
-onMounted(() => {
-  // console.log(router);
-  // console.log(route);
-});
+onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .artist {
+  overflow-x: hidden;
+  overflow-y: auto;
   color: #373737;
-  width: 100%;
   background-color: #fff;
-  padding: 30px 30px 0px 30px;
   .head {
     margin-bottom: 36px;
     display: flex;
@@ -80,7 +112,7 @@ onMounted(() => {
         }
       }
       .btn {
-        width: 80px;
+        width: 130px;
         height: 32px;
         display: block;
         border: 1px solid #d9d9d9;
@@ -91,6 +123,9 @@ onMounted(() => {
         span {
           padding: 0 2px;
           font-size: 15px;
+        }
+        &:hover {
+          background-color: #ededed;
         }
       }
       .number {
@@ -106,8 +141,23 @@ onMounted(() => {
       display: flex;
 
       li {
-        margin-right: 22px;
-        font-size: 18px;
+        margin-right: 20px;
+
+        a {
+          font-size: 18px;
+          padding-bottom: 2px;
+          &.router-link-active {
+            font-size: 20px;
+            font-weight: 700;
+            border-bottom: 2px solid #38b2ae;
+            div {
+              border-bottom: 2px solid #389cb2;
+            }
+          }
+          &:hover {
+            color: #000;
+          }
+        }
       }
     }
   }

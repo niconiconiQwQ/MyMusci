@@ -32,7 +32,7 @@
   </div>
 </template>
 <script setup>
-import { formatNumber } from "@/utils/numFormat";
+import { formatNumber } from "@/utils/Format/format";
 import { onMounted, onBeforeMount } from "vue";
 import { RecommendPalyList } from "@/store/index";
 const RecommendPalyListStore = RecommendPalyList();
