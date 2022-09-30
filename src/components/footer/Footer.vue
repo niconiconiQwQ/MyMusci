@@ -5,7 +5,7 @@
       <div class="msg">
         <div class="name">
           <span class="title">红莲华</span><span class="vip">vip</span
-          ><span class="iconfont icon-shixin"></span>
+          ><span class="iconfont icon-zanxuanzhong"></span>
         </div>
         <div>LISA</div>
       </div>
@@ -46,9 +46,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .footer {

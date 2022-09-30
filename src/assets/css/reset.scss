@@ -101,8 +101,12 @@ html {
   overflow-x: hidden;
 }
 
-input {
+input,
+textarea {
   outline: none;
+}
+textarea {
+  resize: none;
 }
 input:focus {
   outline: none;

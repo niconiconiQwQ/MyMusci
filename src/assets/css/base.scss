@@ -1,20 +1,12 @@
-@import url("http://at.alicdn.com/t/c/font_3651087_weqq3xm7sbl.css");
-// @font-face {
-//   font-family: "iconfont"; /* Project id 3651087 */
-//   src: url("http://at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.woff2?t=1663286512218")
-//       format("woff2"),
-//     url("http:///at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.woff?t=1663286512218")
-//       format("woff"),
-//     url("http:///at.alicdn.com/t/c/font_3651087_c2rmkt4zkqs.ttf?t=1663286512218")
-//       format("truetype");
-// }
+@import url("//at.alicdn.com/t/c/font_3651087_h74ot163u6j.css");
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: "iconfont"; /* Project id 3651087 */
-  src: url("//at.alicdn.com/t/c/font_3651087_weqq3xm7sbl.woff2?t=1664115688208")
+  src: url("//at.alicdn.com/t/c/font_3651087_h74ot163u6j.woff2?t=1664537248203")
       format("woff2"),
-    url("//at.alicdn.com/t/c/font_3651087_weqq3xm7sbl.woff?t=1664115688208")
+    url("//at.alicdn.com/t/c/font_3651087_h74ot163u6j.woff?t=1664537248203")
       format("woff"),
-    url("//at.alicdn.com/t/c/font_3651087_weqq3xm7sbl.ttf?t=1664115688208")
+    url("//at.alicdn.com/t/c/font_3651087_h74ot163u6j.ttf?t=1664537248203")
       format("truetype");
 }
 .iconfont {
@@ -104,4 +96,28 @@
 }
 .time-mode {
   bottom: 2px;
+}
+// 全局：导航的样式
+.nav-mode {
+  margin-bottom: 20px;
+  ul {
+    display: flex;
+
+    li {
+      margin-right: 20px;
+
+      a {
+        font-size: 15px;
+        padding-bottom: 1px;
+        &.router-link-active {
+          font-size: 17px;
+          font-weight: 700;
+          border-bottom: 2px solid #38b2ae;
+        }
+        &:hover {
+          color: #000;
+        }
+      }
+    }
+  }
 }

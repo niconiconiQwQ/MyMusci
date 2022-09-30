@@ -47,8 +47,8 @@ export default [
   },
   // 我喜欢的音乐
   {
-    path: "/playList",
-    component: () => import("@/views/palyList/playList.vue"),
+    path: "/myfond",
+    component: () => import("@/views/myFond/MyFond.vue"),
   },
   // 视频
   {
@@ -106,6 +106,26 @@ export default [
       {
         path: "similar",
         component: () => import("@/views/artistHome/fragment/Similar.vue"),
+      },
+    ],
+  },
+  // 歌单页面路由
+  {
+    path: "/playlist",
+    component: () => import("@/views/playList/PlayList.vue"),
+    redirect: "/playlist/songlist",
+    children: [
+      {
+        path: "songlist",
+        component: () => import("@/views/playList/fragment/SongList.vue"),
+      },
+      {
+        path: "comment",
+        component: () => import("@/views/playList/fragment/Comment.vue"),
+      },
+      {
+        path: "collectors",
+        component: () => import("@/views/playList/fragment/Collectors.vue"),
       },
     ],
   },

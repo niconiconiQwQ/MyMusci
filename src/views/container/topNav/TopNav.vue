@@ -1,35 +1,25 @@
 <template>
-  <div class="nav">
-    <router-link to="/"><div>个性推荐</div></router-link>
-    <router-link to="/main/customized"><div>专属定制</div></router-link>
-    <router-link to="/main/playlists"><div>歌单</div></router-link>
-    <router-link to="/main/toplist"><div>排行榜</div></router-link>
-    <router-link to="/main/artist"><div>歌手</div></router-link>
-    <router-link to="/main/latest"><div>最新音乐</div></router-link>
+  <div class="nav-mode">
+    <ul>
+      <li><router-link to="/">个性推荐</router-link></li>
+      <li><router-link to="/main/customized">专属定制</router-link></li>
+      <li><router-link to="/main/playlists">歌单</router-link></li>
+      <li><router-link to="/main/toplist">排行榜</router-link></li>
+      <li><router-link to="/main/artist">歌手</router-link></li>
+      <li><router-link to="/main/latest">最新音乐</router-link></li>
+    </ul>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-// let isActive = ref(true);
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
-.nav {
-  display: flex;
+.nav-mode {
   margin-bottom: 30px;
   a {
     font-size: 18px;
-    padding-right: 20px;
     &.router-link-active {
       font-size: 20px;
-      font-weight: 700;
-      div {
-        border-bottom: 2px solid #389cb2;
-      }
-    }
-    &:hover {
-      color: #000;
     }
   }
 }

@@ -13,9 +13,9 @@
       <ul>
         <li>
           <router-link to="/playList"
-            ><span class="iconfont icon-aixin"></span><span>我喜欢的音乐</span
-            ><span>❤</span></router-link
-          >
+            ><span class="iconfont icon-zan"></span><span>我喜欢的音乐</span
+            ><span class="iconfont icon-zanxuanzhong"></span
+          ></router-link>
         </li>
         <li>
           <a href=""
@@ -70,8 +70,7 @@
   </div>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .ul-mode1 {

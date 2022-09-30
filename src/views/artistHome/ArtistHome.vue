@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="nav">
+    <div class="nav-mode">
       <ul>
         <li>
           <router-link
@@ -83,10 +83,7 @@ onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .artist {
-  overflow-x: hidden;
-  overflow-y: auto;
   color: #373737;
-  background-color: #fff;
   .head {
     margin-bottom: 36px;
     display: flex;
@@ -131,32 +128,6 @@ onMounted(() => {});
       .number {
         span {
           padding-right: 20px;
-        }
-      }
-    }
-  }
-  .nav {
-    margin-bottom: 20px;
-    ul {
-      display: flex;
-
-      li {
-        margin-right: 20px;
-
-        a {
-          font-size: 18px;
-          padding-bottom: 2px;
-          &.router-link-active {
-            font-size: 20px;
-            font-weight: 700;
-            border-bottom: 2px solid #38b2ae;
-            div {
-              border-bottom: 2px solid #389cb2;
-            }
-          }
-          &:hover {
-            color: #000;
-          }
         }
       }
     }
