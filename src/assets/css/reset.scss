@@ -3,11 +3,13 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-*:before,
-*:after {
+*::before,
+*::after {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 body,
 div,
@@ -92,6 +94,8 @@ textarea,
 select,
 button {
   font: 14px "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+  border: 0;
+  background-color: transparent;
 }
 table {
   border-collapse: collapse;

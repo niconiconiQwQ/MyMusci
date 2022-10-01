@@ -7,7 +7,7 @@
     <ul class="ul-mode">
       <li class="item first" v-for="(item, index) in 1" :key="index">
         <a href="" class="a-mode1">
-          <div class="icon iconfont icon-aixin"></div>
+          <div class="icon iconfont icon-zan"></div>
           <div class="text"><span>根据您的音乐口味生成每日更新</span></div>
           <div class="play-mode iconfont icon-play"></div>
         </a>

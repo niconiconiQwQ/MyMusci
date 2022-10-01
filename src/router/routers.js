@@ -129,6 +129,10 @@ export default [
       },
     ],
   },
+  {
+    path: "/login",
+    component: () => import("@/components/login/Login.vue"),
+  },
   /*   { path: "/", redirect: "/home" },路由重定向
   {
     //在注册路由的时候,如果这里占位，切记务必要传递params
