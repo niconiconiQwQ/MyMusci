@@ -17,7 +17,7 @@ export const formatNumber = (num) => {
   }
 };
 // 歌手描述文字格式化
-export const formatTxt = (txt) => {
+export const formatTxt = (txt = []) => {
   return txt.split("\n");
 };
 // 播放时间(毫秒)格式化

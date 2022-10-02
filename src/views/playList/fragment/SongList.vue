@@ -29,7 +29,15 @@
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-onBeforeMount(() => {});
+import { playList } from "@/store/playlist";
+const props = defineProps(["listId"]);
+const route = useRoute();
+const router = useRouter();
+const playListStore = playList();
+onBeforeMount(() => {
+  // playListStore.getSongs()
+  console.log(props.listId);
+});
 onMounted(() => {});
 </script>
 <style lang="scss" scoped>

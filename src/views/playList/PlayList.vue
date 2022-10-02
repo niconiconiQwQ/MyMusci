@@ -2,19 +2,19 @@
   <div class="playlist ctn-mode">
     <div class="head">
       <div class="left">
-        <img src="@/assets/images/m3.jpg" alt="" />
+        <img :src="playListStore.coverImgUrl" alt="" />
       </div>
       <div class="right">
         <div class="title">
           <div>歌单</div>
-          <h1>今天从xxx听起|私人雷达</h1>
+          <h1>{{ playListStore.playListName }}</h1>
         </div>
         <div class="nickname">
           <a href="#">
-            <img src="@/assets/images/avatar2.png" alt="" />
-            <span>云音乐私人雷达</span>
+            <img :src="playListStore.avatarUrl" alt="" />
+            <span>{{ playListStore.nickname }}</span>
           </a>
-          <span class="time">2019-12-26创建</span>
+          <span class="time">{{ playListStore.createTime }}创建</span>
         </div>
         <ul class="ctrl">
           <li>
@@ -31,13 +31,13 @@
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-yulanshoucang"></span
-              ><span>已收藏(3238万)</span></a
+              ><span>已收藏({{ playListStore.subscribedCount }})</span></a
             >
           </li>
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-yulanshoucang"></span
-              ><span>分享(66万)</span></a
+              ><span>分享({{ playListStore.shareCount }})</span></a
             >
           </li>
           <li>
@@ -49,10 +49,29 @@
         </ul>
 
         <ul class="desc">
-          <li><span>标签: </span><a href="">流行</a></li>
-          <li><span>歌曲: 33</span><span>播放:128亿</span></li>
-          <li><span>简介: 你爱的歌，值的反复聆听</span></li>
+          <li>
+            <span>标签: </span
+            ><a href="#" v-for="(item, index) in playListStore.tags">{{
+              item
+            }}</a>
+          </li>
+          <li>
+            <span>歌曲: {{ playListStore.trackCount }}</span
+            ><span>播放:{{ playListStore.playCount }}</span>
+          </li>
+          <li class="brief" ref="brief">
+            <i class="iconfont icon-up" @click="showDesc" ref="i"></i>
+            <p>简介:</p>
+          </li>
+          <!-- <li class="row" v-for="item in playListStore.description">
+            {{ item }}
+          </li> -->
         </ul>
+        <div class="cur">
+          <p class="row" v-for="item in playListStore.description">
+            {{ item }}
+          </p>
+        </div>
       </div>
     </div>
     <div class="nav-mode">
@@ -60,22 +79,50 @@
         <li>
           <router-link to="/playlist/songlist">歌曲列表</router-link>
         </li>
-        <li><router-link to="/playlist/comment">评论(190437)</router-link></li>
+        <li>
+          <router-link to="/playlist/comment"
+            >评论({{ playListStore.commentCount }})</router-link
+          >
+        </li>
         <li><router-link to="/playlist/collectors">收藏者</router-link></li>
       </ul>
     </div>
-    <router-view></router-view>
+    <router-view :listId="route.query.id"></router-view>
   </div>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-onBeforeMount(() => {});
-onMounted(() => {});
+import { playList } from "@/store/playlist";
+const playListStore = playList();
+const router = useRouter();
+const route = useRoute();
+const isShowDesc = ref(false);
+const brief = ref(null);
+const i = ref(null);
+const showDesc = () => {
+  isShowDesc.value = !isShowDesc.value;
+  if (isShowDesc.value) {
+    // brief.value.style.overflow = "hidden";
+    console.log(isShowDesc.value, "真的啊");
+    i.value.style.transform = "rotate(0deg)";
+  } else {
+    // brief.value.style.overflow = "";
+    console.log(isShowDesc.value, "假的");
+    i.value.style.transform = "";
+  }
+};
+onBeforeMount(() => {
+  // 请求歌单详情
+  playListStore.getPlayListDetail(route.query.id);
+});
+onMounted(() => {
+  // console.log(route.query.id);
+  console.log(playListStore.avatarUrl);
+});
 </script>
 <style lang="scss" scoped>
 .playlist {
-  // backdrop-filter: blur(10px);
   color: #373737;
   font-size: 12px;
   .btn-mode {
@@ -105,7 +152,7 @@ onMounted(() => {});
       }
     }
     .right {
-      width: 100%;
+      flex: 1;
       .title {
         display: flex;
         align-items: center;
@@ -134,7 +181,7 @@ onMounted(() => {});
           img {
             height: 100%;
             border-radius: 50%;
-            margin-right: 2px;
+            margin-right: 10px;
           }
         }
         span {
@@ -181,6 +228,18 @@ onMounted(() => {});
           font-size: 14px;
           span {
             margin-right: 10px;
+          }
+          &.brief {
+            position: relative;
+            height: 20px;
+            i {
+              position: absolute;
+              right: 0;
+              top: 0;
+              font-size: 30px;
+              transform: rotate(90deg);
+              transition: all 0.1s linear;
+            }
           }
         }
       }

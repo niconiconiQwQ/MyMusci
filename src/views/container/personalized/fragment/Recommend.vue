@@ -6,7 +6,7 @@
     ></a>
     <ul class="ul-mode">
       <li class="item first" v-for="(item, index) in 1" :key="index">
-        <a href="" class="a-mode1">
+        <a href="#" class="a-mode1">
           <div class="icon iconfont icon-zan"></div>
           <div class="text"><span>根据您的音乐口味生成每日更新</span></div>
           <div class="play-mode iconfont icon-play"></div>
@@ -15,10 +15,10 @@
       </li>
       <li
         class="item"
-        v-for="item in RecommendPalyListStore.list"
+        v-for="item in playListStore.recommentPlayList"
         :key="item.id"
       >
-        <a href="" class="a-mode1">
+        <a href="#" class="a-mode1" @click="gotoPlayList(item.id)">
           <div class="num-mode">
             <span class="iconfont icon-bofang"></span
             ><span>{{ formatNumber(item.playCount) }}</span>
@@ -34,10 +34,18 @@
 <script setup>
 import { formatNumber } from "@/utils/Format/format";
 import { onMounted, onBeforeMount } from "vue";
-import { RecommendPalyList } from "@/store/index";
-const RecommendPalyListStore = RecommendPalyList();
+import { playList } from "@/store/playlist";
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+const route = useRoute();
+const playListStore = playList();
+
+const gotoPlayList = (id) => {
+  // 路由跳转
+  router.push({ path: "/playlist", query: { id: id } });
+};
 onBeforeMount(() => {
-  RecommendPalyListStore.getPlayList(9);
+  playListStore.getRecPlayList(9);
 });
 onMounted(() => {});
 </script>

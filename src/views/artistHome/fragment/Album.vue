@@ -1,5 +1,5 @@
 <template>
-  <div>专辑</div>
+  <div>专辑; 数据还没做</div>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";

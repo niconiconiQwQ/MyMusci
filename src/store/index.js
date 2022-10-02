@@ -41,7 +41,7 @@ export const topListStore = defineStore("topList", {
     globalList: (state) => state.list.slice(4),
   },
 });
-// 歌单仓库
+// 歌单分类仓库
 export const palyList = defineStore("palyList", {
   state: () => {
     return {
@@ -121,26 +121,6 @@ export const Personalized = defineStore("personalized", {
         }
       } catch (error) {
         console.log(error.message, "请求独家放送error");
-      }
-    },
-  },
-});
-// 推荐歌单仓库
-export const RecommendPalyList = defineStore("playList", {
-  state: () => {
-    return {
-      list: [],
-    };
-  },
-  actions: {
-    async getPlayList(query) {
-      try {
-        let { data } = await reqPersonalized(query);
-        if (data.code == 200) {
-          this.list = data.result || [];
-        }
-      } catch (error) {
-        console.log(error.message, "请求推荐歌单error");
       }
     },
   },
