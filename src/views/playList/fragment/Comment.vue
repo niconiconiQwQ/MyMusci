@@ -1,5 +1,6 @@
 <template>
   <div class="comment">
+    <!-- 发送评论部分 -->
     <div class="send">
       <div class="text">
         <textarea name="" id="" v-model="LastNum"></textarea
@@ -14,24 +15,30 @@
         <a class="btn">评论</a>
       </div>
     </div>
+    <!-- 热门评论 -->
     <div class="hot-comments">
       <h2>精彩评论</h2>
       <ul class="com-list">
-        <li v-for="index in 5" :key="index">
+        <li v-for="item in playListStore.hotComments" :key="item.commentId">
           <div class="inner">
-            <a href="" class="avatar">
-              <img src="@/assets/images/avatar2.png" alt="" />
+            <a href="#" class="avatar" @click="goUser(item.user.userId)">
+              <img v-lazy="item.user.avatarUrl" alt="" />
             </a>
             <div class="detail">
               <div class="top">
-                <a href="" class="nickname">春天吃了: </a
-                ><span>我还以为是谁的歌单这么有品位。原来是我自己哦</span>
+                <a href="#" class="nickname" @click="goUser(item.user.userId)"
+                  >{{ item.user.nickname }}: </a
+                ><span>{{ item.content }}</span>
               </div>
               <div class="num">
-                <div class="time">2011年11月11日 11:11</div>
+                <div class="time">
+                  {{ formatTime(item.time) }}
+                </div>
                 <div class="right">
                   <span class="report">举报</span>
-                  <span class="iconfont icon-dianzan"></span>
+                  <span class="iconfont icon-dianzan"
+                    ><i>{{ item.likedCount }}</i></span
+                  >
                   <span class="iconfont icon-fenxiang"></span>
                   <span class="iconfont icon-jianyi"></span>
                 </div>
@@ -44,24 +51,28 @@
         ><span>更多精彩评论</span> <span class="iconfont icon-right"></span
       ></a>
     </div>
+    <!-- 最新评论 -->
     <div class="latest-comments">
       <h2>最新评论</h2>
       <ul class="com-list">
-        <li v-for="index in 5" :key="index">
+        <li v-for="item in playListStore.comments" :key="item.commentId">
           <div class="inner">
-            <a href="" class="avatar">
-              <img src="@/assets/images/avatar2.png" alt="" />
+            <a href="#" class="avatar" @click="goUser(item.user.userId)">
+              <img v-lazy="item.user.avatarUrl" alt="" />
             </a>
             <div class="detail">
               <div class="top">
-                <a href="" class="nickname">春天吃了: </a
-                ><span>我还以为是谁的歌单这么有品位。原来是我自己哦</span>
+                <a href="#" class="nickname" @click="goUser(item.user.userId)"
+                  >{{ item.user.nickname }} </a
+                ><span>{{ item.content }}</span>
               </div>
               <div class="num">
-                <div class="time">2011年11月11日 11:11</div>
+                <div class="time">{{ formatTime(item.time) }}</div>
                 <div class="right">
                   <span class="report">举报</span>
-                  <span class="iconfont icon-dianzan"></span>
+                  <span class="iconfont icon-dianzan">{{
+                    item.likedCount
+                  }}</span>
                   <span class="iconfont icon-fenxiang"></span>
                   <span class="iconfont icon-jianyi"></span>
                 </div>
@@ -78,8 +89,25 @@
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Pagination from "@/components/pagination/Pagination";
+import { playList } from "@/store/playlist";
+import { formatTime } from "@/utils/Format/format";
+const props = defineProps(["PlayListId"]);
+const route = useRoute();
+const router = useRouter();
+const playListStore = playList();
 let LastNum = ref("");
-onBeforeMount(() => {});
+const goUser = (id) => {
+  router.push({
+    path: "/user",
+    query: {
+      id: id,
+    },
+  });
+};
+onBeforeMount(() => {
+  // 请求歌单评论数据
+  playListStore.getComment(props.PlayListId);
+});
 onMounted(() => {});
 </script>
 <style lang="scss" scoped>
@@ -134,8 +162,7 @@ onMounted(() => {});
     }
     .com-list {
       li {
-        // height: 50px;
-        padding: 4px 0px 20px 0px;
+        padding: 4px 0px 26px 0px;
         border-bottom: 1px solid #f2f2f2;
         .inner {
           height: 38px;
@@ -168,14 +195,18 @@ onMounted(() => {});
                 span {
                   padding: 0px 8px;
                   border-right: 1px solid #dfdfef;
-                  font-size: 14px;
+                  font-size: 13px;
                   &:first-child {
                     visibility: hidden;
                   }
                   &:last-child {
                     border-right: none;
                   }
+                  i {
+                    padding: 0 1px;
+                  }
                 }
+
                 .report {
                   font-size: 12px;
                 }
@@ -198,6 +229,7 @@ onMounted(() => {});
       line-height: 26px;
       text-align: center;
       &:hover {
+        color: #000;
       }
     }
   }

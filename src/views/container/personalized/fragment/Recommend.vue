@@ -24,7 +24,7 @@
             ><span>{{ formatNumber(item.playCount) }}</span>
           </div>
           <div class="play-mode iconfont icon-play"></div>
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></a>
         <span>{{ item.name }}</span>
       </li>

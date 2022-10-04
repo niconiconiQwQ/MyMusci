@@ -3,40 +3,88 @@
     <table class="s-table">
       <thead>
         <tr>
-          <th class="w1">操作</th>
-          <th class="w2">标题</th>
-          <th class="w3">歌手</th>
-          <th class="w4">专辑</th>
-          <th class="w5">时间</th>
+          <th class="w w1">操作</th>
+          <th class="w w2">标题</th>
+          <th class="w w3">歌手</th>
+          <th class="w w4">专辑</th>
+          <th class="w w5">时间</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="index in 30" :key="index" :class="{ bgc: index % 2 }">
-          <td class="w1">
-            <span>{{ index }}</span>
+        <tr
+          v-for="(item, index) in playListStore.songs"
+          :key="item.id"
+          :class="{ bgc: index % 2 }"
+        >
+          <td class="w w1">
+            <span>{{ formatIndex(index + 1) }}</span>
             <span class="iconfont icon-zan"></span>
             <span class="iconfont icon-download"></span>
           </td>
-          <td class="w2"><span>Go! Go! Maniac</span></td>
-          <td class="w3"><span>Gnoka</span></td>
-          <td class="w4"><span>K-ON! Music History's Box</span></td>
-          <td class="w5"><span>04:33</span></td>
+          <td class="w w2">
+            <span>{{ item.name }}</span>
+          </td>
+          <td class="w w3">
+            <span>
+              <a
+                class="pointer"
+                v-for="ar in item.ar"
+                :key="ar.id"
+                @click="gotoArtist(ar.id)"
+                >{{ ar.name }}&nbsp;</a
+              >
+            </span>
+          </td>
+          <td class="w w4">
+            <span>
+              <a class="pointer" @click="gotoAblum(item.al.id)">{{
+                item.al.name
+              }}</a>
+            </span>
+          </td>
+          <td class="w w5"><span>04:33</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeMount,
+  nextTick,
+  watch,
+  watchEffect,
+} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList } from "@/store/playlist";
-const props = defineProps(["listId"]);
+import { formatIndex } from "@/utils/Format/format";
+import { palyList } from "@/store";
+const props = defineProps(["PlayListId"]);
 const route = useRoute();
 const router = useRouter();
 const playListStore = playList();
+const playListId = ref(props.PlayListId);
+// 跳转到某个歌手页面
+const gotoArtist = (ArtistId = -1) => {
+  router.push({
+    path: "/artist",
+    query: {
+      id: ArtistId,
+    },
+  });
+};
+// 跳转到专辑
+const gotoAblum = (ablumId) => {
+  // 专辑和歌单结构类似
+  // router.push({
+  //   path: "",
+  // });
+  console.log(ablumId);
+};
 onBeforeMount(() => {
-  // playListStore.getSongs()
-  console.log(props.listId);
+  playListStore.getSongs(props.PlayListId, 10, 0);
 });
 onMounted(() => {});
 </script>
@@ -44,25 +92,52 @@ onMounted(() => {});
 .song-list {
   .s-table {
     width: 100%;
-    color: #656565;
-    // border-collapse: collapse;
+    color: #888888;
     thead,
     tbody {
-      // vertical-align: middle;
-      // border-color: inherit;
       tr {
-        // display: table-row;
-        // vertical-align: inherit;
-        // border-color: inherit;
+        display: flex;
+        a {
+          color: #888888;
+        }
+        .w {
+          margin-right: 10px;
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+
+          span {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+        .w1,
+        .w5 {
+          flex: 1;
+        }
+        .w2,
+        .w3,
+        .w4 {
+          flex: 3;
+        }
+        .w3 {
+          flex: 2;
+        }
+        .pointer {
+          cursor: pointer;
+          &:hover {
+            color: #ad91ec;
+          }
+        }
         &.bgc {
           background-color: #fafafa;
         }
         text-align: left;
         th {
           height: 34px;
-          // text-align: center;
           &.w1 {
-            text-align: center;
+            justify-content: center;
           }
         }
         td {
@@ -78,12 +153,13 @@ onMounted(() => {});
         }
       }
     }
-    // thead {
-    //   // display: table-header-group;
-    // }
-    // tbody {
-    //   // display: table-row-group;
-    // }
+    tbody {
+      tr {
+        .w2 {
+          color: #373737;
+        }
+      }
+    }
   }
 }
 </style>

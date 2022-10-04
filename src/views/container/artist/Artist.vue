@@ -51,7 +51,7 @@
           class="a-mode1"
           :to="{ path: '/artist', query: { id: item.id } }"
         >
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></router-link>
         <div class="artist-name">
           <span>{{ item.name }}</span

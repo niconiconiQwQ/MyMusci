@@ -6,9 +6,15 @@ import "@/assets/css/reset.scss";
 // 先引入全部element组件，后续再按需引入
 // import ElementPlus from "element-plus";
 // import "element-plus/dist/index.css";
+// 引入图片懒加载
+import { lazyImg } from "@/utils/lazy";
 // 引入pinia
 import { createPinia } from "pinia";
 const pinia = createPinia();
 const app = createApp(App);
 // app.use(ElementPlus);
-app.use(router).use(pinia).mount("#app");
+app
+  .use(router)
+  .use(pinia)
+  .use(lazyImg.lazyPlugin, lazyImg.lazyOptions)
+  .mount("#app");

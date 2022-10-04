@@ -19,19 +19,23 @@ import Main from "@/components/main/Main";
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: var(--greyLight-1);
   // background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
   // 背景图片
-  background: transparent url("@/assets/images/adv2.png") no-repeat fixed;
-  background-size: cover;
-  background-attachment: fixed;
+  // background: transparent url("@/assets/images/adv2.png") no-repeat fixed;
+  // background-size: cover;
+  // background-attachment: fixed;
   .content {
     height: 87vh;
     width: 68vw;
     display: flex;
     flex-direction: column;
-    border-radius: 20px;
-    // overflow: hidden;
-    box-shadow: 6px 6px 9px #9d9db6, -18px -18px 37px #ffffed;
+    border-radius: 2rem;
+    overflow: hidden;
+    background-color: var(--greyLight-1);
+    // box-shadow: 6px 6px 9px #9d9db6, -18px -18px 37px #ffffed;
+    box-shadow: 0.8rem 0.8rem 1.4rem var(--greyLight-2),
+      -0.2rem -0.2rem 1.8rem var(--white);
   }
 }
 </style>

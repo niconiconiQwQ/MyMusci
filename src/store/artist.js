@@ -36,7 +36,7 @@ export const artistListStore = defineStore("artistList", {
     // 某歌手名
     name: (state) => state.detail.artist.name || "",
     // 某歌手身份
-    imageDesc: (state) => state.detail.identify.imageDesc || "",
+    imageDesc: (state) => state.detail.identify.imageDesc || "null",
     // 某歌手封面
     cover: (state) => state.detail.artist.cover || "",
     // 某歌手专辑数：

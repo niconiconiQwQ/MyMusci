@@ -1,6 +1,6 @@
 <template>
   <!-- 轮播图 -->
-  <Swiper></Swiper>
+  <Banner></Banner>
   <!-- 推荐模块 -->
   <Recommend></Recommend>
   <!-- 热门播客模块 -->
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import Swiper from "@/views/container/personalized/fragment/Swiper";
+import Banner from "@/views/container/personalized/fragment/Banner";
 import Recommend from "@/views/container/personalized/fragment/Recommend";
 import Hot from "@/views/container/personalized/fragment/Hot";
 import Exclusive from "@/views/container/personalized/fragment/Exclusive";

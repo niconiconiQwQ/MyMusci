@@ -2,7 +2,7 @@
   <div class="playlist ctn-mode">
     <div class="head">
       <div class="left">
-        <img :src="playListStore.coverImgUrl" alt="" />
+        <img v-lazy="playListStore.coverImgUrl" />
       </div>
       <div class="right">
         <div class="title">
@@ -10,8 +10,8 @@
           <h1>{{ playListStore.playListName }}</h1>
         </div>
         <div class="nickname">
-          <a href="#">
-            <img :src="playListStore.avatarUrl" alt="" />
+          <a href="#" @click="goUser(playListStore.userId)">
+            <img v-lazy="playListStore.avatarUrl" />
             <span>{{ playListStore.nickname }}</span>
           </a>
           <span class="time">{{ playListStore.createTime }}创建</span>
@@ -87,7 +87,7 @@
         <li><router-link to="/playlist/collectors">收藏者</router-link></li>
       </ul>
     </div>
-    <router-view :listId="route.query.id"></router-view>
+    <router-view :PlayListId="PlayListId"></router-view>
   </div>
 </template>
 <script setup>
@@ -100,26 +100,33 @@ const route = useRoute();
 const isShowDesc = ref(false);
 const brief = ref(null);
 const i = ref(null);
+const PlayListId = ref(route.query.id);
+const goUser = (id) => {
+  router.push({
+    path: "/user",
+    query: {
+      id: id,
+    },
+  });
+};
 const showDesc = () => {
   isShowDesc.value = !isShowDesc.value;
   if (isShowDesc.value) {
     // brief.value.style.overflow = "hidden";
-    console.log(isShowDesc.value, "真的啊");
+    // console.log(isShowDesc.value, "真的啊");
     i.value.style.transform = "rotate(0deg)";
   } else {
     // brief.value.style.overflow = "";
-    console.log(isShowDesc.value, "假的");
+    // console.log(isShowDesc.value, "假的");
     i.value.style.transform = "";
   }
 };
 onBeforeMount(() => {
   // 请求歌单详情
   playListStore.getPlayListDetail(route.query.id);
+  playListStore.playListId = route.query.id;
 });
-onMounted(() => {
-  // console.log(route.query.id);
-  console.log(playListStore.avatarUrl);
-});
+onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .playlist {

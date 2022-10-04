@@ -34,22 +34,23 @@ onMounted(() => {});
     width: 100%;
     justify-content: flex-start;
     li {
-      height: 140px;
+      height: 160px;
       width: 24%;
       margin-bottom: 40px;
       margin-right: 1%;
       .a-mode1 {
-        height: 100%;
+        height: 90%;
         width: 100%;
         border-radius: 4px;
         margin-bottom: 4px;
       }
-    }
-    .mv-title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      &:hover {
-        color: #000;
+      .mv-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        &:hover {
+          color: #000;
+        }
       }
     }
   }

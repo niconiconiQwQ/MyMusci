@@ -81,7 +81,7 @@ const startNumAndEndNum = () => {
 .pagination {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin: 30px 0px;
   button {
     margin: 0 5px;
     background-color: #f4f4f5;

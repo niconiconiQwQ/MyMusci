@@ -15,14 +15,14 @@
 
 <script setup>
 import SideBar from "@/components/main/sidebar/SideBar";
-import Container from "@/views/container/Container";
 </script>
 
 <style lang="scss" scoped>
 .center {
   display: flex;
   height: 682px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--white);
   .slide-fade-enter-from {
     transform: translateX(-20px);
     opacity: 0;

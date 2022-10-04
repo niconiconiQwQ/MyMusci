@@ -8,8 +8,8 @@
     </div>
     <!-- 两个切换按钮 -->
     <div class="switch">
-      <div class="circle pre iconfont icon-left"></div>
-      <div class="circle next iconfont icon-right"></div>
+      <div class="circle pre iconfont icon-left" @click="goback"></div>
+      <div class="circle next iconfont icon-right" @click="forword"></div>
     </div>
     <!-- 搜索栏 -->
     <div class="search-bar">
@@ -78,13 +78,19 @@ onMounted(() => {
     isEmailShow.value = false;
   });
 });
+// 进退按钮功能
+const forword = () => {
+  router.go(1);
+  console.log("前进");
+};
+const goback = () => {
+  router.go(-1);
+  console.log("后退");
+};
 </script>
 
 <style lang="scss" scoped>
 .header {
-  // background-image: linear-gradient(-20deg, #dcb0ed 0%, #99c99c 100%);
-  // 毛玻璃 不要用 会出现信息框被遮挡问题
-  // backdrop-filter: blur(200px);
   background-color: #38b2ae;
   width: 100%;
   height: 62px;
@@ -101,19 +107,19 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    // 三个圈
     .circle {
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background-color: #389cb2;
       &.one {
-        background-color: #b8cbb8;
+        background-color: #a9dea9;
       }
       &.two {
-        background-color: #b465da;
+        background-color: #cb95e3;
       }
       &.three {
-        background-color: #ee609c;
+        background-color: #ea80ac;
       }
     }
   }
@@ -126,16 +132,20 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     .circle {
-      height: 18px;
-      width: 18px;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      background-color: #8baaaa80;
+      background-color: #36aba790;
       cursor: pointer;
+      font-size: 2.2rem;
       &.pre {
         margin-right: 6px;
       }
       &:hover {
-        color: #fff;
+        color: var(--white);
       }
     }
   }
@@ -146,20 +156,22 @@ onMounted(() => {
     border-radius: 10px;
     padding-left: 8px;
     color: #fff;
-    background-color: #8baaaa80;
+    background-color: #36aba790;
     margin-right: 12px;
     display: flex;
     align-items: center;
-    &:before {
-      font-family: "iconfont";
+    &::before {
       content: "\e61f";
+      font-family: "iconfont";
+      font-size: 2rem;
+      color: var(--header-font-color);
     }
     &:hover {
       color: #fff;
     }
     .search {
       width: 100%;
-      font-size: 10px;
+      font-size: 1rem;
       height: 100%;
       border: none;
       color: #fff;
@@ -208,14 +220,14 @@ onMounted(() => {
     z-index: 1;
     .center {
       height: 12px;
-      font-size: 12px;
+      font-size: 1.2rem;
       color: #b1d8e0;
       display: flex;
       align-items: center;
       .name {
         color: var(--header-font-color);
         &:hover {
-          color: #fff;
+          color: var(--white);
         }
       }
       img {
@@ -225,7 +237,7 @@ onMounted(() => {
         cursor: pointer;
       }
       .iconfont {
-        font-size: 26px;
+        font-size: 2.6rem;
       }
       &:hover,
       &:hover .iconfont,
@@ -252,7 +264,7 @@ onMounted(() => {
       display: flex;
       justify-content: space-around;
       .iconfont {
-        font-size: 18px;
+        font-size: 1.8rem;
         &:hover {
           color: #fff;
         }

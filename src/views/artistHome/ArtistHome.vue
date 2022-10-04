@@ -2,7 +2,7 @@
   <div class="artist ctn-mode">
     <div class="head">
       <div class="left">
-        <img :src="ArtistListStore.cover" alt="" />
+        <img v-lazy="ArtistListStore.cover" alt="" />
       </div>
       <div class="right">
         <h1>{{ ArtistListStore.name }}</h1>

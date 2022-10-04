@@ -11,7 +11,7 @@
             <span class="iconfont icon-bofang"></span
             ><span>{{ formatNumber(item.playCount) }}</span>
           </div>
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></a>
         <div class="msg">{{ item.name }}</div>
       </li>

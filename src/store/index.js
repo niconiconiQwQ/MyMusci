@@ -8,17 +8,35 @@ import {
   reqMV,
   reqLatestMusic,
   reqDjRecommend,
+  reqBanners,
+  reqUserDetail,
+  reqFolloweds,
+  reqFollows,
 } from "@/api/index";
+import { province, city } from "@/utils/area";
 // 首页仓库
-export const homePageStore = defineStore("home", {
+export const home = defineStore("home", {
   state: () => {
-    return {};
+    return {
+      banners: [],
+    };
   },
-  actions: {},
+  actions: {
+    async getBanners() {
+      try {
+        let { data } = await reqBanners();
+        if (data.code == 200) {
+          this.banners = datga.banners;
+        }
+      } catch (error) {
+        console.log(error.message, "请求首页轮播图error");
+      }
+    },
+  },
   getters: {},
 });
 // 排行榜列表数据仓库
-export const topListStore = defineStore("topList", {
+export const topList = defineStore("topList", {
   state: () => {
     return {
       list: [],
@@ -176,6 +194,7 @@ export const DjRecommend = defineStore("djRecommend", {
     };
   },
   actions: {
+    // 获取dj
     async getDjList() {
       try {
         let { data } = await reqDjRecommend();
@@ -186,5 +205,67 @@ export const DjRecommend = defineStore("djRecommend", {
         console.log(error.message, "请求推荐电台 error");
       }
     },
+  },
+});
+// 用户详情仓库
+export const userDetail = defineStore("userDetail", {
+  state: () => {
+    return {
+      level: 0, // 等级
+      listenSongs: 0, // 听歌数
+      profile: {}, // 用户详情
+      followedsList: [], // 用户粉丝列表
+      follow: [], // 关注列表
+    };
+  },
+  actions: {
+    // 获取用户详情
+    async getUserDetail(id) {
+      try {
+        let { data } = await reqUserDetail(id);
+        if (data.code == 200) {
+          this.level = data.level;
+          this.listenSongs = data.listenSongs;
+          this.profile = data.profile;
+        }
+      } catch (error) {
+        console.log(error.message, "请求用户详情 error");
+      }
+    },
+    // 获取用户粉丝列表
+    async getFolloweds(id, limit, offset) {
+      try {
+        let { data } = await reqFolloweds(id, limit, offset);
+        if (data.code == 200) {
+          this.followedsList = data.followeds;
+        }
+      } catch (error) {
+        console.log(error.message, "请求用户粉丝列表 error");
+      }
+    },
+    // 获取用户关注列表
+    async getFollows(id) {
+      try {
+        let { data } = await reqFollows(id);
+        if (data.code == 200) {
+          this.follow = data.follow;
+        }
+      } catch (error) {
+        console.log(error.message, "请求用户关注列表 error");
+      }
+    },
+  },
+  getters: {
+    userId: (state) => state.profile.userId, // 昵称
+    nickname: (state) => state.profile.nickname, // 昵称
+    avatarUrl: (state) => state.profile.avatarUrl, // 头像地址
+    gender: (state) => state.profile.gender, // 性别
+    followeds: (state) => state.profile.followeds, // 粉丝
+    follows: (state) => state.profile.follows, // 关注
+    eventCount: (state) => state.profile.eventCount, // 动态数
+    playlistCount: (state) => state.profile.playlistCount, // 创建的歌单数
+    signature: (state) => state.profile.signature, // 标签
+    province: (state) => province(state.profile.province), // 省(编号)
+    city: (state) => city(state.profile.city), // 城市
   },
 });

@@ -4,8 +4,8 @@ export default [
     path: "/",
     component: () => import("@/views/container/Container.vue"),
   },
+  // 主内容展示区
   {
-    // 主内容展示区
     path: "/main",
     children: [
       // 专属定制
@@ -129,9 +129,20 @@ export default [
       },
     ],
   },
+  // 登录
   {
     path: "/login",
     component: () => import("@/components/login/Login.vue"),
+  },
+  // 粉丝【和关注用的是同一个组件】
+  {
+    path: "/follows",
+    component: () => import("@/components/common/follow.vue"),
+  },
+  // 关注
+  {
+    path: "/fans",
+    component: () => import("@/components/common/follow.vue"),
   },
   /*   { path: "/", redirect: "/home" },路由重定向
   {

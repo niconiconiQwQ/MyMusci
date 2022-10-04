@@ -2,17 +2,17 @@
   <div class="user ctn-mode">
     <div class="myInof">
       <div class="left">
-        <img src="@/assets/images/avatar2.png" alt="" />
+        <img v-lazy="userDetailStore.avatarUrl" alt="" />
       </div>
       <div class="right">
         <div class="name">
-          <h1>凉宫柚希</h1>
+          <h1>{{ userDetailStore.nickname }}</h1>
           <div class="grade">
             <div class="level">
               <div class="my-grade">
                 <img src="@/assets/images/vip.png" alt="" />
               </div>
-              <div class="lv">Lv10</div>
+              <div class="lv">Lv{{ userDetailStore.level }}</div>
             </div>
             <div class="edit">
               <span class="iconfont icon-xiepinglun"></span
@@ -24,32 +24,50 @@
           <div class="num-info">
             <ul>
               <li>
-                <div>35</div>
-                <div>动态</div>
+                <div @click="goEvent(userDetailStore.userId)">
+                  <div>
+                    <a href="#">{{ userDetailStore.eventCount }}</a>
+                  </div>
+                  <div>动态</div>
+                </div>
               </li>
               <li>
-                <div>390</div>
-                <div>关注</div>
+                <div @click="goFollows(userDetailStore.userId)">
+                  <div>
+                    <a href="#">{{ userDetailStore.follows }}</a>
+                  </div>
+                  <div>关注</div>
+                </div>
               </li>
               <li>
-                <div>524</div>
-                <div>粉丝</div>
+                <div @click="goFolloweds(userDetailStore.userId)">
+                  <div>
+                    <a href="#">{{ userDetailStore.followeds }}</a>
+                  </div>
+                  <div>粉丝</div>
+                </div>
               </li>
             </ul>
           </div>
           <div class="msg">
-            <div>所在地区：浙江省&nbsp;金华市</div>
+            <div>
+              所在地区：{{ userDetailStore.province }}&nbsp;{{
+                userDetailStore.city
+              }}
+            </div>
             <div>
               <span>社交网络：</span><span class="iconfont icon-xinlang"></span>
             </div>
-            <div>个人简介：我太菜了</div>
+            <div>个人简介：{{ userDetailStore.signature }}</div>
           </div>
         </div>
       </div>
     </div>
     <div class="content">
       <ul class="nav">
-        <li class="active"><a href="#">创建的歌单</a></li>
+        <li class="active">
+          <a href="#">创建的歌单({{ userDetailStore.playlistCount }})</a>
+        </li>
         <li><a href="#">收藏的歌单</a></li>
         <li><a href="#">收藏的播客</a></li>
         <li><a href="#">创建的音乐专栏</a></li>
@@ -65,7 +83,9 @@
               <img src="@/assets/images/m3.jpg" alt=""
             /></a>
             <div class="title">我喜欢的音乐</div>
-            <div class="song-num">32首</div>
+            <div class="song-num">
+              累计听歌{{ userDetailStore.listenSongs }}首
+            </div>
           </li>
         </ul>
       </div>
@@ -81,11 +101,46 @@
 
 <script setup>
 import Pagination from "@/components/pagination/Pagination";
-import { ref } from "vue";
+import { ref, onBeforeMount, onMounted } from "vue";
+import { userDetail } from "@/store/index";
+import { useRoute, useRouter } from "vue-router";
+const router = useRouter();
+const route = useRoute();
+const userDetailStore = userDetail();
+const goEvent = (id) => {
+  // router.push({
+  //   path: "",
+  //   query: {
+  //     id: id,
+  //   },
+  // });
+};
+const goFollows = (id) => {
+  router.push({
+    path: "/follows",
+    query: {
+      id: id,
+    },
+  });
+  console.log(id, "关注");
+};
+const goFolloweds = (id) => {
+  router.push({
+    path: "/fans",
+    query: {
+      id: id,
+    },
+  });
+};
 let pageNo = ref(5);
 let pageSize = ref(10);
 let total = ref(1000);
 let continues = ref(5);
+const uid = ref(route.query.id);
+onBeforeMount(() => {
+  // 发起请求捞数据
+  userDetailStore.getUserDetail(uid.value);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -208,17 +263,19 @@ let continues = ref(5);
             color: #373737;
             margin-bottom: 8px;
             li {
-              cursor: pointer;
-              text-align: center;
-              div {
-                &:nth-child(1) {
-                  font-size: 18px;
-                  font-weight: 700;
-                }
-                &:nth-child(2) {
-                  color: #666666;
-                  &:hover {
-                    color: #000;
+              > div {
+                cursor: pointer;
+                text-align: center;
+                div {
+                  &:nth-child(1) {
+                    font-size: 18px;
+                    font-weight: 700;
+                  }
+                  &:nth-child(2) {
+                    color: #666666;
+                    &:hover {
+                      color: #000;
+                    }
                   }
                 }
               }

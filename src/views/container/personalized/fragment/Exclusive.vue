@@ -8,7 +8,7 @@
       <li class="item" v-for="item in PersonalizedStore.list" :key="item.id">
         <a href=""
           ><div class="play-mode iconfont icon-play"></div>
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></a>
         <div class="msg">{{ item.name }}</div>
       </li>

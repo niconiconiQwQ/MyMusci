@@ -9,40 +9,12 @@
         >
           <img :src="item" />
         </div>
-        <i @click="prev" class="arrow arrow-left" v-show="isShow"
-          ><svg
-            t="1598261572608"
-            class="icon"
-            viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            p-id="3271"
-            width="100%"
-            height="100%"
-          >
-            <path
-              d="M641.28 278.613333l-45.226667-45.226666-278.634666 278.762666 278.613333 278.485334 45.248-45.269334-233.365333-233.237333z"
-              p-id="3272"
-              fill="#ccc"
-            ></path></svg
-        ></i>
-        <i @click="next" class="arrow arrow-right" v-show="isShow"
-          ><svg
-            t="1598261670602"
-            class="icon"
-            viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            p-id="3400"
-            width="100%"
-            height="100%"
-          >
-            <path
-              d="M593.450667 512.128L360.064 278.613333l45.290667-45.226666 278.613333 278.762666L405.333333 790.613333l-45.226666-45.269333z"
-              p-id="3401"
-              fill="#ccc"
-            ></path></svg
-        ></i>
+        <span @click="prev" class="arrow arrow-left" v-show="isShow">
+          <i class="icon iconfont icon-left"></i
+        ></span>
+        <span @click="next" class="arrow arrow-right" v-show="isShow">
+          <i class="icon iconfont icon-right"></i
+        ></span>
       </div>
       <div class="dots">
         <span
@@ -57,7 +29,9 @@
 </template>
 <script setup>
 import { ref, reactive, computed } from "vue";
-// 准备图片列表 这里不require，图片就加载不出来
+import { home } from "@/store/index";
+const homeStore = home();
+// 准备图片列表 这里不require, 图片就加载不出来
 let list = reactive([
   require("@/assets/images/adv1.png"),
   require("@/assets/images/adv2.png"),
@@ -183,6 +157,10 @@ const setDotActiveStyl = (i) => {
     width: 30px;
     cursor: pointer;
     transform: translate3d(0, -50%, 0);
+    color: #fff;
+    i {
+      font-size: 3.2rem;
+    }
   }
   .arrow.arrow-right {
     right: 0;

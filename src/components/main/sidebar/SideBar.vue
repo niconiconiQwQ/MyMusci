@@ -1,6 +1,8 @@
 <template>
+  <!-- 整个侧边栏 -->
   <div class="side-bar">
-    <ul class="nav">
+    <!-- 侧边栏第一块导航 -->
+    <ul class="nav ul-mode1">
       <li><router-link to="/" class="active">发现音乐</router-link></li>
       <li><router-link to="/podcast">播客</router-link></li>
       <li><router-link to="/video">视频</router-link></li>
@@ -8,9 +10,10 @@
       <li><router-link to="/live">直播</router-link></li>
       <li><router-link to="/myfm">私人FM</router-link></li>
     </ul>
+    <!-- 我的音乐部分 -->
     <div class="my-music">
       <h5>我的音乐</h5>
-      <ul>
+      <ul class="ul-mode1">
         <li>
           <router-link to="/playList"
             ><span class="iconfont icon-zan"></span><span>我喜欢的音乐</span
@@ -47,6 +50,7 @@
         </li>
       </ul>
     </div>
+    <!-- 创建的歌单 -->
     <div class="created">
       <div class="title">
         <span>创建的歌单</span><span class="iconfont icon-up"></span>
@@ -57,9 +61,10 @@
         <li></li>
       </ul>
     </div>
+    <!-- 收藏的歌单 -->
     <div class="collected">
       <div class="title">
-        <span>创建的歌单</span>
+        <span>收藏的歌单</span>
         <span class="iconfont icon-up"></span>
         <span></span>
       </div>
@@ -73,6 +78,7 @@
 <script setup></script>
 
 <style lang="scss" scoped>
+// 公共样式
 .ul-mode1 {
   height: 228px;
   display: flex;
@@ -83,7 +89,7 @@
     height: 30px;
     line-height: 30px;
     padding-left: 4px;
-    font-size: 14px;
+    font-size: 1.4rem;
     a {
       padding-left: 6px;
       display: block;
@@ -111,35 +117,34 @@
     display: flex;
     align-items: center;
     .iconfont {
-      font-size: 24px;
+      font-size: 2.4rem;
     }
     span {
       &:nth-child(3) {
-        font-size: 20px;
+        font-size: 2rem;
         padding-left: 50px;
       }
     }
   }
 }
+//侧边栏样式
 .side-bar {
   width: 16%;
   padding: 10px 6px 0px 16px;
-  background-color: #fff;
-  border-right: 1px solid rgb(217, 209, 209);
+  border-right: 1px solid var(--border-color);
   .nav {
-    @extend .ul-mode1;
     margin-bottom: 14px;
   }
+  // 我的音乐部分
   .my-music {
     margin-bottom: 10px;
     h5 {
-      font-size: 10px;
+      font-size: 1rem;
       color: #9f9f9f;
       margin-bottom: 6px;
       padding-left: 6px;
     }
     ul {
-      @extend .ul-mode1;
       li {
         a {
           span {
@@ -151,11 +156,14 @@
               border: 1px solid rgb(223, 210, 210);
               border-radius: 10px;
               padding: 1px 8px;
+              &:hover {
+                background-color: #efe7e7;
+              }
             }
           }
           .icon-download,
           .icon-time {
-            font-size: 17px;
+            font-size: 1.7rem;
           }
         }
       }

@@ -103,6 +103,7 @@ table {
 html {
   overflow-y: scroll;
   overflow-x: hidden;
+  font-size: 10px;
 }
 
 input,
@@ -114,6 +115,9 @@ textarea {
 }
 input:focus {
   outline: none;
+}
+i {
+  font-style: normal;
 }
 .clearfix:before,
 .clearfix:after {
@@ -147,3 +151,4 @@ input:focus {
   display: none;
 }
 @import url("./base.scss");
+@import url("./common.scss");

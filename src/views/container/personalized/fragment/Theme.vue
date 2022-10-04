@@ -9,7 +9,7 @@
         <a href="" class="a-mode1">
           <div class="icon iconfont icon-boke"></div>
           <div class="type">{{ item.category }}</div>
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></a>
       </li>
     </ul>

@@ -12,7 +12,14 @@ export const reqArtistList = (query) => {
 // 请求排行榜榜单内容
 export const reqTopList = () => {
   return requests({
-    url: "/toplist/detail",
+    url: "/toplist",
+    method: "get",
+  });
+};
+// 请求首页banner
+export const reqBanners = () => {
+  return requests({
+    url: "/banner?type=0",
     method: "get",
   });
 };
@@ -118,6 +125,41 @@ export const reqPlayListDetail = (id) => {
 export const reqSongs = (id, limit, offset) => {
   return requests({
     url: `/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}`,
+    method: "get",
+  });
+};
+// 请求歌单评论
+export const reqComment = (id) => {
+  return requests({
+    url: `/comment/playlist?id=${id}`,
+    method: "get",
+  });
+};
+// 请求歌单收藏者
+export const reqCollectors = (id, limit) => {
+  return requests({
+    url: `/playlist/subscribers?id=${id}&limit=${limit}`,
+    method: "get",
+  });
+};
+// 请求用户详情
+export const reqUserDetail = (id) => {
+  return requests({
+    url: `/user/detail?uid=${id}`,
+    method: "get",
+  });
+};
+// 请求用户粉丝列表
+export const reqFolloweds = (id,limit = 20,offset = 0) => {
+  return requests({
+    url: `/user/followeds?uid=${id}&limit=${limit}&offset=${offset}`,
+    method: "get",
+  });
+};
+// 请求用户关注列表
+export const reqFollows = (id) => {
+  return requests({
+    url: `/user/follows?uid=${id}`,
     method: "get",
   });
 };

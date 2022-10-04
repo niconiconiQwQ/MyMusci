@@ -358,6 +358,7 @@ onMounted(() => {
         input:valid + label span {
           color: #00a1d6;
           transform: translateY(-30px);
+          font-size: 16px;
         }
         label {
           position: absolute;

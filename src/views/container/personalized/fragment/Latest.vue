@@ -8,7 +8,7 @@
       <li class="item" v-for="item in LatestSotre.nineList" :key="item.id">
         <a href="" class="a-mode1">
           <div class="play-mode iconfont icon-play"></div>
-          <img :src="item.picUrl" alt=""
+          <img v-lazy="item.picUrl" alt=""
         /></a>
         <div class="msg">
           <h5>{{ item.name }}&nbsp;&nbsp;{{ item.song.alias[0] }}</h5>

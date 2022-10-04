@@ -9,8 +9,8 @@
         v-for="item in TopListStore.officialList"
         :key="item.id"
       >
-        <a href="" class="a-mode1 left"
-          ><img :src="item.coverImgUrl" alt="" />
+        <a class="a-mode1 left" @click="goPlayList(item.id)"
+          ><img v-lazy="item.coverImgUrl" alt="" />
           <div class="play-mode iconfont icon-play"></div>
         </a>
         <div class="right">
@@ -42,7 +42,7 @@
             ><span>{{ formatNumber(item.playCount) }}</span>
           </div>
           <div class="play-mode iconfont icon-play"></div>
-          <img :src="item.coverImgUrl" alt=""
+          <img v-lazy="item.coverImgUrl" alt=""
         /></a>
         <span class="name">{{ item.name }}</span>
       </li>
@@ -57,12 +57,24 @@
 import { formatNumber } from "@/utils/Format/format";
 import { onBeforeMount, onMounted, onUpdated } from "vue";
 import TopNav from "@/views/container/topNav/TopNav";
-import { topListStore } from "@/store/index";
+import { topList } from "@/store/index";
+import { useRoute, useRouter } from "vue-router";
+import { query } from "express";
 // 调用后，得到实例化小仓库
-const TopListStore = topListStore();
+const TopListStore = topList();
+const route = useRoute();
+const router = useRouter();
 onBeforeMount(() => {
   TopListStore.getTopList();
 });
+// const goPlayList = (id) => {
+//   router.push({
+//     path: "playlist",
+//     query: {
+//       id: id,
+//     },
+//   });
+// };
 onMounted(() => {});
 onUpdated(() => {});
 </script>
