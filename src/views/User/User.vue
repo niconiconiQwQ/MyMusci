@@ -2,17 +2,17 @@
   <div class="user ctn-mode">
     <div class="myInof">
       <div class="left">
-        <img v-lazy="userDetailStore.avatarUrl" alt="" />
+        <img v-if="avatarUrl" :src="avatarUrl" alt="" />
       </div>
       <div class="right">
         <div class="name">
-          <h1>{{ userDetailStore.nickname }}</h1>
+          <h1>{{ nickname }}</h1>
           <div class="grade">
             <div class="level">
               <div class="my-grade">
                 <img src="@/assets/images/vip.png" alt="" />
               </div>
-              <div class="lv">Lv{{ userDetailStore.level }}</div>
+              <div class="lv">Lv{{ level }}</div>
             </div>
             <div class="edit">
               <span class="iconfont icon-xiepinglun"></span
@@ -24,25 +24,25 @@
           <div class="num-info">
             <ul>
               <li>
-                <div @click="goEvent(userDetailStore.userId)">
+                <div @click="goEvent(userId)">
                   <div>
-                    <a href="#">{{ userDetailStore.eventCount }}</a>
+                    <a href="#">{{ eventCount }}</a>
                   </div>
                   <div>动态</div>
                 </div>
               </li>
               <li>
-                <div @click="goFollows(userDetailStore.userId)">
+                <div @click="goFollows(userId)">
                   <div>
-                    <a href="#">{{ userDetailStore.follows }}</a>
+                    <a href="#">{{ follows }}</a>
                   </div>
                   <div>关注</div>
                 </div>
               </li>
               <li>
-                <div @click="goFolloweds(userDetailStore.userId)">
+                <div @click="goFolloweds(userId)">
                   <div>
-                    <a href="#">{{ userDetailStore.followeds }}</a>
+                    <a href="#">{{ followeds }}</a>
                   </div>
                   <div>粉丝</div>
                 </div>
@@ -50,15 +50,11 @@
             </ul>
           </div>
           <div class="msg">
-            <div>
-              所在地区：{{ userDetailStore.province }}&nbsp;{{
-                userDetailStore.city
-              }}
-            </div>
+            <div>所在地区：{{ province }}&nbsp;{{ city }}</div>
             <div>
               <span>社交网络：</span><span class="iconfont icon-xinlang"></span>
             </div>
-            <div>个人简介：{{ userDetailStore.signature }}</div>
+            <div>个人简介：{{ signature }}</div>
           </div>
         </div>
       </div>
@@ -66,7 +62,7 @@
     <div class="content">
       <ul class="nav">
         <li class="active">
-          <a href="#">创建的歌单({{ userDetailStore.playlistCount }})</a>
+          <a href="#">创建的歌单({{ playlistCount }})</a>
         </li>
         <li><a href="#">收藏的歌单</a></li>
         <li><a href="#">收藏的播客</a></li>
@@ -83,9 +79,7 @@
               <img src="@/assets/images/m3.jpg" alt=""
             /></a>
             <div class="title">我喜欢的音乐</div>
-            <div class="song-num">
-              累计听歌{{ userDetailStore.listenSongs }}首
-            </div>
+            <div class="song-num">累计听歌{{ listenSongs }}首</div>
           </li>
         </ul>
       </div>
@@ -104,9 +98,24 @@ import Pagination from "@/components/pagination/Pagination";
 import { ref, onBeforeMount, onMounted } from "vue";
 import { userDetail } from "@/store/index";
 import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 const router = useRouter();
 const route = useRoute();
 const userDetailStore = userDetail();
+const {
+  avatarUrl,
+  nickname,
+  level,
+  userId,
+  eventCount,
+  follows,
+  followeds,
+  province,
+  city,
+  signature,
+  playlistCount,
+  listenSongs,
+} = storeToRefs(userDetailStore);
 const goEvent = (id) => {
   // router.push({
   //   path: "",
@@ -115,6 +124,7 @@ const goEvent = (id) => {
   //   },
   // });
 };
+// 跳转关注页
 const goFollows = (id) => {
   router.push({
     path: "/follows",
@@ -122,8 +132,8 @@ const goFollows = (id) => {
       id: id,
     },
   });
-  console.log(id, "关注");
 };
+// 跳转粉丝页
 const goFolloweds = (id) => {
   router.push({
     path: "/fans",

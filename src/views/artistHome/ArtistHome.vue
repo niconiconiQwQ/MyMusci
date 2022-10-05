@@ -2,50 +2,46 @@
   <div class="artist ctn-mode">
     <div class="head">
       <div class="left">
-        <img v-lazy="ArtistListStore.cover" alt="" />
+        <img v-lazy="cover" alt="" />
       </div>
       <div class="right">
-        <h1>{{ ArtistListStore.name }}</h1>
+        <h1>{{ name }}</h1>
         <div class="nickname">
-          <span>{{ ArtistListStore.imageDesc }}</span>
+          <span>{{ imageDesc }}</span>
         </div>
         <a href="#" class="btn">
           <span class="iconfont icon-yulanshoucang"></span
-          ><span>{{ ArtistListStore.fans.isFollow ? "已关注" : "关注" }}</span>
-          <span>{{ formatFansNum(ArtistListStore.fans.fansCnt) }}</span></a
+          ><span>{{ fans.isFollow ? "已关注" : "关注" }}</span>
+          <span>{{ formatFansNum(fans.fansCnt) }}</span></a
         >
         <div class="number">
-          <span>单曲数:{{ ArtistListStore.musicSize }}</span
-          ><span>专辑数:{{ ArtistListStore.albumSize }}</span
-          ><span>MV数:{{ ArtistListStore.mvSize }}</span>
+          <span>单曲数:{{ musicSize }}</span
+          ><span>专辑数:{{ albumSize }}</span
+          ><span>MV数:{{ mvSize }}</span>
         </div>
       </div>
     </div>
     <div class="nav-mode">
       <ul>
         <li>
-          <router-link
-            exact
-            :to="{ path: '/artist/album', query: { id: ArtistListStore.id } }"
+          <router-link exact :to="{ path: '/artist/album', query: { id: id } }"
             >专辑</router-link
           >
         </li>
         <li>
-          <router-link
-            :to="{ path: '/artist/mv', query: { id: ArtistListStore.id } }"
+          <router-link :to="{ path: '/artist/mv', query: { id: id } }"
             >MV</router-link
           >
         </li>
         <li>
-          <router-link
-            :to="{ path: '/artist/detail', query: { id: ArtistListStore.id } }"
+          <router-link :to="{ path: '/artist/detail', query: { id: id } }"
             >歌手详情</router-link
           >
         </li>
         <li>
           <router-link
             exact
-            :to="{ path: '/artist/similar', query: { id: ArtistListStore.id } }"
+            :to="{ path: '/artist/similar', query: { id: id } }"
             >相似歌手</router-link
           >
         </li>
@@ -59,8 +55,10 @@ import { onMounted, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { artistListStore } from "@/store/artist";
 import { formatFansNum } from "@/utils/Format/format";
+import { storeToRefs } from "pinia";
 const ArtistListStore = artistListStore();
-let id = ref(0);
+const { cover, name, imageDesc, fans, musicSize, albumSize, mvSize, id } =
+  storeToRefs(ArtistListStore);
 const router = useRouter();
 const route = useRoute();
 watch(
@@ -75,9 +73,9 @@ onBeforeMount(() => {
   // 存一下歌手id
   ArtistListStore.id = route.query.id;
   // 发起请求获取歌手详情
-  ArtistListStore.getDetail(ArtistListStore.id);
+  ArtistListStore.getDetail(id.value);
   // 发起请求获取歌手粉丝数
-  ArtistListStore.getFans(ArtistListStore.id);
+  ArtistListStore.getFans(id.value);
 });
 onMounted(() => {});
 </script>

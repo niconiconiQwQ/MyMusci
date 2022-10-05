@@ -1,8 +1,14 @@
 <template>
   <div class="fans-follow ctn-mode">
-    <h1><a href="#">凉宫柚希</a>的粉丝</h1>
+    <h1>
+      <a href="#">{{ nickname }}</a
+      >的{{ type }}
+    </h1>
     <ul>
-      <li v-for="item in userDetailStore.followedsList" :key="item.userId">
+      <li
+        v-for="item in type == '粉丝' ? followedsList : followList"
+        :key="item.userId"
+      >
         <div class="left">
           <a href="#" @click="goUser(item.userId)"
             ><img v-lazy="item.avatarUrl"
@@ -33,12 +39,20 @@
 </template>
 <script setup>
 import PaginationVue from "@/components/pagination/Pagination.vue";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount, onUpdated } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
 import { userDetail } from "@/store/index";
 const route = useRoute();
 const router = useRouter();
 const userDetailStore = userDetail();
+const {
+  nickname,
+  followedsList,
+  followList,
+  userId,
+} = storeToRefs(userDetailStore);
+const type = ref(route.meta.type);
 const goUser = (id) => {
   router.push({
     path: "user",
@@ -48,9 +62,16 @@ const goUser = (id) => {
   });
 };
 onBeforeMount(() => {
-  userDetailStore.getFolloweds(416608258, 20, 0);
+  // 判断type 是 关注 还是粉丝 来决定发什么请求
+  if (type.value == "粉丝") {
+    userDetailStore.getFolloweds(userId.value, 20, 0);
+  } else {
+    //  请求关注
+    userDetailStore.getFollows(userId.value, 20, 0);
+  }
 });
 onMounted(() => {});
+onUpdated(() => {});
 </script>
 <style lang="scss" scoped>
 .fans-follow {

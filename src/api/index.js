@@ -150,16 +150,30 @@ export const reqUserDetail = (id) => {
   });
 };
 // 请求用户粉丝列表
-export const reqFolloweds = (id,limit = 20,offset = 0) => {
+export const reqFolloweds = (id, limit = 20, offset = 0) => {
   return requests({
     url: `/user/followeds?uid=${id}&limit=${limit}&offset=${offset}`,
     method: "get",
   });
 };
 // 请求用户关注列表
-export const reqFollows = (id) => {
+export const reqFollows = (id, limit = 20, offset = 0) => {
   return requests({
-    url: `/user/follows?uid=${id}`,
+    url: `/user/follows?uid=${id}&limit=${limit}&offset=${offset}`,
+    method: "get",
+  });
+};
+// 请求音乐 url https://music.163.com/song/media/outer/url?id=id.mp3
+export const reqSongUrl = (id, level = "standard") => {
+  return requests({
+    url: `/song/url/v1?id=${id}&level=${level}`,
+    method: "get",
+  });
+};
+// 请求歌曲详情
+export const reqSongDetail = (id) => {
+  return requests({
+    url: `/song/detail?ids=${id}`,
     method: "get",
   });
 };

@@ -60,7 +60,7 @@ export const topList = defineStore("topList", {
   },
 });
 // 歌单分类仓库
-export const palyList = defineStore("palyList", {
+export const palyListTag = defineStore("palyListTag", {
   state: () => {
     return {
       hotTags: [], // 热门分类
@@ -215,7 +215,7 @@ export const userDetail = defineStore("userDetail", {
       listenSongs: 0, // 听歌数
       profile: {}, // 用户详情
       followedsList: [], // 用户粉丝列表
-      follow: [], // 关注列表
+      followList: [], // 关注列表
     };
   },
   actions: {
@@ -244,11 +244,11 @@ export const userDetail = defineStore("userDetail", {
       }
     },
     // 获取用户关注列表
-    async getFollows(id) {
+    async getFollows(id, limit, offset) {
       try {
-        let { data } = await reqFollows(id);
+        let { data } = await reqFollows(id, limit, offset);
         if (data.code == 200) {
-          this.follow = data.follow;
+          this.followList = data.follow;
         }
       } catch (error) {
         console.log(error.message, "请求用户关注列表 error");
@@ -256,7 +256,7 @@ export const userDetail = defineStore("userDetail", {
     },
   },
   getters: {
-    userId: (state) => state.profile.userId, // 昵称
+    userId: (state) => state.profile.userId, // 用户id
     nickname: (state) => state.profile.nickname, // 昵称
     avatarUrl: (state) => state.profile.avatarUrl, // 头像地址
     gender: (state) => state.profile.gender, // 性别

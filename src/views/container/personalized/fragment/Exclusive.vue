@@ -5,7 +5,7 @@
       <span class="iconfont icon-right"></span
     ></a>
     <ul class="ul-mode">
-      <li class="item" v-for="item in PersonalizedStore.list" :key="item.id">
+      <li class="item" v-for="item in list" :key="item.id">
         <a href=""
           ><div class="play-mode iconfont icon-play"></div>
           <img v-lazy="item.picUrl" alt=""
@@ -18,8 +18,9 @@
 <script setup>
 import { ref, onBeforeMount, onMounted } from "vue";
 import { Personalized } from "@/store/index";
+import { storeToRefs } from "pinia";
 const PersonalizedStore = Personalized();
-
+const { list } = storeToRefs(PersonalizedStore);
 onBeforeMount(() => {
   PersonalizedStore.getList();
 });

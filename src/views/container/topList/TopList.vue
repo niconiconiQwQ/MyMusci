@@ -36,7 +36,7 @@
     <h1>全球榜</h1>
     <ul class="ul-mode">
       <li class="item" v-for="item in TopListStore.globalList" :key="item.id">
-        <a href="" class="a-mode1">
+        <a href="" class="a-mode1" @click="goPlayList(item.id)">
           <div class="num-mode">
             <span class="iconfont icon-bofang"></span
             ><span>{{ formatNumber(item.playCount) }}</span>
@@ -59,7 +59,6 @@ import { onBeforeMount, onMounted, onUpdated } from "vue";
 import TopNav from "@/views/container/topNav/TopNav";
 import { topList } from "@/store/index";
 import { useRoute, useRouter } from "vue-router";
-import { query } from "express";
 // 调用后，得到实例化小仓库
 const TopListStore = topList();
 const route = useRoute();
@@ -67,14 +66,14 @@ const router = useRouter();
 onBeforeMount(() => {
   TopListStore.getTopList();
 });
-// const goPlayList = (id) => {
-//   router.push({
-//     path: "playlist",
-//     query: {
-//       id: id,
-//     },
-//   });
-// };
+const goPlayList = (id) => {
+  router.push({
+    path: "/playlist",
+    query: {
+      id: id,
+    },
+  });
+};
 onMounted(() => {});
 onUpdated(() => {});
 </script>

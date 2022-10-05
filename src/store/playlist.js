@@ -5,9 +5,11 @@ import {
   reqSongs,
   reqComment,
   reqCollectors,
+  reqSongUrl,
+  reqSongDetail,
 } from "@/api/index";
 import dayjs from "dayjs";
-import { formatNumber, formatTxt } from "@/utils/Format/format";
+import { formatNumber, formatTxt, formatPlayTime } from "@/utils/Format/format";
 // 推荐歌单仓库
 export const RecommendPalyList = defineStore("playList", {
   state: () => {
@@ -118,11 +120,55 @@ export const playList = defineStore("playList", {
     commentCount: (state) => formatNumber(state.playListDetail.commentCount),
     shareCount: (state) => formatNumber(state.playListDetail.shareCount),
     trackCount: (state) => state.playListDetail.trackCount,
-    avatarUrl: (state) => state.playListDetail.creator.avatarUrl,
-    nickname: (state) => state.playListDetail.creator.nickname,
+    avatarUrl: (state) => state.playListDetail.creator.avatarUrl || "",
+    nickname: (state) => state.playListDetail.creator.nickname || "",
     // 歌单创建者id
     userId: (state) => state.playListDetail.userId,
     playCount: (state) => state.playListDetail.playCount,
     // subscribedCount: (state) => state.playListDetail.subscribedCount,
+  },
+});
+// 歌曲数据仓库
+export const songDetail = defineStore("song", {
+  state: () => {
+    return {
+      data: {},
+      songDetail: {},
+    };
+  },
+  actions: {
+    // 获取歌曲url
+    async getSongUrl(id) {
+      try {
+        let { data } = await reqSongUrl(id);
+        if (data.code == 200) {
+          this.data = data.data[0];
+        }
+      } catch (error) {
+        console.log("获取歌曲url失败", error.message);
+      }
+    },
+    // 获取歌曲详情
+    async getSongDetail(id) {
+      try {
+        let { data } = await reqSongDetail(id);
+        if (data.code == 200) {
+          this.songDetail = data.songs[0];
+          // console.log(songDetail.al.picUrl);
+        }
+      } catch (error) {
+        console.log("获取歌曲详情失败", error.message);
+      }
+    },
+  },
+  getters: {
+    url: (state) => state.data.url, // 歌曲url
+    id: (state) => state.songDetail.id, // 歌曲id
+    time: (state) => formatPlayTime(state.songDetail.dt), // 歌曲时间
+    name: (state) => state.songDetail.name, //歌名
+    ar: (state) => state.songDetail.ar, // 作者
+    alia: (state) => state.songDetail.alia, // 副标题
+    // picUrl: (state) => state.songDetail.al.picUrl, // 封面
+    fee: (state) => state.songDetail.fee, // 0为免费 1为vip歌曲
   },
 });

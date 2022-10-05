@@ -2,19 +2,19 @@
   <div class="playlist ctn-mode">
     <div class="head">
       <div class="left">
-        <img v-lazy="playListStore.coverImgUrl" />
+        <img :src="coverImgUrl" />
       </div>
       <div class="right">
         <div class="title">
           <div>歌单</div>
-          <h1>{{ playListStore.playListName }}</h1>
+          <h1>{{ playListName }}</h1>
         </div>
         <div class="nickname">
-          <a href="#" @click="goUser(playListStore.userId)">
-            <img v-lazy="playListStore.avatarUrl" />
-            <span>{{ playListStore.nickname }}</span>
+          <a href="#" @click="goUser(userId)">
+            <img v-lazy="avatarUrl" src="@/assets/images/avatar2.png" />
+            <span>{{ nickname }}</span>
           </a>
-          <span class="time">{{ playListStore.createTime }}创建</span>
+          <span class="time">{{ createTime }}创建</span>
         </div>
         <ul class="ctrl">
           <li>
@@ -31,13 +31,13 @@
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-yulanshoucang"></span
-              ><span>已收藏({{ playListStore.subscribedCount }})</span></a
+              ><span>已收藏({{ subscribedCount }})</span></a
             >
           </li>
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-yulanshoucang"></span
-              ><span>分享({{ playListStore.shareCount }})</span></a
+              ><span>分享({{ shareCount }})</span></a
             >
           </li>
           <li>
@@ -51,13 +51,11 @@
         <ul class="desc">
           <li>
             <span>标签: </span
-            ><a href="#" v-for="(item, index) in playListStore.tags">{{
-              item
-            }}</a>
+            ><a href="#" v-for="(item, index) in tags">{{ item }}</a>
           </li>
           <li>
-            <span>歌曲: {{ playListStore.trackCount }}</span
-            ><span>播放:{{ playListStore.playCount }}</span>
+            <span>歌曲: {{ trackCount }}</span
+            ><span>播放:{{ playCount }}</span>
           </li>
           <li class="brief" ref="brief">
             <i class="iconfont icon-up" @click="showDesc" ref="i"></i>
@@ -68,7 +66,7 @@
           </li> -->
         </ul>
         <div class="cur">
-          <p class="row" v-for="item in playListStore.description">
+          <p class="row" v-for="item in description">
             {{ item }}
           </p>
         </div>
@@ -94,7 +92,23 @@
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList } from "@/store/playlist";
+import { storeToRefs } from "pinia";
 const playListStore = playList();
+const {
+  playListId,
+  coverImgUrl,
+  playListName,
+  userId,
+  avatarUrl,
+  nickname,
+  createTime,
+  subscribedCount,
+  shareCount,
+  tags,
+  trackCount,
+  playCount,
+  description,
+} = storeToRefs(playListStore);
 const router = useRouter();
 const route = useRoute();
 const isShowDesc = ref(false);
@@ -124,7 +138,7 @@ const showDesc = () => {
 onBeforeMount(() => {
   // 请求歌单详情
   playListStore.getPlayListDetail(route.query.id);
-  playListStore.playListId = route.query.id;
+  playListId.value = route.query.id;
 });
 onMounted(() => {});
 </script>

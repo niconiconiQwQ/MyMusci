@@ -140,8 +140,8 @@
 import TopNav from "@/views/container/topNav/TopNav";
 import Pagination from "@/components/pagination/Pagination";
 import { ref, onMounted, onBeforeMount } from "vue";
-import { palyList } from "@/store/index";
-const palyListStore = palyList();
+import { palyListTag } from "@/store/index";
+const palyListStore = palyListTag();
 let isShowTags = ref(false);
 const showTags = () => {
   isShowTags.value = !isShowTags.value;

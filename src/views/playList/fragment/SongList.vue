@@ -15,6 +15,7 @@
           v-for="(item, index) in playListStore.songs"
           :key="item.id"
           :class="{ bgc: index % 2 }"
+          @dblclick="play(item.id)"
         >
           <td class="w w1">
             <span>{{ formatIndex(index + 1) }}</span>
@@ -42,7 +43,9 @@
               }}</a>
             </span>
           </td>
-          <td class="w w5"><span>04:33</span></td>
+          <td class="w w5">
+            <span>{{ formatPlayTime(item.dt) }}</span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -58,14 +61,21 @@ import {
   watchEffect,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { playList } from "@/store/playlist";
+import { playList, songDetail } from "@/store/playlist";
 import { formatIndex } from "@/utils/Format/format";
-import { palyList } from "@/store";
+import { formatPlayTime } from "@/utils/Format/format";
 const props = defineProps(["PlayListId"]);
 const route = useRoute();
 const router = useRouter();
 const playListStore = playList();
+const songDetailStore = songDetail();
 const playListId = ref(props.PlayListId);
+const play = (id) => {
+  // 获取id之后发请求，捞数据 url
+  songDetailStore.getSongUrl(id, "standard");
+  // 捞歌曲详情
+  songDetailStore.getSongDetail(id)
+};
 // 跳转到某个歌手页面
 const gotoArtist = (ArtistId = -1) => {
   router.push({

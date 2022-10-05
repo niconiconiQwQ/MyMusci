@@ -1,15 +1,23 @@
 <template>
   <div class="footer">
+    <audio controls="controls" class="audio" :src="url"></audio>
     <div class="song-info">
-      <img src="../../assets/images/avatar2.png" alt="" />
+      <a href="#" class="cover"
+        ><img src="@/assets/images/avatar2.png" alt=""
+      /></a>
+      <!-- v-lazy="picUrl"  -->
       <div class="msg">
         <div class="name">
-          <span class="title">红莲华</span><span class="vip">vip</span
+          <span class="title">{{ name || "欢迎" }}</span
+          ><span class="vip" v-if="fee == 1 ? true : false">vip</span
           ><span class="iconfont icon-zanxuanzhong"></span>
         </div>
-        <div>LISA</div>
+        <div class="artist">
+          <span>LISA</span>
+        </div>
       </div>
     </div>
+    <!-- 控件 -->
     <div class="control">
       <div class="manage">
         <div class="iconfont icon-24gl-shuffle"></div>
@@ -24,7 +32,7 @@
           <div class="circle"></div>
           <div class="fill"></div>
         </div>
-        <span>03:58</span>
+        <span>{{ time }}</span>
       </div>
     </div>
     <div class="effect">
@@ -46,9 +54,25 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onBeforeMount, onMounted, onUpdated } from "vue";
+import { songDetail } from "@/store/playlist";
+import { storeToRefs } from "pinia";
+const songDetailStore = songDetail();
+const { url, id, time, ar, alia, picUrl, name, fee } =
+  storeToRefs(songDetailStore);
+onBeforeMount(() => {});
+onUpdated(() => {
+  // console.log(picUrl.value);
+});
+</script>
 
 <style lang="scss" scoped>
+.audio {
+  position: absolute;
+  bottom: 300px;
+  left: 200px;
+}
 .footer {
   // 毛玻璃
   backdrop-filter: blur(100px);
@@ -63,19 +87,26 @@
     display: flex;
   }
   .song-info {
-    width: 15%;
+    width: 20%;
   }
   .effect {
-    width: 18%;
+    width: 20%;
   }
   .song-info {
-    img {
-      margin-right: 12px;
+    .cover {
+      display: block;
+      height: 100%;
+      img {
+        height: 100%;
+        margin-right: 12px;
+        border-radius: 10%;
+      }
     }
     .msg {
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
+      overflow: hidden;
       .name {
         display: flex;
         align-items: center;
@@ -97,6 +128,11 @@
           font-size: 18px;
         }
       }
+      .artist {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
   .control {
@@ -107,7 +143,7 @@
     justify-content: space-around;
     .manage {
       display: flex;
-      width: 200px;
+      width: 260px;
       justify-content: space-around;
       align-items: center;
       .play {

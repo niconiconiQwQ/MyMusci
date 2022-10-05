@@ -113,6 +113,7 @@ onBeforeUnmount(() => {
     }
     img {
       width: 50px;
+      box-shadow: 30px 30px 43px #929292, -30px -30px 43px #ffffff;
     }
   }
 }

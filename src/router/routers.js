@@ -65,11 +65,6 @@ export default [
     path: "/live",
     component: () => import("@/views/live/Live.vue"),
   },
-  // 我的粉丝
-  {
-    path: "/myfollow",
-    component: () => import("@/views/myFollow/MyFollow.vue"),
-  },
   // 我的收藏
   {
     path: "/mycollection",
@@ -134,15 +129,17 @@ export default [
     path: "/login",
     component: () => import("@/components/login/Login.vue"),
   },
-  // 粉丝【和关注用的是同一个组件】
+  // 关注列表【和粉丝用的是同一个组件】
   {
     path: "/follows",
     component: () => import("@/components/common/follow.vue"),
+    meta: { type: "关注" },
   },
-  // 关注
+  // 粉丝列表
   {
     path: "/fans",
     component: () => import("@/components/common/follow.vue"),
+    meta: { type: "粉丝" },
   },
   /*   { path: "/", redirect: "/home" },路由重定向
   {

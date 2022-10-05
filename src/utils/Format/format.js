@@ -19,8 +19,8 @@ export const formatTxt = (txt = []) => txt.split("\n");
 export const formatPlayTime = (time) => {
   let seconds = time / 1000; // 换成秒
   let m = parseInt(seconds / 60); // 分钟
-  let s = seconds % 60; // 剩余秒
-  return `${m < 10 ? "0" + m : m}:${s}`;
+  let s = parseInt(seconds % 60); // 剩余秒
+  return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
 };
 // 格式化粉丝数量
 export const formatFansNum = (num) => {
