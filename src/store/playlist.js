@@ -164,7 +164,7 @@ export const songDetail = defineStore("song", {
   getters: {
     url: (state) => state.data.url, // 歌曲url
     id: (state) => state.songDetail.id, // 歌曲id
-    time: (state) => formatPlayTime(state.songDetail.dt), // 歌曲时间
+    time: (state) => formatPlayTime(state.songDetail.dt || 0), // 歌曲时间
     name: (state) => state.songDetail.name, //歌名
     ar: (state) => state.songDetail.ar, // 作者
     alia: (state) => state.songDetail.alia, // 副标题
