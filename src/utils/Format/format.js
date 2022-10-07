@@ -36,3 +36,9 @@ export const formatIndex = (num) => (num > 9 ? num : "0" + num);
 // 时间戳转化为 xxxx年xx月xx日 xx时xx分xx秒
 export const formatTime = (time) =>
   dayjs(time).format("YYYY年MM月DD日 HH:mm:ss");
+// 把秒转换为分钟
+export const formatSecond = (num) => {
+  let m = parseInt(num / 60);
+  let s = parseInt(num) % 60;
+  return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
+};

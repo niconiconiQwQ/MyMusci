@@ -26,20 +26,22 @@
       <div class="manage">
         <div class="iconfont icon-24gl-shuffle"></div>
         <div class="iconfont icon-a-26Eshangyizhen" @click="pre"></div>
-        <div
-          class="play iconfont icon-a-26Hyoubofang"
-          @click="togglePlay"
-        ></div>
+        <div @click="togglePlay" class="play">
+          <i
+            class="y iconfont"
+            :class="paused ? 'icon-a-26Hyoubofang' : 'icon-a-26Izanting'"
+          ></i>
+        </div>
         <div class="iconfont icon-a-26Fxiayizhen" @click="next"></div>
         <div class="iconfont word">词</div>
       </div>
       <div class="time-bar">
-        <span>00:00</span>
-        <div class="progress">
+        <span>{{ formatSecond(currentTime) }}</span>
+        <div class="progress" @click="dragTime($event)" ref="timeProgress">
+          <div class="fill-time" ref="fillTime"></div>
           <div class="circle"></div>
-          <div class="fill"></div>
         </div>
-        <span>{{ time }}</span>
+        <span>{{ formatSecond(duration) }}</span>
       </div>
     </div>
     <div class="effect">
@@ -49,9 +51,9 @@
         <!-- 音量 -->
         <div class="volume" ref="volumeContainer">
           <div class="inner">
-            <div class="progress" @click="ctrlVolumn($event)" ref="progress">
-              <div class="circle" @mousedown="drag($event)"></div>
-              <div class="fill" ref="fill"></div>
+            <div class="progress" @click="ctrlVolumn($event)" ref="vProgress">
+              <div class="circle" @mousedown="dragVolumn($event)"></div>
+              <div class="fill-volumn" ref="fillVolumn"></div>
             </div>
           </div>
           <div class="triangle"></div>
@@ -83,99 +85,153 @@
   console.log(audio.value.play); // 当 paused 属性由 true 转换为 false 时触发 play 事件
   console.log(audio.value.timeupdate); // 当currentTime更新时会触发timeupdate事件。
 */
-import { ref, onBeforeMount, onMounted, onUpdated } from "vue";
+import { ref, onBeforeMount, onMounted, watch } from "vue";
 import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
+import { formatSecond } from "@/utils/Format/format";
 const songDetailStore = songDetail();
-const paused = ref(true);
 const { url, id, time, ar, alia, picUrl, name, fee } =
   storeToRefs(songDetailStore);
-onBeforeMount(() => {});
-const audio = ref(null);
 const pre = () => {};
 const next = () => {};
+// 定义audio的状态
+const duration = ref(0); //持续时间
+const currentTime = ref(0); //当前时间
+const volumn = ref(0.3); // 音量
+const paused = ref(true);
 // 获取dom
-const progress = ref(null);
-const fill = ref(null);
+const audio = ref(null);
+const vProgress = ref(null);
+const fillVolumn = ref(null);
+const fillTime = ref(null);
 const volumeContainer = ref(null);
-let progressLong = ref(80);
-let fillLong = ref(10);
+const timeProgress = ref(null);
+let progressLong = ref(0);
 // 控制音频播放/暂停
 const togglePlay = () => {
   paused.value = !paused.value;
   if (paused.value) {
     // 暂停播放
     audio.value.pause();
+    paused.value = true;
     // 取消监听
     audio.value.removeEventListener("timeupdate", (e) => {});
   } else {
     // 播放
     audio.value.play();
-    // 监听音频播放进度;
-    audio.value.addEventListener("timeupdate", (e) => {});
+
+    paused.value = false;
   }
 };
-// 点击音量槽控制音频音量
+// 点击音量槽控制音频音量 ok
 const ctrlVolumn = (e) => {
-  // isPlayIng.value.volume = 0.3; // 0 - 1
   // 计算出音量
-  let temp =
-    (1 -
-      (
-        (e.pageY - progress.value.getBoundingClientRect().top) /
-        progressLong.value
-      ).toFixed(4)) *
-    100;
-  if (temp > 100) temp = 100;
-  let volumnSize = temp + "%";
-  fill.value.style.height = volumnSize;
-  audio.value.volume = (temp / 100).toFixed(4);
+  volumn.value =
+    1 -
+    (
+      (e.pageY - vProgress.value.getBoundingClientRect().top) /
+      progressLong.value
+    ).toFixed(4);
+  // 控制边界
+  if (volumn.value > 1) volumn.value = 1;
+  if (volumn.value < 0) volumn.value = 0;
+  fillVolumn.value.style.height = volumn.value * 100 + "%";
 };
-const listen = () => {
-  console.log("监听移动");
-  document.addEventListener("mouseup", (eve) => {
-    document.removeEventListener("mousemove");
-  });
-};
-const rem = () => {
-  console.log("移除监听");
-};
-// 拖动圆圈实现音量控制
-const drag = (e) => {
+// 拖动圆圈实现音量控制 ok
+const dragVolumn = (e) => {
   volumeContainer.value.style.visibility = "visible";
-  // 按下鼠标拖拽
-  // var x = event.clientX - dra.offsetLeft;
+  let volumeSize = 0;
   // 监听鼠标移动
   document.onmousemove = function (event) {
-    fill.value.style.height =
+    volumeSize =
       (1 -
         (
-          (event.clientY - progress.value.getBoundingClientRect().top) /
+          (event.clientY - vProgress.value.getBoundingClientRect().top) /
           progressLong.value
         ).toFixed(4)) *
-        100 +
-      "%";
-    if (event.clientY < progress.value.getBoundingClientRect().top) {
-      fill.value.style.height = "100%";
-    }
-    if (
-      event.clientY >
-      progress.value.getBoundingClientRect().top + progress.value.offsetHeight
-    ) {
-      fill.value.style.height = "0%";
-    }
+      100;
+    volumn.value = (
+      1 -
+      (event.clientY - vProgress.value.getBoundingClientRect().top) /
+        progressLong.value
+    ).toFixed(4);
+    // 控制边界
+    if (volumn.value > 1) volumn.value = 1;
+    if (volumn.value < 0) volumn.value = 0;
+    fillVolumn.value.style.height = volumn.value * 100 + "%";
   };
   // 监听鼠标松开
   document.onmouseup = function () {
     document.onmousemove = null;
     document.onmouseup = null;
     volumeContainer.value.style.visibility = "hidden";
+    audio.value.volume = (volumeSize / 100).toFixed(4);
   };
 };
-// 控制进度条
+// 点击进度条控制播放时间
+const dragTime = (e) => {
+  // let timeSize =
+  //   (
+  //     (e.clientX - fillTime.value.getBoundingClientRect().left) /
+  //     timeProgress.value.offsetWidth
+  //   ).toFixed(4) * 100;
+  currentTime.value = (
+    (e.clientX - fillTime.value.getBoundingClientRect().left) /
+    timeProgress.value.offsetWidth
+  ).toFixed(4);
+  // 控制边界
+  if (currentTime.value < 0) currentTime.value = 0;
+  if (currentTime.value > 1) currentTime.value = 1;
+  console.log(currentTime.value, "点击");
+  // if (timeSize < 0) {
+  //   timeSize = 0;
+  // }
+  // if (timeSize > 100) {
+  //   timeSize = 100;
+  // }
+  fillTime.value.style.width = currentTime.value * 100 + "%";
+  audio.value.currentTime = audio.value.duration * currentTime.value;
+  // fillTime.value.style.width = timeSize + "%";
+  // audio.value.currentTime = audio.value.duration * (timeSize / 100);
+};
+// 侦听音量长度,控制真实audio的音量
+watch(
+  () => volumn.value,
+  (nawVal, oldVal) => {
+    audio.value.volume = volumn.value;
+  }
+);
+// 侦听时间长度，控制真实audio的currentTime
+// watch(
+//   () => currentTime.value,
+//   (nawVal, oldVal) => {
+//     // audio.value.currentTime = audio.value.duration * currentTime.value;
+//     // console.log((nawVal / duration.value) * 100 + "%");
+//     // console.log("naw", nawVal, "duration", duration.value);
+//     // console.log(nawVal * 100 + "%");
+//     fillTime.value.style.width = nawVal * 100 + "%";
+//     // audio.value.currentTime = nawVal * duration.value;
+//     console.log(nawVal * duration.value);
+//   }
+// );
 onBeforeMount(() => {});
 onMounted(() => {
-  // progressLong.value = progress.value.getBoundingClientRect().height; // 进度条总长
+  //挂在完初始化一些数据
+  progressLong.value = vProgress.value.offsetHeight;
+  // 挂载完后 就监听audio的加载第一帧
+  audio.value.addEventListener("loadeddata", (event) => {
+    fillTime.value.style.width = "0%";
+    duration.value = audio.value.duration;
+    currentTime.value = audio.value.currentTime;
+    volumn.value = audio.value.volume;
+    paused.value = true;
+  });
+  // 监听音频播放进度;更新进度条
+  audio.value.addEventListener("timeupdate", (e) => {
+    fillTime.value.style.width =
+      (audio.value.currentTime / audio.value.duration).toFixed(4) * 100 + "%";
+    currentTime.value = audio.value.currentTime;
+  });
 });
 </script>
 
@@ -272,6 +328,7 @@ onMounted(() => {
       justify-content: space-around;
       align-items: center;
       .play {
+        cursor: pointer;
         height: 34px;
         width: 34px;
         display: flex;
@@ -279,9 +336,13 @@ onMounted(() => {
         justify-content: center;
         background-color: #f5f5f5;
         border-radius: 50%;
-        padding-left: 4px;
+        position: relative;
+        i {
+          position: absolute;
+        }
         &:hover {
           background-color: #e5e5e5;
+          color: #60b0c1;
         }
       }
       .iconfont {
@@ -295,30 +356,25 @@ onMounted(() => {
       align-items: center;
       width: 50%;
       .progress {
-        position: relative;
+        cursor: pointer;
+        display: flex;
         height: 4px;
         width: 100%;
         background-color: #ccc;
         margin: 0 6px;
-
         .circle {
-          position: absolute;
-          width: 6px;
-          height: 6px;
+          width: 8px;
+          height: 8px;
           background-color: #5aa9bf;
           border-radius: 50%;
-          top: -1px;
-          left: 198px;
+          transform: translateY(-25%);
         }
-        .fill {
-          position: absolute;
-          width: 200px;
+        .fill-time {
+          // position: absolute;
+          width: 0%;
           height: 4px;
           border-radius: 4px;
           background-color: #389cb2;
-        }
-        &:hover {
-          transform: scale(1, 1.4);
         }
       }
     }
@@ -378,9 +434,9 @@ onMounted(() => {
                 transform: translateY(25%);
                 left: 50%;
               }
-              .fill {
+              .fill-volumn {
                 width: 4px;
-                height: 80%;
+                height: 50%;
                 border-radius: 4px;
                 bottom: 0;
                 background-color: #389cb2;

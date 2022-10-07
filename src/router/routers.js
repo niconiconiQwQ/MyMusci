@@ -154,4 +154,8 @@ export default [
     component: Detail,
     meta: { show: true },
   }, */
+  {
+    path: "/:pathMatch(.*)",
+    component: () => import("@/views/404/404.vue"),
+  },
 ];
