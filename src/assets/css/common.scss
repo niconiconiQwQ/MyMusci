@@ -30,11 +30,11 @@
 .a-mode1 {
   position: relative;
   display: block;
-  border-radius: 10px;
   overflow: hidden;
   img {
     height: 100%;
     width: 100%;
+    border-radius: 10px;
   }
 }
 // play的出现
@@ -45,7 +45,6 @@
   }
 }
 /* 其他全局样式 */
-
 // 全局：出现在图片上的播放圆圈
 .play-mode {
   height: 34px;
@@ -61,8 +60,20 @@
   font-size: 24px;
   opacity: 1;
 }
+.btn-mode {
+  height: 32px;
+  display: block;
+  border: 1px solid #d9d9d9;
+  border-radius: 32px;
+  text-align: center;
+  line-height: 32px;
+  margin: 14px 0;
+  span {
+    padding: 0 2px;
+    font-size: 15px;
+  }
+}
 // 全局：图片右上角的播放次数
-
 .num-mode,
 .time-mode {
   position: absolute;

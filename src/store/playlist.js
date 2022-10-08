@@ -36,7 +36,10 @@ export const playList = defineStore("playList", {
     return {
       recommentPlayList: [],
       // 具体歌单数据
-      playListDetail: {},
+      playListDetail: {
+        coverImgUrl: "",
+        creator: {},
+      },
       songs: [],
       // 歌单id
       playListId: -1,
@@ -108,24 +111,24 @@ export const playList = defineStore("playList", {
   },
   getters: {
     // 具体歌单数据
-    playListName: (state) => state.playListDetail.name,
-    coverImgUrl: (state) => state.playListDetail.coverImgUrl,
-    description: (state) => formatTxt(state.playListDetail.description),
+    playListName: (state) => state.playListDetail.name || "",
+    coverImgUrl: (state) => state.playListDetail.coverImgUrl || "",
+    description: (state) => formatTxt(state.playListDetail.description || ""),
     createTime: (state) =>
-      dayjs(state.playListDetail.createTime).format("YYYY-MM-DD"),
-    playCount: (state) => formatNumber(state.playListDetail.playCount),
+      dayjs(state.playListDetail.createTime || 0).format("YYYY-MM-DD"),
+    playCount: (state) => formatNumber(state.playListDetail.playCount || 0),
     subscribedCount: (state) =>
-      formatNumber(state.playListDetail.subscribedCount),
-    tags: (state) => state.playListDetail.tags,
-    commentCount: (state) => formatNumber(state.playListDetail.commentCount),
-    shareCount: (state) => formatNumber(state.playListDetail.shareCount),
-    trackCount: (state) => state.playListDetail.trackCount,
+      formatNumber(state.playListDetail.subscribedCount || 0),
+    tags: (state) => state.playListDetail.tags || [],
+    commentCount: (state) =>
+      formatNumber(state.playListDetail.commentCount || 0),
+    shareCount: (state) => formatNumber(state.playListDetail.shareCount || 0),
+    trackCount: (state) => state.playListDetail.trackCount || 0,
     avatarUrl: (state) => state.playListDetail.creator.avatarUrl || "",
     nickname: (state) => state.playListDetail.creator.nickname || "",
     // 歌单创建者id
-    userId: (state) => state.playListDetail.userId,
-    playCount: (state) => state.playListDetail.playCount,
-    // subscribedCount: (state) => state.playListDetail.subscribedCount,
+    userId: (state) => state.playListDetail.userId || 0,
+    playCount: (state) => state.playListDetail.playCount || 0,
   },
 });
 // 歌曲数据仓库
@@ -133,7 +136,7 @@ export const songDetail = defineStore("song", {
   state: () => {
     return {
       data: {},
-      songDetail: {},
+      songDetail: { al: [] },
     };
   },
   actions: {
@@ -154,7 +157,6 @@ export const songDetail = defineStore("song", {
         let { data } = await reqSongDetail(id);
         if (data.code == 200) {
           this.songDetail = data.songs[0];
-          // console.log(songDetail.al.picUrl);
         }
       } catch (error) {
         console.log("获取歌曲详情失败", error.message);
@@ -162,13 +164,13 @@ export const songDetail = defineStore("song", {
     },
   },
   getters: {
-    url: (state) => state.data.url, // 歌曲url
-    id: (state) => state.songDetail.id, // 歌曲id
+    url: (state) => state.data.url || "", // 歌曲url
+    id: (state) => state.songDetail.id || 0, // 歌曲id
     time: (state) => formatPlayTime(state.songDetail.dt || 0), // 歌曲时间
-    name: (state) => state.songDetail.name, //歌名
-    ar: (state) => state.songDetail.ar, // 作者
-    alia: (state) => state.songDetail.alia, // 副标题
-    // picUrl: (state) => state.songDetail.al.picUrl, // 封面
-    fee: (state) => state.songDetail.fee, // 0为免费 1为vip歌曲
+    name: (state) => state.songDetail.name || "", //歌名
+    ar: (state) => state.songDetail.ar || "", // 作者
+    alia: (state) => state.songDetail.alia || "", // 副标题
+    fee: (state) => state.songDetail.fee || 0, // 0为免费 1为vip歌曲
+    picUrl: (state) => state.songDetail.al.picUrl || "", // 歌曲的封面
   },
 });

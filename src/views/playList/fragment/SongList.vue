@@ -62,8 +62,7 @@ import {
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList, songDetail } from "@/store/playlist";
-import { formatIndex } from "@/utils/Format/format";
-import { formatPlayTime } from "@/utils/Format/format";
+import { formatIndex, formatPlayTime } from "@/utils/Format/format";
 const props = defineProps(["PlayListId"]);
 const route = useRoute();
 const router = useRouter();
@@ -74,7 +73,7 @@ const play = (id) => {
   // 获取id之后发请求，捞数据 url
   songDetailStore.getSongUrl(id, "standard");
   // 捞歌曲详情
-  songDetailStore.getSongDetail(id)
+  songDetailStore.getSongDetail(id);
 };
 // 跳转到某个歌手页面
 const gotoArtist = (ArtistId = -1) => {

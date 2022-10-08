@@ -12,6 +12,7 @@ import {
   reqUserDetail,
   reqFolloweds,
   reqFollows,
+  reqUserPlayList,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -216,6 +217,7 @@ export const userDetail = defineStore("userDetail", {
       profile: {}, // 用户详情
       followedsList: [], // 用户粉丝列表
       followList: [], // 关注列表
+      playList: [],
     };
   },
   actions: {
@@ -252,6 +254,17 @@ export const userDetail = defineStore("userDetail", {
         }
       } catch (error) {
         console.log(error.message, "请求用户关注列表 error");
+      }
+    },
+    // 获取用户歌单
+    async getUserPlayList(id, limit, offset) {
+      try {
+        let { data } = await reqUserPlayList(id, limit, offset);
+        if (data.code == 200) {
+          this.playList = data.playlist;
+        }
+      } catch (error) {
+        console.log(error.message, "请求用户歌单 error");
       }
     },
   },

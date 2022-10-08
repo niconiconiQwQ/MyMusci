@@ -11,7 +11,7 @@
         </div>
         <div class="nickname">
           <a href="#" @click="goUser(userId)">
-            <img v-lazy="avatarUrl" src="@/assets/images/avatar2.png" />
+            <img :src="avatarUrl" />
             <span>{{ nickname }}</span>
           </a>
           <span class="time">{{ createTime }}创建</span>
@@ -36,7 +36,7 @@
           </li>
           <li>
             <a href="#" class="btn-mode btn">
-              <span class="iconfont icon-yulanshoucang"></span
+              <span class="iconfont icon-fenxiang"></span
               ><span>分享({{ shareCount }})</span></a
             >
           </li>
@@ -146,19 +146,6 @@ onMounted(() => {});
 .playlist {
   color: #373737;
   font-size: 12px;
-  .btn-mode {
-    height: 32px;
-    display: block;
-    border: 1px solid #d9d9d9;
-    border-radius: 32px;
-    text-align: center;
-    line-height: 32px;
-    margin: 14px 0;
-    span {
-      padding: 0 2px;
-      font-size: 15px;
-    }
-  }
   .head {
     margin-bottom: 36px;
     display: flex;

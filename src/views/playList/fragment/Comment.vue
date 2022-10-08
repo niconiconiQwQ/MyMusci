@@ -113,6 +113,7 @@ onMounted(() => {});
 <style lang="scss" scoped>
 .comment {
   .send {
+    margin-bottom: 20px;
     .text {
       position: relative;
       margin-bottom: 10px;

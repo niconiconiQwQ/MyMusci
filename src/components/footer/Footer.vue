@@ -2,10 +2,9 @@
   <div class="footer">
     <audio controls="controls" class="audio" :src="url" ref="audio"></audio>
     <div class="song-info">
-      <a href="#" class="cover"
-        ><img src="@/assets/images/avatar2.png" alt=""
-      /></a>
-      <!-- v-lazy="picUrl"  -->
+      <a href="#" class="cover">
+        <img :src="picUrl" alt="" />
+      </a>
       <div class="msg">
         <div class="top">
           <div class="title">
@@ -90,8 +89,7 @@ import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatSecond } from "@/utils/Format/format";
 const songDetailStore = songDetail();
-const { url, id, time, ar, alia, picUrl, name, fee } =
-  storeToRefs(songDetailStore);
+const { url, id, ar, alia, name, fee, picUrl } = storeToRefs(songDetailStore);
 const pre = () => {};
 const next = () => {};
 // 定义audio的状态
@@ -170,11 +168,6 @@ const dragVolumn = (e) => {
 };
 // 点击进度条控制播放时间
 const dragTime = (e) => {
-  // let timeSize =
-  //   (
-  //     (e.clientX - fillTime.value.getBoundingClientRect().left) /
-  //     timeProgress.value.offsetWidth
-  //   ).toFixed(4) * 100;
   currentTime.value = (
     (e.clientX - fillTime.value.getBoundingClientRect().left) /
     timeProgress.value.offsetWidth
@@ -183,16 +176,8 @@ const dragTime = (e) => {
   if (currentTime.value < 0) currentTime.value = 0;
   if (currentTime.value > 1) currentTime.value = 1;
   console.log(currentTime.value, "点击");
-  // if (timeSize < 0) {
-  //   timeSize = 0;
-  // }
-  // if (timeSize > 100) {
-  //   timeSize = 100;
-  // }
   fillTime.value.style.width = currentTime.value * 100 + "%";
   audio.value.currentTime = audio.value.duration * currentTime.value;
-  // fillTime.value.style.width = timeSize + "%";
-  // audio.value.currentTime = audio.value.duration * (timeSize / 100);
 };
 // 侦听音量长度,控制真实audio的音量
 watch(
@@ -201,19 +186,6 @@ watch(
     audio.value.volume = volumn.value;
   }
 );
-// 侦听时间长度，控制真实audio的currentTime
-// watch(
-//   () => currentTime.value,
-//   (nawVal, oldVal) => {
-//     // audio.value.currentTime = audio.value.duration * currentTime.value;
-//     // console.log((nawVal / duration.value) * 100 + "%");
-//     // console.log("naw", nawVal, "duration", duration.value);
-//     // console.log(nawVal * 100 + "%");
-//     fillTime.value.style.width = nawVal * 100 + "%";
-//     // audio.value.currentTime = nawVal * duration.value;
-//     console.log(nawVal * duration.value);
-//   }
-// );
 onBeforeMount(() => {});
 onMounted(() => {
   //挂在完初始化一些数据
@@ -225,6 +197,8 @@ onMounted(() => {
     currentTime.value = audio.value.currentTime;
     volumn.value = audio.value.volume;
     paused.value = true;
+    // console.log(picUrl.value);
+    console.log(picUrl.value);
   });
   // 监听音频播放进度;更新进度条
   audio.value.addEventListener("timeupdate", (e) => {
@@ -237,9 +211,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .audio {
-  position: absolute;
-  bottom: 300px;
-  left: 200px;
+  position: fixed;
+  visibility: hidden;
+  top: 0;
 }
 .footer {
   // 毛玻璃

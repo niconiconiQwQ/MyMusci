@@ -70,16 +70,17 @@
       </ul>
       <div class="main">
         <ul>
-          <li class="item" v-for="index in 10" :key="index.id">
-            <a href="">
+          <li class="item" v-for="item in playList" :key="item.id">
+            <a href="#" @click="goPlayList(item.id)">
               <div class="num">
-                <span class="iconfont icon-bofang"></span><span>222万</span>
+                <span class="iconfont icon-bofang"></span
+                ><span>{{ item.playCount }}</span>
               </div>
               <div class="play iconfont icon-play"></div>
-              <img src="@/assets/images/m3.jpg" alt=""
+              <img v-lazy="item.coverImgUrl" alt=""
             /></a>
-            <div class="title">我喜欢的音乐</div>
-            <div class="song-num">累计听歌{{ listenSongs }}首</div>
+            <div class="title">{{ item.name }}</div>
+            <div class="song-num">{{ item.trackCount }}首</div>
           </li>
         </ul>
       </div>
@@ -115,6 +116,7 @@ const {
   signature,
   playlistCount,
   listenSongs,
+  playList,
 } = storeToRefs(userDetailStore);
 const goEvent = (id) => {
   // router.push({
@@ -142,15 +144,27 @@ const goFolloweds = (id) => {
     },
   });
 };
+// 跳转歌单页面
+const goPlayList = (id) => {
+  router.push({
+    path: "/playlist",
+    query: {
+      id: id,
+    },
+  });
+};
 let pageNo = ref(5);
 let pageSize = ref(10);
 let total = ref(1000);
 let continues = ref(5);
 const uid = ref(route.query.id);
 onBeforeMount(() => {
-  // 发起请求捞数据
+  // 发起请求捞用户的详情
   userDetailStore.getUserDetail(uid.value);
+  // 捞用户歌单的歌单
+  userDetailStore.getUserPlayList(uid.value, 19, 0);
 });
+onMounted(() => {});
 </script>
 
 <style lang="scss" scoped>

@@ -177,3 +177,10 @@ export const reqSongDetail = (id) => {
     method: "get",
   });
 };
+// 请求用户歌单
+export const reqUserPlayList = (id, limit = 20, offset = 0) => {
+  return requests({
+    url: `/user/playlist?uid=${id}&limit=${limit}&offset=${offset}`,
+    method: "get",
+  });
+};
