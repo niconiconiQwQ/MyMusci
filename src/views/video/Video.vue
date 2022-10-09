@@ -3,70 +3,71 @@
     <div class="v-top">
       <div class="left">
         <h1><a href="#"></a>视频详情</h1>
-        <video
-          controls
-          src="http://vodkgeyttp8.vod.126.net/cloudmusic/MTY3ODE0MzA=/5cf3f294325c3dbc1fa4396200825652/50a7444dc8391dfe1ee58bd46c24f152.mp4?wsSecret=4dafc9205a8c206badd920e96974c45e&wsTime=1665216434"
-        ></video>
+        <video controls :src="url"></video>
         <div class="creator">
           <div class="left-a">
-            <a href="#"><img src="@/assets/images/avatar2.png" alt="" /></a>
-            <span>音乐库分享</span>
+            <a href="#"><img :src="img1v1Url" alt="" /></a>
+            <span>{{ artistName }}</span>
           </div>
           <div class="right-a">
             <span class="iconfont icon-jia"></span><span>关注</span>
           </div>
         </div>
         <div class="detail">
-          <div><h1>3首下饭神曲!</h1></div>
+          <div>
+            <h1>{{ name }}</h1>
+          </div>
           <div class="time">
-            <span>发布: 2020-7-25</span><span>播放: 22222次</span>
+            <span>发布: {{ publishTime }}</span
+            ><span>播放: {{ playCount }}次</span>
           </div>
           <div class="tags">
-            <a href="#">现场</a>
-            <a href="#">生活</a>
-            <a href="#">音乐</a>
-            <a href="#">纯音乐</a>
-            <a href="#">音乐推荐</a>
+            <a href="#" v-for="item in videoGroup" :key="item.id">{{
+              item.name
+            }}</a>
           </div>
           <ul class="ctrl">
             <li>
               <a href="#" class="btn-mode btn">
                 <span class="iconfont icon-dianzan"></span
-                ><span>赞({{}}222)</span></a
+                ><span>赞({{ likedCount }})</span></a
               >
             </li>
             <li>
               <a href="#" class="btn-mode btn">
                 <span class="iconfont icon-yulanshoucang"></span
-                ><span>已收藏({{ subscribedCount }}222)</span></a
+                ><span>已收藏({{ subCount }})</span></a
               >
             </li>
             <li>
               <a href="#" class="btn-mode btn">
                 <span class="iconfont icon-fenxiang"></span
-                ><span>分享({{ shareCount }}222)</span></a
+                ><span>分享({{ shareCount }})</span></a
               >
             </li>
           </ul>
         </div>
         <div>
-          <Comment></Comment>
+          <Comment :hotComments="hotComments" :comments="comments"></Comment>
         </div>
       </div>
       <div class="right">
         <h1>相关推荐</h1>
         <ul>
-          <li v-for="(item, index) in 6" :key="index">
+          <li v-for="item in simiMVs" :key="item.id">
             <a href="#" class="a-mode1">
-              <img src="@/assets/images/m3.jpg" alt="" />
+              <img v-lazy="item.cover" alt="" />
               <div class="num-mode">
-                <span class="iconfont icon-bofang"></span><span>22万</span>
+                <span class="iconfont icon-bofang"></span
+                ><span>{{ formatNumber(item.playCount) }}</span>
               </div>
-              <div class="time-mode">01:00</div>
+              <div class="time-mode">{{ formatPlayTime(item.duration) }}</div>
             </a>
             <div class="msg">
-              <div class="name">我是一只小毛驴</div>
-              <div class="art"><span>by</span>&nbsp;<span>凉宫柚希</span></div>
+              <div class="desc">{{ item.name }}</div>
+              <div class="art">
+                <span>by</span>&nbsp;<span>{{ item.artistName }}</span>
+              </div>
             </div>
           </li>
         </ul>
@@ -76,7 +77,40 @@
 </template>
 
 <script setup>
-import Comment from "@/views/playList/fragment/Comment";
+import { ref, onBeforeMount, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { MV } from "@/store/index";
+import Comment from "@/components/common/Comment.vue";
+import { storeToRefs } from "pinia";
+import { formatNumber, formatPlayTime } from "@/utils/Format/format";
+const route = useRoute();
+const MVStore = MV();
+const {
+  url,
+  name,
+  artistName,
+  playCount,
+  subCount,
+  shareCount,
+  likedCount,
+  commentCount,
+  publishTime,
+  videoGroup,
+  img1v1Url,
+  desc,
+  comments,
+  hotComments,
+  simiMVs,
+} = storeToRefs(MVStore);
+let id = ref(route.query.id);
+// 在这里捞仓库数据
+MVStore.getUrl(id.value);
+MVStore.getMVDetail(id.value);
+MVStore.getMVDetailNum(id.value);
+MVStore.getMVcomment(id.value, 0);
+MVStore.getSimiMV(id.value);
+onBeforeMount(() => {});
+onMounted(() => {});
 </script>
 
 <style lang="scss" scoped>
@@ -162,20 +196,32 @@ h1 {
         li {
           display: flex;
           margin-bottom: 10px;
-          height: 80px;
+          height: 100px;
           .a-mode1 {
-            width: 50%;
+            width: 60%;
+            height: 100%;
             font-size: 1.2rem;
+            .num-mode,
+            .time-mode {
+              right: 4px;
+            }
             img {
               height: 100%;
             }
             margin-right: 10px;
           }
           .msg {
+            width: 40%;
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
-
+            .desc {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 2;
+            }
             .art {
               font-size: 1.2rem;
               color: #9f9f9f;

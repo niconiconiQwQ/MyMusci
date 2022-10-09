@@ -6,7 +6,7 @@
     ></a>
     <ul class="ul-mode">
       <li class="item" v-for="item in RecommendMVStore.list" :key="item.id">
-        <a href="" class="a-mode1"
+        <a href="#" class="a-mode1" @click="goMV(item.id)"
           ><div class="num-mode">
             <span class="iconfont icon-bofang"></span
             ><span>{{ formatNumber(item.playCount) }}</span>
@@ -22,11 +22,20 @@
 import { formatNumber } from "@/utils/Format/format";
 import { onMounted, onBeforeMount } from "vue";
 import { RecommendMV } from "@/store/index";
+import { useRoute, useRouter } from "vue-router";
 const RecommendMVStore = RecommendMV();
+const router = useRouter();
+const goMV = (id) => {
+  router.push({
+    path: "/video",
+    query: {
+      id: id,
+    },
+  });
+};
 onBeforeMount(() => {
   RecommendMVStore.getMVList();
 });
-onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .mv {

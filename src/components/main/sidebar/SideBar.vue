@@ -5,7 +5,7 @@
     <ul class="nav ul-mode1">
       <li><router-link to="/" class="active">发现音乐</router-link></li>
       <li><router-link to="/podcast">播客</router-link></li>
-      <li><router-link to="/video">视频</router-link></li>
+      <li><router-link to="/media">视频</router-link></li>
       <li><router-link to="/focus">关注</router-link></li>
       <li><router-link to="/live">直播</router-link></li>
       <li><router-link to="/myfm">私人FM</router-link></li>

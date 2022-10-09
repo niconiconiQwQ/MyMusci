@@ -50,10 +50,14 @@ export default [
     path: "/myfond",
     component: () => import("@/views/myFond/MyFond.vue"),
   },
-  // 视频
+  // 视频/MV
   {
     path: "/video",
     component: () => import("@/views/video/Video.vue"),
+  },
+  {
+    path: "/media",
+    component: () => import("@/views/media/Media.vue"),
   },
   // 私人FM
   {

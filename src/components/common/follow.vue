@@ -46,13 +46,9 @@ import { userDetail } from "@/store/index";
 const route = useRoute();
 const router = useRouter();
 const userDetailStore = userDetail();
-const {
-  nickname,
-  followedsList,
-  followList,
-  userId,
-} = storeToRefs(userDetailStore);
-const type = ref(route.meta.type);
+const { nickname, followedsList, followList, userId } =
+  storeToRefs(userDetailStore);
+let type = ref(route.meta.type);
 const goUser = (id) => {
   router.push({
     path: "user",

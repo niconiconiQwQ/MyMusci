@@ -13,6 +13,11 @@ import {
   reqFolloweds,
   reqFollows,
   reqUserPlayList,
+  reqMVUrl,
+  reqMVDetail,
+  reqMVDetailNum,
+  reqMVcomment,
+  reqSimiMV,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -280,5 +285,91 @@ export const userDetail = defineStore("userDetail", {
     signature: (state) => state.profile.signature, // 标签
     province: (state) => province(state.profile.province), // 省(编号)
     city: (state) => city(state.profile.city), // 城市
+  },
+});
+// MV仓库
+export const MV = defineStore("MV", {
+  state: () => {
+    return {
+      url: "",
+      likedCount: 0,
+      shareCount: 0,
+      commentCount: 0,
+      data: {},
+      comments: [],
+      hotComments: [],
+      simiMVs: [],
+    };
+  },
+  actions: {
+    // 获取MV的Url
+    async getUrl(id) {
+      try {
+        let { data } = await reqMVUrl(id);
+        if (data.code == 200) {
+          this.url = data.data.url;
+        }
+      } catch (error) {
+        console.log(error.message, "请求MVUrl error");
+      }
+    },
+    // 获取MV的详情
+    async getMVDetail(id) {
+      try {
+        let { data } = await reqMVDetail(id);
+        if (data.code == 200) {
+          this.data = data.data;
+        }
+      } catch (error) {
+        console.log(error.message, "请求MVUrl error");
+      }
+    },
+    // 获取MV的点赞分享收藏数量
+    async getMVDetailNum(id) {
+      try {
+        let { data } = await reqMVDetailNum(id);
+        if (data.code == 200) {
+          this.likedCount = data.likedCount;
+          this.shareCount = data.shareCount;
+          this.commentCount = data.commentCount;
+        }
+      } catch (error) {
+        console.log(error.message, "请求MVUrl error");
+      }
+    },
+    // 获取MV评论
+    async getMVcomment(id, offset) {
+      try {
+        let { data } = await reqMVcomment(id, offset);
+        if (data.code == 200) {
+          this.comments = data.comments;
+          this.hotComments = data.hotComments;
+        }
+      } catch (error) {
+        console.log(error.message, "请求MV评论 error");
+      }
+    },
+    // 获取相似歌曲
+    async getSimiMV(id) {
+      try {
+        let { data } = await reqSimiMV(id);
+        if (data.code == 200) {
+          this.simiMVs = data.mvs;
+        }
+      } catch (error) {
+        console.log(error.message, "请求相似MV error");
+      }
+    },
+  },
+  getters: {
+    name: (state) => state.data.name,
+    artistName: (state) => state.data.artistName,
+    cover: (state) => state.data.cover,
+    playCount: (state) => state.data.playCount,
+    subCount: (state) => state.data.subCount,
+    publishTime: (state) => state.data.publishTime,
+    img1v1Url: (state) => state.data.artists[0].img1v1Url,
+    desc: (state) => state.data.desc,
+    videoGroup: (state) => state.data.videoGroup,
   },
 });

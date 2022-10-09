@@ -184,3 +184,39 @@ export const reqUserPlayList = (id, limit = 20, offset = 0) => {
     method: "get",
   });
 };
+// =======================MV
+// 请求MV地址
+export const reqMVUrl = (id) => {
+  return requests({
+    url: `/mv/url?id=${id}`,
+    method: "get",
+  });
+};
+// 请求MV数据
+export const reqMVDetail = (id) => {
+  return requests({
+    url: `/mv/detail?mvid=${id}`,
+    method: "get",
+  });
+};
+// 请求MV评论
+export const reqMVcomment = (id, offset = 0) => {
+  return requests({
+    url: `/comment/mv?id=${id}&offset=${offset}`,
+    method: "get",
+  });
+};
+// 请求相似MV
+export const reqSimiMV = (id) => {
+  return requests({
+    url: `/simi/mv?mvid=${id}`,
+    method: "get",
+  });
+};
+// 请求点赞转发收藏数量
+export const reqMVDetailNum = (id) => {
+  return requests({
+    url: `/mv/detail/info?mvid=${id}`,
+    method: "get",
+  });
+};

@@ -55,7 +55,7 @@
           </li>
           <li>
             <span>歌曲: {{ trackCount }}</span
-            ><span>播放:{{ playCount }}</span>
+            ><span>播放: {{ formatNumber(playCount) }}</span>
           </li>
           <li class="brief" ref="brief">
             <i class="iconfont icon-up" @click="showDesc" ref="i"></i>
@@ -93,6 +93,7 @@ import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList } from "@/store/playlist";
 import { storeToRefs } from "pinia";
+import { formatNumber } from "@/utils/Format/format";
 const playListStore = playList();
 const {
   playListId,
