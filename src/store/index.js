@@ -18,6 +18,12 @@ import {
   reqMVDetailNum,
   reqMVcomment,
   reqSimiMV,
+  reqSearchDefault,
+  reqSearchSuggest,
+  reqSearchHot,
+  reqHotSingle,
+  reqMulSearch,
+  reqSearch,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -371,5 +377,88 @@ export const MV = defineStore("MV", {
     img1v1Url: (state) => state.data.artists[0].img1v1Url,
     desc: (state) => state.data.desc,
     videoGroup: (state) => state.data.videoGroup,
+  },
+});
+// 搜索仓库
+export const Search = defineStore("search", {
+  state: () => {
+    return {
+      defaultKeyword: "",
+      searchHot: [],
+      hotSingle: [],
+      suggests: { albums: [], artists: [], songs: [], playlists: [] },
+      MulSearchRes: { new_mlog: [], artist: [] },
+    };
+  },
+  actions: {
+    // 获取默认关键词
+    async getDefault() {
+      try {
+        let { data } = await reqSearchDefault();
+        if (data.code == 200) {
+          this.defaultKeyword = data.data.showKeyword;
+        }
+      } catch (error) {
+        console.log(error.message, "请求默认关键词 error");
+      }
+    },
+    // 获取热搜列表(详细)
+    async getSearchHot() {
+      try {
+        let { data } = await reqSearchHot();
+        if (data.code == 200) {
+          this.searchHot = data.data;
+        }
+      } catch (error) {
+        console.log(error.message, "请求热搜列表(详细) error");
+      }
+    },
+    // 获取热搜列表(简略)
+    async getHotSingle() {
+      try {
+        let { data } = await reqHotSingle();
+        if (data.code == 200) {
+          this.hotSingle = data.result.hots;
+        }
+      } catch (error) {
+        console.log(error.message, "请求热搜列表(简略) error");
+      }
+    },
+    // 获取搜索建议
+    async getSearchSuggest(keywords) {
+      try {
+        let { data } = await reqSearchSuggest(keywords);
+        if (data.code == 200) {
+          this.suggests = data.result;
+        }
+      } catch (error) {
+        console.log(error.message, "请求搜索建议 error");
+      }
+    },
+    // 获取搜索多重匹配
+    async getMulSearch(keywords) {
+      try {
+        let { data } = await reqMulSearch(keywords);
+        if (data.code == 200) {
+          this.MulSearchRes = data.result;
+        }
+      } catch (error) {
+        console.log(error.message, "请求搜索多重匹配 error");
+      }
+    },
+    //获取搜索
+    async getSearch(keywords, limit, offset, type) {
+      try {
+        let { data } = await reqSearch(keywords, limit, offset, type);
+        if (data.code == 200) {
+          this.MulSearchRes = data.result;
+        }
+      } catch (error) {
+        console.log(error.message, "请求搜索 error");
+      }
+    },
+  },
+  getters: {
+    // name: (state) => state.data.name,
   },
 });

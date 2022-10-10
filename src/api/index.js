@@ -220,3 +220,45 @@ export const reqMVDetailNum = (id) => {
     method: "get",
   });
 };
+// 请求默认搜索关键词
+export const reqSearchDefault = () => {
+  return requests({
+    url: "/search/default",
+    method: "get",
+  });
+};
+// 请求搜索建议
+export const reqSearchSuggest = (keywords) => {
+  return requests({
+    url: `/search/suggest?keywords=${keywords}`,
+    method: "get",
+  });
+};
+// 请求热搜列表(简略)
+export const reqHotSingle = () => {
+  return requests({
+    url: "/search/hot",
+    method: "get",
+  });
+};
+// 请求热搜列表(详细)
+export const reqSearchHot = (keywords) => {
+  return requests({
+    url: "/search/hot/detail",
+    method: "get",
+  });
+};
+// 请求搜索多重匹配
+export const reqMulSearch = (keywords) => {
+  return requests({
+    url: "/search/multimatch?keywords=${keywords}",
+    method: "get",
+  });
+};
+// 请求搜索
+export const reqSearch = (keywords, limit = 30, offset = 0, type = 1) => {
+  return requests({
+    url: `/cloudsearch?keywords=${keywords}&limit=${limit}&offset=${offset}&type=${type}`,
+    method: "get",
+  });
+};

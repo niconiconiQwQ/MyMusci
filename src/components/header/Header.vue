@@ -13,7 +13,16 @@
     </div>
     <!-- 搜索栏 -->
     <div class="search-bar">
-      <input class="search" type="text" name="" id="" placeholder="Search" />
+      <input
+        class="search"
+        type="text"
+        :placeholder="SearchStore.defaultKeyword || 'Search'"
+        @focus="getSearch"
+        v-model="keywords"
+      />
+      <div class="searchList" v-show="isSearchShow">
+        <SearchList :keywords="keywords"></SearchList>
+      </div>
     </div>
     <!-- 麦克风图标 -->
     <div class="listen iconfont icon-microphone"></div>
@@ -54,15 +63,33 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
 import Info from "@/components/header/Info";
 import Email from "@/components/header/Email";
 import Skin from "@/components/header/Skin";
+import SearchList from "@/components/header/SearchList";
+import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { Search } from "@/store/index";
+const SearchStore = Search();
 const router = useRouter();
 const route = useRoute();
-let isInfoShow = ref(false);
-let isEmailShow = ref(false);
+const isInfoShow = ref(false);
+const isEmailShow = ref(false);
+const isSearchShow = ref(false);
+const keywords = ref("");
+const search = ref();
+watch(
+  () => keywords.value,
+  (newVal, oldVal) => {
+    // 得做防抖
+    // 去发请求
+    console.log("改了", newVal);
+    SearchStore.getSearchHot();
+    SearchStore.getSearchSuggest(newVal);
+    SearchStore.getHotSingle();
+  }
+);
+SearchStore.getDefault();
 const infoShow = () => {
   isInfoShow.value = !isInfoShow.value;
 };
@@ -76,16 +103,20 @@ onMounted(() => {
   document.addEventListener("click", () => {
     isInfoShow.value = false;
     isEmailShow.value = false;
+    isSearchShow.value = false;
   });
 });
 // 进退按钮功能
 const forword = () => {
   router.go(1);
-  console.log("前进");
 };
 const goback = () => {
   router.go(-1);
-  console.log("后退");
+};
+const getSearch = () => {
+  // 有问题
+  isSearchShow.value = true;
+  SearchStore.getDefault();
 };
 </script>
 
@@ -151,6 +182,7 @@ const goback = () => {
   }
   // 搜索栏
   .search-bar {
+    position: relative;
     width: 230px;
     height: 100%;
     border-radius: 10px;
@@ -180,6 +212,12 @@ const goback = () => {
       &::-webkit-input-placeholder {
         color: var(--header-font-color);
       }
+    }
+    .searchList {
+      position: absolute;
+      top: 24px;
+      left: -30px;
+      z-index: 3;
     }
   }
   // 麦克风
