@@ -1,5 +1,6 @@
 <template>
   <div class="searchList">
+    <!-- 搜索呈现1 -->
     <div class="searchList1 ctn-mode" v-if="props.keywords == ''">
       <div class="history">
         <div class="title">
@@ -27,6 +28,7 @@
         </ul>
       </div>
     </div>
+    <!-- 搜索呈现2 -->
     <div class="searchList2 ctn-mode" v-else>
       <ul>
         <li class="guess">
@@ -77,7 +79,6 @@
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount, defineProps } from "vue";
-import { useRouter, useRoute } from "vue-router";
 import { Search } from "@/store/index";
 import { storeToRefs } from "pinia";
 const SearchStore = Search();
@@ -85,7 +86,6 @@ const { searchHot, suggests, hotSingle } = storeToRefs(SearchStore);
 const props = defineProps(["keywords"]);
 // 发请求捞数据
 SearchStore.getSearchHot();
-SearchStore.getSearchSuggest(props.keywords);
 onBeforeMount(() => {});
 onMounted(() => {});
 </script>

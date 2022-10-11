@@ -45,7 +45,7 @@ const gotoPlayList = (id) => {
   router.push({ path: "/playlist", query: { id: id } });
 };
 onBeforeMount(() => {
-  playListStore.getRecPlayList(9);
+  playListStore.getRecPlayList();
 });
 onMounted(() => {});
 </script>

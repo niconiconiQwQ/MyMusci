@@ -53,9 +53,9 @@ export const playList = defineStore("playList", {
   },
   actions: {
     // 获取推荐歌单
-    async getRecPlayList(query) {
+    async getRecPlayList(limit) {
       try {
-        let { data } = await reqPersonalized(query);
+        let { data } = await reqPersonalized(limit);
         if (data.code == 200) {
           this.recommentPlayList = data.result || [];
         }

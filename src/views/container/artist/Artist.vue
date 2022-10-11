@@ -104,13 +104,12 @@ let area = ref();
 let initialActive = ref(0);
 let typeActive = ref(0);
 let areaActive = ref(0);
-let query = computed(
-  () =>
-    `type=${type.value || -1}&area=${area.value || -1}&initial=${
-      initial.value === 0 ? 0 : initial.value || -1
-    }`
-);
-// 点击语种的回调
+let params = computed(() => ({
+  type: type.value,
+  area: area.value,
+  initial: initial.value,
+}));
+// 点击 语种的回调
 const choiceArea = (item, index) => {
   areaActive.value = index;
   let areaNum = -1;
@@ -135,7 +134,8 @@ const choiceArea = (item, index) => {
       break;
   }
   area.value = areaNum;
-  ArtistListStore.getArtist(query.value);
+  console.log(params.value);
+  ArtistListStore.getArtist(params.value);
 };
 // 点击 分类的回调
 const choiceType = (item, index) => {
@@ -156,8 +156,9 @@ const choiceType = (item, index) => {
       break;
   }
   type.value = typeNum;
+  console.log(params.value);
   // 发请求
-  ArtistListStore.getArtist(query.value);
+  ArtistListStore.getArtist(params.value);
 };
 //点击 筛选的回调
 const choiceInitial = (item, index) => {
@@ -169,11 +170,11 @@ const choiceInitial = (item, index) => {
   } else {
     initial.value = item.toLowerCase();
   }
-  console.log(query.value);
-  ArtistListStore.getArtist(query.value);
+  console.log(params.value);
+  ArtistListStore.getArtist(params.value);
 };
 onBeforeMount(() => {
-  ArtistListStore.getArtist(query.value);
+  ArtistListStore.getArtist(params.value);
 });
 </script>
 

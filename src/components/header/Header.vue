@@ -17,9 +17,13 @@
         class="search"
         type="text"
         :placeholder="SearchStore.defaultKeyword || 'Search'"
+        @input="getSearch"
         @focus="getSearch"
+        @blur="lostSearch"
         v-model="keywords"
+        @click.stop=""
       />
+      <!-- @focus="getSearch" -->
       <div class="searchList" v-show="isSearchShow">
         <SearchList :keywords="keywords"></SearchList>
       </div>
@@ -67,7 +71,7 @@ import Info from "@/components/header/Info";
 import Email from "@/components/header/Email";
 import Skin from "@/components/header/Skin";
 import SearchList from "@/components/header/SearchList";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick, onUpdated } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Search } from "@/store/index";
 const SearchStore = Search();
@@ -83,7 +87,6 @@ watch(
   (newVal, oldVal) => {
     // 得做防抖
     // 去发请求
-    console.log("改了", newVal);
     SearchStore.getSearchHot();
     SearchStore.getSearchSuggest(newVal);
     SearchStore.getHotSingle();
@@ -106,6 +109,7 @@ onMounted(() => {
     isSearchShow.value = false;
   });
 });
+onUpdated(() => {});
 // 进退按钮功能
 const forword = () => {
   router.go(1);
@@ -113,10 +117,14 @@ const forword = () => {
 const goback = () => {
   router.go(-1);
 };
+
 const getSearch = () => {
-  // 有问题
   isSearchShow.value = true;
-  SearchStore.getDefault();
+  console.log(isSearchShow.value, "获取焦点了");
+};
+
+const lostSearch = () => {
+  console.log("失去焦点了");
 };
 </script>
 

@@ -3,7 +3,7 @@
     <audio controls="controls" class="audio" :src="url" ref="audio"></audio>
     <div class="song-info">
       <a href="#" class="cover">
-        <img :src="picUrl" alt="" />
+        <img v-lazy="picUrl" alt="" :src="picUrl" />
       </a>
       <div class="msg">
         <div class="top">

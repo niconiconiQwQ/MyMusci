@@ -55,9 +55,21 @@ export default [
     path: "/video",
     component: () => import("@/views/video/Video.vue"),
   },
+  // media
   {
     path: "/media",
     component: () => import("@/views/media/Media.vue"),
+    redirect: "/media/video",
+    children: [
+      {
+        path: "video",
+        component: () => import("@/views/media/HVideo.vue"),
+      },
+      {
+        path: "mv",
+        component: () => import("@/views/media/HMV.vue"),
+      },
+    ],
   },
   // 私人FM
   {

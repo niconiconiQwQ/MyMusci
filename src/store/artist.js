@@ -50,9 +50,9 @@ export const artistListStore = defineStore("artistList", {
   },
   actions: {
     // 请求歌手列表
-    async getArtist(query) {
+    async getArtist(params) {
       try {
-        let { data } = await reqArtistList(query);
+        let { data } = await reqArtistList(params);
         if (data.code == 200) {
           this.artistsList = data.artists;
         }

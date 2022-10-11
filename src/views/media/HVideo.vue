@@ -1,27 +1,44 @@
 <template>
-  <div class="ctn-mode">
-    <nav>
-      <span><router-link href="#" to="/media/video">视频</router-link></span>
-      <span><router-link href="#" to="/media/mv">MV</router-link></span>
-    </nav>
-    <router-view></router-view>
+  <div class="video-home">
+    <div class="nav">
+      <a class="choice" @click.stop="showTags">
+        <span>全部歌单</span>
+        <span class="iconfont icon-right"></span>
+      </a>
+      <ul class="title">
+        <li v-for="index in 6" :key="index">二次元</li>
+      </ul>
+    </div>
+    <div class="video-box">
+      <ul class="ul-mode">
+        <li class="a-mode1" v-for="index in 20" :key="index">
+          <a href="#" class="a-mode1" @click="gotoPlayList()">
+            <div class="num-mode">
+              <span class="iconfont icon-bofang"></span
+              ><span>{{ formatNumber(112343) }}</span>
+            </div>
+            <div class="time-mode">{{ formatPlayTime(300000) }}</div>
+            <img src="@/assets/images/m3.jpg" alt=""
+          /></a>
+          <div class="name">
+            仓木麻衣孙燕姿隔空对唱《toning, i feel clolllllllllllll》
+          </div>
+          <div class="creator">by <span>全球音乐吧</span></div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { ref, onMounted, onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { formatNumber, formatPlayTime } from "@/utils/Format/format";
+import { xxx } from "@/store/index";
+onBeforeMount(() => {});
+onMounted(() => {});
+</script>
 <style lang="scss" scoped>
-.ctn-mode {
-  > nav {
-    font-size: 1.8rem;
-    span {
-      margin-right: 20px;
-      .router-link-active {
-        font-weight: 700;
-        font-size: 2rem;
-        padding: 4px 0;
-        border-bottom: 3px #38b2a8 solid;
-      }
-    }
-  }
+.video-home {
   .nav {
     width: 100%;
     height: 30px;

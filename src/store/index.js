@@ -24,6 +24,9 @@ import {
   reqHotSingle,
   reqMulSearch,
   reqSearch,
+  reqFirstMV,
+  reqAllMV,
+  reqExclusive,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -155,14 +158,16 @@ export const Personalized = defineStore("personalized", {
     },
   },
 });
-// 推荐MV仓库
+// MV仓库
 export const RecommendMV = defineStore("MVList", {
   state: () => {
     return {
       list: [],
+      latestMV: [],
     };
   },
   actions: {
+    // 获取推荐MV
     async getMVList() {
       try {
         let { data } = await reqMV();
@@ -171,6 +176,38 @@ export const RecommendMV = defineStore("MVList", {
         }
       } catch (error) {
         console.log(error.message, "请求MV error");
+      }
+    },
+    // 获取最新MV
+    async getFirstMV(area, limit) {
+      try {
+        let { data } = await reqFirstMV(area, limit);
+        if (data.code == 200) {
+          this.latestMV = data.data;
+        }
+      } catch (error) {
+        console.log(error.message, "请求最新MV error");
+      }
+    },
+    // 获取全部
+    async getAllMV(area, type, older, limit, offset) {
+      try {
+        let { data } = await reqAllMV(area, type, older, limit, offset);
+        if (data.code == 200) {
+        }
+      } catch (error) {
+        console.log(error.message, "请求全部MV error");
+      }
+    },
+    // 获取网易出品 mv
+    async getExclusive() {
+      try {
+        const { data } = await reqExclusive();
+        if (data.code == 200) {
+          console.log(data);
+        }
+      } catch (error) {
+        console.log(error.message, "请求网易出品 mv error");
       }
     },
   },
