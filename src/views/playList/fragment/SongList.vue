@@ -93,7 +93,7 @@ const gotoAblum = (ablumId) => {
   console.log(ablumId);
 };
 onBeforeMount(() => {
-  playListStore.getSongs(props.PlayListId, 10, 0);
+  playListStore.getSongs(props.PlayListId);
 });
 onMounted(() => {});
 </script>

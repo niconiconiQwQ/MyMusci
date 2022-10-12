@@ -60,10 +60,10 @@ const goUser = (id) => {
 onBeforeMount(() => {
   // 判断type 是 关注 还是粉丝 来决定发什么请求
   if (type.value == "粉丝") {
-    userDetailStore.getFolloweds(userId.value, 20, 0);
+    userDetailStore.getFolloweds(userId.value);
   } else {
     //  请求关注
-    userDetailStore.getFollows(userId.value, 20, 0);
+    userDetailStore.getFollows(userId.value);
   }
 });
 onMounted(() => {});

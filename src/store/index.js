@@ -27,6 +27,7 @@ import {
   reqFirstMV,
   reqAllMV,
   reqExclusive,
+  reqTopMV,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -158,12 +159,15 @@ export const Personalized = defineStore("personalized", {
     },
   },
 });
-// MV仓库
+// MV列表仓库
 export const RecommendMV = defineStore("MVList", {
   state: () => {
     return {
       list: [],
       latestMV: [],
+      Exclusive: [],
+      Allmv: [],
+      topMV: [],
     };
   },
   actions: {
@@ -179,9 +183,9 @@ export const RecommendMV = defineStore("MVList", {
       }
     },
     // 获取最新MV
-    async getFirstMV(area, limit) {
+    async getFirstMV(options) {
       try {
-        let { data } = await reqFirstMV(area, limit);
+        let { data } = await reqFirstMV(options);
         if (data.code == 200) {
           this.latestMV = data.data;
         }
@@ -190,26 +194,41 @@ export const RecommendMV = defineStore("MVList", {
       }
     },
     // 获取全部
-    async getAllMV(area, type, older, limit, offset) {
+    async getAllMV(option) {
       try {
-        let { data } = await reqAllMV(area, type, older, limit, offset);
+        let { data } = await reqAllMV(option);
         if (data.code == 200) {
+          this.Allmv = data.data;
         }
       } catch (error) {
         console.log(error.message, "请求全部MV error");
       }
     },
     // 获取网易出品 mv
-    async getExclusive() {
+    async getExclusive(options) {
       try {
-        const { data } = await reqExclusive();
+        const { data } = await reqExclusive(options);
         if (data.code == 200) {
-          console.log(data);
+          this.Exclusive = data.data;
         }
       } catch (error) {
         console.log(error.message, "请求网易出品 mv error");
       }
     },
+    // 获取MV排行
+    async getTopMV(options) {
+      try {
+        const { data } = await reqTopMV(options);
+        if (data.code == 200) {
+          this.topMV = data.data;
+        }
+      } catch (error) {
+        console.log(error.message, "请求MV排行 error");
+      }
+    },
+  },
+  getters: {
+    hotMV: (state) => state.Allmv.slice(0, 8),
   },
 });
 // 推荐新音乐仓库
@@ -283,9 +302,9 @@ export const userDetail = defineStore("userDetail", {
       }
     },
     // 获取用户粉丝列表
-    async getFolloweds(id, limit, offset) {
+    async getFolloweds(id, options) {
       try {
-        let { data } = await reqFolloweds(id, limit, offset);
+        let { data } = await reqFolloweds(id, options);
         if (data.code == 200) {
           this.followedsList = data.followeds;
         }
@@ -294,9 +313,9 @@ export const userDetail = defineStore("userDetail", {
       }
     },
     // 获取用户关注列表
-    async getFollows(id, limit, offset) {
+    async getFollows(id, options) {
       try {
-        let { data } = await reqFollows(id, limit, offset);
+        let { data } = await reqFollows(id, options);
         if (data.code == 200) {
           this.followList = data.follow;
         }
@@ -305,9 +324,9 @@ export const userDetail = defineStore("userDetail", {
       }
     },
     // 获取用户歌单
-    async getUserPlayList(id, limit, offset) {
+    async getUserPlayList(id, options) {
       try {
-        let { data } = await reqUserPlayList(id, limit, offset);
+        let { data } = await reqUserPlayList(id, options);
         if (data.code == 200) {
           this.playList = data.playlist;
         }

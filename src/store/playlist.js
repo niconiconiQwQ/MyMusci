@@ -75,9 +75,9 @@ export const playList = defineStore("playList", {
       }
     },
     // 请求歌单所有歌曲
-    async getSongs(id, limit, offset) {
+    async getSongs(id,options) {
       try {
-        let { data } = await reqSongs(id, limit, offset);
+        let { data } = await reqSongs(id,options);
         if (data.code == 200) {
           this.songs = data.songs;
         }

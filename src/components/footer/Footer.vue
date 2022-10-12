@@ -4,6 +4,7 @@
     <div class="song-info">
       <a href="#" class="cover">
         <img v-lazy="picUrl" alt="" :src="picUrl" />
+        <div class="mask"><i class="iconfont icon-shang"></i></div>
       </a>
       <div class="msg">
         <div class="top">
@@ -43,6 +44,7 @@
         <span>{{ formatSecond(duration) }}</span>
       </div>
     </div>
+    <!-- 右侧一些图标 -->
     <div class="effect">
       <span class="hight">极高</span>
       <span class="iconfont icon-041siyecao"></span>
@@ -237,10 +239,35 @@ onMounted(() => {
     display: flex;
     .cover {
       height: 100%;
+      width: 52px;
+      margin-right: 10px;
+      position: relative;
+      border-radius: 10%;
+      overflow: hidden;
       img {
         height: 100%;
         margin-right: 12px;
-        border-radius: 10%;
+      }
+      .mask {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: none;
+        background-color: #49362b80;
+        backdrop-filter: blur(2px);
+        i {
+          font-size: 4rem;
+          color: #c9c6c4;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+      &:hover .mask {
+        display: block;
       }
     }
     .msg {

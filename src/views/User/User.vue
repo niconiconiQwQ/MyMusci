@@ -162,7 +162,7 @@ onBeforeMount(() => {
   // 发起请求捞用户的详情
   userDetailStore.getUserDetail(uid.value);
   // 捞用户歌单的歌单
-  userDetailStore.getUserPlayList(uid.value, 19, 0);
+  userDetailStore.getUserPlayList(uid.value);
 });
 onMounted(() => {});
 </script>

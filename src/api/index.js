@@ -25,15 +25,21 @@ export const reqDjRecommend = () => {
 };
 /* ============================歌手相关====================== */
 // 请求歌手分类列表
-export const reqArtistList = (artParams) => {
+export const reqArtistList = ({
+  limit = 20,
+  offset = 0,
+  type = -1,
+  initial = -1,
+  area = -1,
+} = {}) => {
   return requests({
     url: "/artist/list",
     params: {
-      limit: artParams.limit || 20,
-      offset: artParams.offset || 0,
-      type: artParams.type || -1,
-      initial: artParams.initial || -1,
-      area: artParams.area || -1,
+      limit,
+      offset,
+      type,
+      initial,
+      area,
     },
     method: "get",
   });
@@ -89,7 +95,7 @@ export const reqArtistTopSong = (id) => {
   });
 };
 // 请求获取歌手专辑--没渲染 ====no
-export const reqArtistAlbum = (id, limit) => {
+export const reqArtistAlbum = (id, limit = 0) => {
   return requests({
     url: "/artist/album",
     params: {
@@ -142,7 +148,7 @@ export const reqPlayListDetail = (id) => {
   });
 };
 // 请求歌单中的歌曲
-export const reqSongs = (id, limit, offset) => {
+export const reqSongs = (id, { limit = 10, offset = 0 } = {}) => {
   return requests({
     url: "/playlist/track/all",
     params: {
@@ -164,7 +170,7 @@ export const reqComment = (id) => {
   });
 };
 // 请求歌单收藏者
-export const reqCollectors = (id, limit) => {
+export const reqCollectors = (id, limit = 0) => {
   return requests({
     url: "/playlist/subscribers",
     params: {
@@ -213,7 +219,7 @@ export const reqUserDetail = (uid) => {
   });
 };
 // 请求用户粉丝列表
-export const reqFolloweds = (uid, limit = 20, offset = 0) => {
+export const reqFolloweds = (uid, { limit = 20, offset = 0 } = {}) => {
   return requests({
     url: "/user/followeds",
     params: {
@@ -225,7 +231,7 @@ export const reqFolloweds = (uid, limit = 20, offset = 0) => {
   });
 };
 // 请求用户关注列表
-export const reqFollows = (uid, limit = 20, offset = 0) => {
+export const reqFollows = (uid, { limit = 20, offset = 0 } = {}) => {
   return requests({
     url: "/user/follows",
     params: { uid, limit, offset },
@@ -233,7 +239,7 @@ export const reqFollows = (uid, limit = 20, offset = 0) => {
   });
 };
 // 请求用户歌单
-export const reqUserPlayList = (uid, limit = 20, offset = 0) => {
+export const reqUserPlayList = (uid, { limit = 19, offset = 0 } = {}) => {
   return requests({
     url: "/user/playlist",
     params: { uid, limit, offset },
@@ -293,14 +299,14 @@ export const reqMVDetailNum = (mvid) => {
     method: "get",
   });
 };
-// 请求全部 MV  ====no
-export const reqAllMV = (
+// 请求全部 MV
+export const reqAllMV = ({
   area = "全部",
   type = "全部",
   older = "上升最快",
   limit = 10,
-  offset = 0
-) => {
+  offset = 0,
+} = {}) => {
   return requests({
     url: "/mv/all",
     params: {
@@ -314,7 +320,7 @@ export const reqAllMV = (
   });
 };
 // 请求最新 mv
-export const reqFirstMV = (area = "内地", limit = 8) => {
+export const reqFirstMV = ({ area = "内地", limit = 8 } = {}) => {
   return requests({
     url: "/mv/first",
     params: {
@@ -324,8 +330,8 @@ export const reqFirstMV = (area = "内地", limit = 8) => {
     method: "get",
   });
 };
-// 请求网易出品 mv === no
-export const reqExclusive = (limit = 8, offset = 0) => {
+// 请求网易出品 mv
+export const reqExclusive = ({ limit = 8, offset = 0 } = {}) => {
   return requests({
     url: "/mv/exclusive/rcmd",
     params: {
@@ -335,8 +341,8 @@ export const reqExclusive = (limit = 8, offset = 0) => {
     method: "get",
   });
 };
-// 请求mv 排行 ===no
-export const reqTopMV = (limit, offset, area) => {
+// 请求mv 排行
+export const reqTopMV = ({ limit = 10, offset = 0, area = "" } = {}) => {
   return requests({
     url: "/top/mv",
     params: {
@@ -385,8 +391,11 @@ export const reqMulSearch = (keywords) => {
     method: "get",
   });
 };
-// 请求搜索
-export const reqSearch = (keywords, limit = 30, offset = 0, type = 1) => {
+// 请求搜索 ===no
+export const reqSearch = (
+  keywords,
+  { limit = 30, offset = 0, type = 1 } = {}
+) => {
   return requests({
     url: "/cloudsearch",
     params: {
