@@ -101,7 +101,7 @@ export default [
       {
         // path: "", // 默认子路由
         path: "album",
-        component: () => import("@/views/artistHome/fragment/Album.vue"),
+        component: () => import("@/views/artistHome/fragment/Albums.vue"),
       },
       // MV
       {

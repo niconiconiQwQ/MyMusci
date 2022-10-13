@@ -7,6 +7,7 @@ import {
   reqFans,
   reqArtistTopSong,
   reqArtistAlbum,
+  reqAlbum,
 } from "@/api/index";
 // 歌手列表的仓库
 export const artistListStore = defineStore("artistList", {
@@ -17,7 +18,7 @@ export const artistListStore = defineStore("artistList", {
       // 某歌手描述 desc
       descList: [],
       // 某歌手详情 detail
-      detail: {},
+      detail: { artist: {}, identify: {} },
       // 某歌手 id
       id: 0,
       // 某歌手简介
@@ -30,6 +31,7 @@ export const artistListStore = defineStore("artistList", {
       songs: [],
       // 某歌手的专辑
       hotAlbums: [],
+
     };
   },
   getters: {
@@ -120,12 +122,33 @@ export const artistListStore = defineStore("artistList", {
     async getArtistAlbum(id, limit) {
       try {
         let { data } = await reqArtistAlbum(id, limit);
-        console.log(data);
         if (data.code == 200) {
           this.hotAlbums = data.hotAlbums;
         }
       } catch (error) {
         console.log(error.message, "请求获取歌手专辑 error");
+      }
+    },
+    // 请求专辑信息 === no
+    async getAblum(id) {
+      try {
+        let { data } = await reqAlbum(id);
+        if (data.code == 200) {
+          // this.hotAlbums = data.hotAlbums;
+        }
+      } catch (error) {
+        console.log(error.message, "请求专辑信息 error");
+      }
+    },
+    // 请求专辑前10首歌 === no
+    async getAblum(id) {
+      try {
+        let { data } = await reqAlbum(id);
+        if (data.code == 200) {
+          // this.hotAlbums = data.hotAlbums;
+        }
+      } catch (error) {
+        console.log(error.message, "请求专辑10首歌 error");
       }
     },
   },

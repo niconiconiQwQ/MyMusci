@@ -84,7 +84,7 @@ export const reqFans = (id) => {
     method: "get",
   });
 };
-// 请求歌手热门50首歌曲--没渲染 ====no
+// 请求歌手热门50首歌曲
 export const reqArtistTopSong = (id) => {
   return requests({
     url: "/artist/top/song",
@@ -94,14 +94,22 @@ export const reqArtistTopSong = (id) => {
     method: "get",
   });
 };
-// 请求获取歌手专辑--没渲染 ====no
-export const reqArtistAlbum = (id, limit = 0) => {
+// 请求获取歌手专辑
+export const reqArtistAlbum = (id, limit = 20) => {
   return requests({
     url: "/artist/album",
     params: {
       id,
       limit,
     },
+    method: "get",
+  });
+};
+// 请求专辑内容
+export const reqAlbum = (id) => {
+  requests({
+    url: "/album",
+    params: { id },
     method: "get",
   });
 };

@@ -1,17 +1,155 @@
 <template>
-  <div>专辑; 数据还没做</div>
+  <div class="album">
+    <div class="left">
+      <a href="#">
+        <img v-lazy="props.blurPicUrl" src="@/assets/images/m3.jpg" alt="" />
+      </a>
+    </div>
+    <div class="right">
+      <div class="ctrl">
+        <span class="title">歌手热门50首</span
+        ><a href="#" class="iconfont icon-play1"></a>
+        <a href="#" class="iconfont icon-yulanshoucang"></a>
+      </div>
+      <table class="s-table">
+        <thead></thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in props.songs"
+            :key="item.id"
+            :class="{ bgc: index % 2 }"
+            @dblclick="play(item.id)"
+          >
+            <td class="w w1">
+              <span>{{ formatIndex(index + 1) }}</span>
+              <span class="iconfont icon-zan"></span>
+              <span class="iconfont icon-download"></span>
+            </td>
+            <td class="w w2">
+              <span>{{ item.name }}</span>
+            </td>
+            <td class="w w3">
+              <span>{{ formatPlayTime(item.dt) }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { artistListStore } from "@/store/artist";
-const ArtistListStore = artistListStore();
-onBeforeMount(() => {
-  ArtistListStore.getArtistTopSong(ArtistListStore.id);
-  ArtistListStore.getArtistAlbum(ArtistListStore.id, 10);
-});
-onMounted(() => {
-  console.log(ArtistListStore.hotAlbums);
-});
+import { defineProps } from "vue";
+import { formatPlayTime, formatIndex } from "@/utils/Format/format";
+import { songDetail } from "@/store/playlist";
+const songDetailStore = songDetail();
+const play = (id) => {
+  // 获取id之后发请求，捞数据 url
+  songDetailStore.getSongUrl(id, "standard");
+  songDetailStore.getSongDetail(id);
+};
+const props = defineProps(["songs", "title"]);
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.album {
+  display: flex;
+  margin-bottom: 60px;
+  width: 100%;
+  .left {
+    margin-right: 60px;
+    a {
+      display: block;
+      height: 150px;
+      width: 150px;
+      border-radius: 6px;
+      overflow: hidden;
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+  .right {
+    width: 100%;
+    .ctrl {
+      margin-bottom: 15px;
+      .title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-right: 20px;
+      }
+      .iconfont {
+        padding: 0 10px;
+        font-size: 1.8rem;
+      }
+      .icon-play1 {
+        border-right: 1px #e7e7e7 solid;
+      }
+    }
+    .s-table {
+      width: 100%;
+      color: #888888;
+      thead,
+      tbody {
+        tr {
+          display: flex;
+          a {
+            color: #888888;
+          }
+          .w {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            span {
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+          }
+          .w1,
+          .w3 {
+            flex: 1;
+          }
+          .w2 {
+            flex: 8;
+          }
+          .pointer {
+            cursor: pointer;
+            &:hover {
+              color: #ad91ec;
+            }
+          }
+          &.bgc {
+            background-color: #fafafa;
+          }
+          text-align: left;
+          th {
+            height: 34px;
+            &.w1 {
+              justify-content: center;
+            }
+          }
+          td {
+            height: 34px;
+            &.w1 {
+              display: flex;
+              justify-content: space-evenly;
+              align-items: center;
+            }
+          }
+          &:hover {
+            background-color: #f1f2f3;
+          }
+        }
+      }
+      tbody {
+        tr {
+          .w2 {
+            color: #373737;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
