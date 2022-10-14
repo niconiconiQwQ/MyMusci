@@ -105,14 +105,6 @@ export const reqArtistAlbum = (id, limit = 20) => {
     method: "get",
   });
 };
-// 请求专辑内容
-export const reqAlbum = (id) => {
-  requests({
-    url: "/album",
-    params: { id },
-    method: "get",
-  });
-};
 /* ===========================歌单相关======================== */
 // 请求歌单排行榜
 export const reqTopList = () => {
@@ -460,6 +452,47 @@ export const reqVideoNum = (vid) => {
   return requests({
     url: "/video/detail/info",
     params: { vid },
+    method: "get",
+  });
+};
+/* ===============================新歌速递和新碟上架==================== */
+// 请求全部新碟
+export const reqNewAlbum = ({ limit = 30, offset = 0, area = "ALL" } = {}) => {
+  return requests({
+    url: "/album/new",
+    params: { limit, offset, area },
+    method: "get",
+  });
+};
+// 请求专辑评论
+export const reqAlbumComment = (id, { limit = 20, offset = 0 } = {}) => {
+  return requests({
+    url: "/comment/album",
+    params: { id, offset, limit },
+    method: "get",
+  });
+};
+// 请求专辑内容
+export const reqAlbum = (id) => {
+  return requests({
+    url: "/album",
+    params: { id },
+    method: "get",
+  });
+};
+// 请求专辑动态信息
+export const reqAlbumDynamic = (id) => {
+  return requests({
+    url: "/album/detail/dynamic",
+    params: { id },
+    method: "get",
+  });
+};
+// 请求新歌速递
+export const reqNewSongs = (type = 0) => {
+  return requests({
+    url: "/top/song",
+    params: { type },
     method: "get",
   });
 };

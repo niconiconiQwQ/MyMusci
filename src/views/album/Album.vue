@@ -2,19 +2,12 @@
   <div class="playlist ctn-mode">
     <div class="head">
       <div class="left">
-        <img :src="coverImgUrl" />
+        <img :src="blurPicUrl" />
       </div>
       <div class="right">
         <div class="title">
-          <div>歌单</div>
-          <h1>{{ playListName }}</h1>
-        </div>
-        <div class="nickname">
-          <a href="#" @click="goUser(userId)">
-            <img :src="avatarUrl" />
-            <span>{{ nickname }}</span>
-          </a>
-          <span class="time">{{ createTime }}创建</span>
+          <div>专辑</div>
+          <h1>{{ name }}</h1>
         </div>
         <!-- 播放 收藏 等按钮 -->
         <ul class="ctrl">
@@ -32,13 +25,13 @@
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-yulanshoucang"></span
-              ><span>已收藏({{ subscribedCount }})</span></a
+              ><span>已收藏({{ formatNumber(subCount) }})</span></a
             >
           </li>
           <li>
             <a href="#" class="btn-mode btn">
               <span class="iconfont icon-fenxiang"></span
-              ><span>分享({{ shareCount }})</span></a
+              ><span>分享({{ formatNumber(shareCount) }})</span></a
             >
           </li>
           <li>
@@ -50,100 +43,63 @@
         </ul>
         <ul class="desc">
           <li>
-            <span>标签: </span
-            ><a href="#" v-for="(item, index) in tags">{{ item }}</a>
+            <span>歌手: </span><a href="#">{{ artistName }}</a>
           </li>
-          <li>
-            <span>歌曲: {{ trackCount }}</span
-            ><span>播放: {{ formatNumber(playCount) }}</span>
-          </li>
-          <li class="brief" ref="brief">
-            <i class="iconfont icon-up" @click="showDesc" ref="i"></i>
-            <p>简介:</p>
-          </li>
-          <!-- <li class="row" v-for="item in playListStore.description">
-            {{ item }}
-          </li> -->
+          <li>时间: {{ formatTime2(publishTime) }}</li>
         </ul>
-        <div class="cur">
-          <p class="row" v-for="item in description">
-            {{ item }}
-          </p>
-        </div>
       </div>
     </div>
     <div class="nav-mode">
       <ul>
         <li>
-          <router-link to="/playlist/songlist">歌曲列表</router-link>
+          <router-link to="/album/songlist">歌曲列表</router-link>
         </li>
         <li>
-          <router-link to="/playlist/comment"
-            >评论({{ playListStore.commentCount }})</router-link
+          <router-link to="/album/comment"
+            >评论({{ formatNumber(commentCount) }})</router-link
           >
         </li>
         <li>
-          <router-link to="/playlist/collectors">收藏者</router-link>
+          <router-link to="/album/detail">专辑详情</router-link>
         </li>
       </ul>
     </div>
-    <router-view :PlayListId="PlayListId"></router-view>
+    <router-view :albumId="albumId"></router-view>
   </div>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { playList } from "@/store/playlist";
 import { storeToRefs } from "pinia";
-import { formatNumber } from "@/utils/Format/format";
-const playListStore = playList();
+import { formatTime2, formatNumber } from "@/utils/Format/format";
+import { album } from "@/store/index";
+const albumStore = album();
 const {
-  playListId,
-  coverImgUrl,
-  playListName,
-  userId,
-  avatarUrl,
-  nickname,
-  createTime,
-  subscribedCount,
-  shareCount,
-  tags,
-  trackCount,
-  playCount,
+  name,
+  blurPicUrl,
+  publishTime,
   description,
-} = storeToRefs(playListStore);
+  artistName,
+  shareCount,
+  subCount,
+  commentCount,
+} = storeToRefs(albumStore);
 const router = useRouter();
 const route = useRoute();
-const isShowDesc = ref(false);
-const brief = ref(null);
 const i = ref(null);
-const PlayListId = ref(route.query.id);
-const goUser = (id) => {
-  router.push({
-    path: "/user",
-    query: {
-      id: id,
-    },
-  });
-};
-const showDesc = () => {
-  isShowDesc.value = !isShowDesc.value;
-  if (isShowDesc.value) {
-    // brief.value.style.overflow = "hidden";
-    // console.log(isShowDesc.value, "真的啊");
-    i.value.style.transform = "rotate(0deg)";
-  } else {
-    // brief.value.style.overflow = "";
-    // console.log(isShowDesc.value, "假的");
-    i.value.style.transform = "";
-  }
-};
+const albumId = ref(route.query.id);
+// 发请求捞数据
+// albumStore.getAlbum(albumId);
+albumStore.getAlbum(albumId.value);
+albumStore.getAlbumDynamic(albumId.value);
 onBeforeMount(() => {
-  // 发歌单相关的请求
-  playListStore.getPlayListDetail(route.query.id);
-  playListId.value = route.query.id;
+  // console.log(albumDetail.value);
+  // console.log(route.query.id);
+  // 发专辑相关的请求
 });
-onMounted(() => {});
+onMounted(() => {
+  // console.log(subCount.value);
+});
 </script>
 <style lang="scss" scoped>
 .playlist {
@@ -178,25 +134,6 @@ onMounted(() => {});
         h1 {
           font-size: 20px;
           font-weight: 700;
-        }
-      }
-
-      .nickname {
-        height: 28px;
-        display: flex;
-        line-height: 28px;
-        a {
-          height: 100%;
-          display: block;
-          color: #507daf;
-          img {
-            height: 100%;
-            border-radius: 50%;
-            margin-right: 10px;
-          }
-        }
-        span {
-          padding-right: 10px;
         }
       }
       .ctrl {
@@ -239,18 +176,6 @@ onMounted(() => {});
           font-size: 14px;
           span {
             margin-right: 10px;
-          }
-          &.brief {
-            position: relative;
-            height: 20px;
-            i {
-              position: absolute;
-              right: 0;
-              top: 0;
-              font-size: 30px;
-              transform: rotate(90deg);
-              transition: all 0.1s linear;
-            }
           }
         }
       }

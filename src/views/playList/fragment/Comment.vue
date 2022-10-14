@@ -1,7 +1,5 @@
 <template>
-  <div class="comment">
-    <Comment :hotComments="hotComments" :comments="comments"></Comment>
-  </div>
+  <Comment :hotComments="hotComments" :comments="comments"></Comment>
 </template>
 <script setup>
 import Comment from "@/components/common/Comment";
@@ -13,4 +11,3 @@ const { hotComments, comments } = storeToRefs(playListStore);
 // 请求歌单评论数据
 playListStore.getComment(props.PlayListId);
 </script>
-<style lang="scss" scoped></style>

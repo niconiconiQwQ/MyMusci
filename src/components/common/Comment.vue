@@ -3,8 +3,7 @@
     <!-- 发送评论部分 -->
     <div class="send">
       <div class="text">
-        <textarea name="" id="" v-model="LastNum"></textarea
-        ><span>{{ 140 - LastNum.length }}</span>
+        <textarea name="" id="" v-model="LastNum"></textarea><span>{{}}22</span>
       </div>
       <div class="ctrl">
         <div class="select">
@@ -16,7 +15,7 @@
       </div>
     </div>
     <!-- 热门评论 -->
-    <div class="hot-comments" v-if="hotComments > 0">
+    <div class="hot-comments" v-if="props.hotComments.length > 0">
       <h2>精彩评论</h2>
       <ul class="com-list">
         <li v-for="item in props.hotComments" :key="item.commentId">
@@ -52,7 +51,7 @@
       ></a>
     </div>
     <!-- 最新评论 -->
-    <div class="latest-comments" v-if="comments > 0">
+    <div class="latest-comments" v-if="props.comments.length > 0">
       <h2>最新评论</h2>
       <ul class="com-list">
         <li v-for="item in props.comments" :key="item.commentId">

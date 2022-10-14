@@ -32,6 +32,20 @@ export default [
       {
         path: "latest",
         component: () => import("@/views/container/latest/Latest.vue"),
+        redirect: { name: "songs" },
+        children: [
+          {
+            path: "albums",
+            component: () =>
+              import("@/views/container/latest/fragment/LatestAlbum.vue"),
+          },
+          {
+            name: "songs",
+            path: "songs",
+            component: () =>
+              import("@/views/container/latest/fragment/LatestSongs.vue"),
+          },
+        ],
       },
     ],
   },
@@ -125,6 +139,7 @@ export default [
     path: "/playlist",
     component: () => import("@/views/playList/PlayList.vue"),
     redirect: "/playlist/songlist",
+    meta: { to: "playlist" },
     children: [
       {
         path: "songlist",
@@ -137,6 +152,27 @@ export default [
       {
         path: "collectors",
         component: () => import("@/views/playList/fragment/Collectors.vue"),
+      },
+    ],
+  },
+  // 专辑页面路由和歌单页面路由共用组件
+  {
+    path: "/album",
+    component: () => import("@/views/album/Album.vue"),
+    meta: { to: "album" },
+    redirect: "/album/songlist",
+    children: [
+      {
+        path: "songlist",
+        component: () => import("@/views/album/fragment/SongList.vue"),
+      },
+      {
+        path: "comment",
+        component: () => import("@/views/album/fragment/Comment.vue"),
+      },
+      {
+        path: "detail",
+        component: () => import("@/views/album/fragment/Detail.vue"),
       },
     ],
   },
@@ -157,7 +193,7 @@ export default [
     component: () => import("@/components/common/follow.vue"),
     meta: { type: "粉丝" },
   },
-  // 歌词
+  // 歌词 === no
   {
     path: "/lyric",
     component: () => import("@/views/Lyric/Lyric.vue"),

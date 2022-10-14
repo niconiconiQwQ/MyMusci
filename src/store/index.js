@@ -28,6 +28,11 @@ import {
   reqAllMV,
   reqExclusive,
   reqTopMV,
+  reqNewAlbum,
+  reqAlbumComment,
+  reqAlbum,
+  reqAlbumDynamic,
+  reqNewSongs,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -516,5 +521,99 @@ export const Search = defineStore("search", {
   },
   getters: {
     // name: (state) => state.data.name,
+  },
+});
+// 新碟，新歌仓库
+export const newAlbumSong = defineStore("new", {
+  state: () => {
+    return {
+      newAlbum: [],
+      newSongs: [],
+    };
+  },
+  actions: {
+    // 获取全部新碟
+    async getNewAlbum(options) {
+      try {
+        let { data } = await reqNewAlbum(options);
+        if (data.code == 200) {
+          this.newAlbum = data.albums;
+        }
+      } catch (error) {
+        console.log(error.message, "请求全部新碟 error");
+      }
+    },
+    // 获取新歌速递
+    async getNewSongs(type) {
+      try {
+        let { data } = await reqNewSongs(type);
+        if (data.code == 200) {
+          this.newSongs = data.data.slice(0, 20);
+        }
+      } catch (error) {
+        console.log(error.message, "请求新歌速递 error");
+      }
+    },
+  },
+  getters: {},
+});
+// 专辑仓库
+export const album = defineStore("album", {
+  state: () => {
+    return {
+      albumSongs: [],
+      albumDetail: { artist: {} },
+      shareCount: 0,
+      subCount: 0,
+      commentCount: 0,
+      hotComments: [],
+      comments: [],
+    };
+  },
+  actions: {
+    // 获取专辑评论
+    async getAlbumComment(id, options) {
+      try {
+        let { data } = await reqAlbumComment(id, options);
+        if (data.code == 200) {
+          this.hotComments = data.hotComments;
+          this.comments = data.comments;
+        }
+      } catch (error) {
+        console.log(error.message, "请求专辑评论 error");
+      }
+    },
+    // 获取专辑内容
+    async getAlbum(id) {
+      try {
+        let { data } = await reqAlbum(id);
+        if (data.code == 200) {
+          this.albumSongs = data.songs;
+          this.albumDetail = data.album;
+        }
+      } catch (error) {
+        console.log(error.message, "请求专辑内容 error");
+      }
+    },
+    // 获取专辑动态信息
+    async getAlbumDynamic(id) {
+      try {
+        let { data } = await reqAlbumDynamic(id);
+        if (data.code == 200) {
+          this.commentCount = data.commentCount;
+          this.shareCount = data.shareCount;
+          this.subCount = data.subCount;
+        }
+      } catch (error) {
+        console.log(error.message, "请求专辑动态信息 error");
+      }
+    },
+  },
+  getters: {
+    name: (state) => state.albumDetail.name,
+    blurPicUrl: (state) => state.albumDetail.blurPicUrl,
+    publishTime: (state) => state.albumDetail.publishTime,
+    description: (state) => state.albumDetail.description,
+    artistName: (state) => state.albumDetail.artist.name,
   },
 });
