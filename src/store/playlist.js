@@ -7,9 +7,16 @@ import {
   reqCollectors,
   reqSongUrl,
   reqSongDetail,
+  reqLyric,
+  reqSongComment,
 } from "@/api/index";
 import dayjs from "dayjs";
-import { formatNumber, formatTxt, formatPlayTime } from "@/utils/Format/format";
+import {
+  formatNumber,
+  formatTxt,
+  formatPlayTime,
+  formatLyric,
+} from "@/utils/Format/format";
 // 推荐歌单仓库
 export const RecommendPalyList = defineStore("playList", {
   state: () => {
@@ -75,9 +82,9 @@ export const playList = defineStore("playList", {
       }
     },
     // 请求歌单所有歌曲
-    async getSongs(id,options) {
+    async getSongs(id, options) {
       try {
-        let { data } = await reqSongs(id,options);
+        let { data } = await reqSongs(id, options);
         if (data.code == 200) {
           this.songs = data.songs;
         }
@@ -137,6 +144,8 @@ export const songDetail = defineStore("song", {
     return {
       data: {},
       songDetail: { al: [] },
+      lrc: "",
+      tlyric: {},
     };
   },
   actions: {
@@ -162,6 +171,27 @@ export const songDetail = defineStore("song", {
         console.log("获取歌曲详情失败", error.message);
       }
     },
+    // 获取歌词
+    async getLyric(id) {
+      try {
+        let { data } = await reqLyric(id);
+        if (data.code == 200) {
+          this.lrc = data.lrc.lyric;
+        }
+      } catch (error) {
+        console.log("获取歌词", error.message);
+      }
+    },
+    // 获取歌曲评论
+    async getSongComment(id, options) {
+      try {
+        let { data } = await reqSongComment(id, options);
+        if (data.code == 200) {
+        }
+      } catch (error) {
+        console.log("获取歌曲评论", error.message);
+      }
+    },
   },
   getters: {
     url: (state) => state.data.url || "", // 歌曲url
@@ -172,5 +202,6 @@ export const songDetail = defineStore("song", {
     alia: (state) => state.songDetail.alia || "", // 副标题
     fee: (state) => state.songDetail.fee || 0, // 0为免费 1为vip歌曲
     picUrl: (state) => state.songDetail.al.picUrl || "", // 歌曲的封面
+    formatedLyric: (state) => formatLyric(state.lrc),
   },
 });

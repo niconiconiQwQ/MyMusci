@@ -3,7 +3,7 @@
     <div class="v-top">
       <div class="left">
         <h1><a href="#"></a>视频详情</h1>
-        <video controls :src="url"></video>
+        <video controls :src="url" :poster="cover"></video>
         <div class="creator">
           <div class="left-a">
             <a href="#"><img :src="img1v1Url" alt="" /></a>
@@ -101,6 +101,7 @@ const {
   comments,
   hotComments,
   simiMVs,
+  cover,
 } = storeToRefs(MVStore);
 let id = ref(route.query.id);
 // 在这里捞仓库数据

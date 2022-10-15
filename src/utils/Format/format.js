@@ -44,3 +44,13 @@ export const formatSecond = (num) => {
   let s = parseInt(num) % 60;
   return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
 };
+export const formatLyric = (str) => {
+  let lyric = str;
+  let obj = {};
+  let reg = /\[(.*?)](.*)/g;
+  lyric.replace(reg, (a, b, c) => {
+    b = b.slice(0, 5);
+    obj[b] = c;
+  })
+  return obj;
+};

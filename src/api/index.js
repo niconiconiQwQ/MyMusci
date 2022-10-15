@@ -180,6 +180,18 @@ export const reqCollectors = (id, limit = 0) => {
     method: "get",
   });
 };
+// 请求歌单 ( 网友精选碟 )
+export const reqHotPlayList = ({cat = 'ACG',limit = 30,offset = 0} ={}) => {
+  return requests({
+    url: "/top/playlist",
+    params: {
+      cat,
+      limit,
+      offset,
+    },
+    method: "get",
+  });
+};
 /* ===========================歌曲/音乐相关======================== */
 // 请求 推荐新音乐
 export const reqLatestMusic = () => {
@@ -204,6 +216,22 @@ export const reqSongDetail = (ids) => {
   return requests({
     url: "/song/detail",
     params: { ids },
+    method: "get",
+  });
+};
+// 请求歌词
+export const reqLyric = (id) => {
+  return requests({
+    url: "/lyric",
+    params: { id },
+    method: "get",
+  });
+};
+// 请求歌曲评论
+export const reqSongComment = (id,{limit = 20,offset = 0} = {}) => {
+  return requests({
+    url: "/comment/music",
+    params: { id, limit, offset },
     method: "get",
   });
 };

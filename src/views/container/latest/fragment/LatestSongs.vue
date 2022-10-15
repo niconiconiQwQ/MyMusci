@@ -71,9 +71,7 @@ newAlbumSongStore.getNewSongs();
 const select = (type) => {
   newAlbumSongStore.getNewSongs(type);
 };
-onBeforeMount(() => {
-  console.log(newSongs.value);
-});
+onBeforeMount(() => {});
 onMounted(() => {});
 </script>
 <style lang="scss" scoped>

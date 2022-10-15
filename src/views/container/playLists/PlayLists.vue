@@ -3,23 +3,28 @@
     <!-- 顶部标题导航组件 -->
     <TopNav></TopNav>
     <div class="content">
-      <div class="head">
-        <img src="@/assets/images/m3.jpg" alt="" />
-        <div class="right">
-          <div class="box">
-            <span class="iconfont icon-huangjinhuiyuan0101-copy"></span
-            ><span>精品歌单</span>
+      <div class="head" ref="head">
+        <div>
+          <img v-lazy="playlists[0].coverImgUrl" alt="" />
+          <div class="right">
+            <div class="box">
+              <span class="iconfont icon-huangjinhuiyuan0101-copy"></span
+              ><span>精品歌单</span>
+            </div>
+            <h1>{{ playlists[0].name }}</h1>
+            <div>另类迷幻的空灵音律</div>
           </div>
-          <h1>【PB-RB】另类迷幻的空灵音律</h1>
-          <div>另类迷幻的空灵音律</div>
         </div>
       </div>
+      <!-- 标签导航栏 -->
       <div class="nav">
         <a class="choice" @click.stop="showTags">
-          <span>全部歌单</span>
+          <span>{{ params.cat || "全部歌单" }}</span>
           <span class="iconfont icon-right"></span>
           <div class="tags" v-if="isShowTags" @click.stop="">
-            <div class="all"><span>全部歌单</span></div>
+            <div class="all">
+              <a href="#" @click="select('全部')">全部歌单</a>
+            </div>
             <ul class="detail">
               <li class="detail-item">
                 <div class="d-title">
@@ -29,11 +34,8 @@
                   </div>
                 </div>
                 <ul class="type">
-                  <li
-                    v-for="(item, index) in palyListStore.category0"
-                    :key="index"
-                  >
-                    <a href="#">{{ item.name }}</a>
+                  <li v-for="(item, index) in category0" :key="index">
+                    <a href="#" @click="select(item.name)">{{ item.name }}</a>
                   </li>
                 </ul>
               </li>
@@ -45,11 +47,8 @@
                   </div>
                 </div>
                 <ul class="type">
-                  <li
-                    v-for="(item, index) in palyListStore.category1"
-                    :key="index"
-                  >
-                    <a href="#">{{ item.name }}</a>
+                  <li v-for="(item, index) in category1" :key="index">
+                    <a href="#" @click="select(item.name)">{{ item.name }}</a>
                   </li>
                 </ul>
               </li>
@@ -61,11 +60,8 @@
                   </div>
                 </div>
                 <ul class="type">
-                  <li
-                    v-for="(item, index) in palyListStore.category2"
-                    :key="index"
-                  >
-                    <a href="#">{{ item.name }}</a>
+                  <li v-for="(item, index) in category2" :key="index">
+                    <a href="#" @click="select(item.name)">{{ item.name }}</a>
                   </li>
                 </ul>
               </li>
@@ -77,11 +73,8 @@
                   </div>
                 </div>
                 <ul class="type">
-                  <li
-                    v-for="(item, index) in palyListStore.category3"
-                    :key="index"
-                  >
-                    <a href="#">{{ item.name }}</a>
+                  <li v-for="(item, index) in category3" :key="index">
+                    <a href="#" @click="select(item.name)">{{ item.name }}</a>
                   </li>
                 </ul>
               </li>
@@ -93,11 +86,8 @@
                   </div>
                 </div>
                 <ul class="type">
-                  <li
-                    v-for="(item, index) in palyListStore.category4"
-                    :key="index"
-                  >
-                    <a href="#">{{ item.name }}</a>
+                  <li v-for="(item, index) in category4" :key="index">
+                    <a href="#" @click="select(item.name)">{{ item.name }}</a>
                   </li>
                 </ul>
               </li>
@@ -105,25 +95,27 @@
           </div>
         </a>
         <ul class="title">
-          <li v-for="item in palyListStore.hotTags" :key="item.id">
+          <li v-for="item in hotTags" :key="item.id" @click="select(item.name)">
             {{ item.name }}
           </li>
         </ul>
       </div>
+      <!-- 歌单列表 -->
       <ul class="ul-mode">
-        <li class="item" v-for="index in 40" :key="index">
-          <a href="" class="a-mode1">
+        <li class="item" v-for="item in playlists" :key="item.id">
+          <a href="#" class="a-mode1" @click="goPlayList(item.id)">
             <div class="num-mode">
-              <span class="iconfont icon-play"></span><span>222万</span>
+              <span class="iconfont icon-play"></span
+              ><span>{{ formatNumber(item.playCount) }}</span>
             </div>
             <div class="play-mode iconfont icon-play"></div>
             <div class="name">
               <span class="iconfont icon-yonghu"></span>
-              <span class="creater">解忧杂货店</span>
+              <span class="creater">{{ item.creator.nickname }}</span>
             </div>
-            <img src="@/assets/images/m3.jpg" alt=""
+            <img v-lazy="item.coverImgUrl" alt=""
           /></a>
-          <span>听你爱的《otonashi》时光雷达</span>
+          <span>{{ item.name }}</span>
         </li>
       </ul>
       <Pagination
@@ -139,17 +131,45 @@
 <script setup>
 import TopNav from "@/views/container/topNav/TopNav";
 import Pagination from "@/components/pagination/Pagination";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { palyListTag } from "@/store/index";
+import { storeToRefs } from "pinia";
+import { formatNumber } from "@/utils/Format/format";
 const palyListStore = palyListTag();
-let isShowTags = ref(false);
+const {
+  playlists,
+  hotTags,
+  category0,
+  category1,
+  category2,
+  category3,
+  category4,
+} = storeToRefs(palyListStore);
+const router = useRouter();
+const isShowTags = ref(false);
+const params = ref({ cat: "ACG" });
+const select = (cat) => {
+  params.value.cat = cat;
+  palyListStore.getHotPlayList(params.value);
+  isShowTags.value = false;
+};
+const goPlayList = (id) => {
+  router.push({
+    path: "/playlist",
+    query: {
+      id,
+    },
+  });
+};
+const head = ref();
 const showTags = () => {
   isShowTags.value = !isShowTags.value;
 };
-onBeforeMount(() => {
-  palyListStore.getHotPlayListTag();
-  palyListStore.getSubPlayListTag();
-});
+// 先发请求捞数据
+palyListStore.getHotPlayListTag();
+palyListStore.getSubPlayListTag();
+palyListStore.getHotPlayList();
 onMounted(() => {
   document.addEventListener("click", () => {
     isShowTags.value = false;
@@ -163,47 +183,40 @@ onMounted(() => {
     .head {
       height: 170px;
       width: 100%;
-      background-image: linear-gradient(to left, #bdbbbe 0%, #9d9ea3 100%),
-        radial-gradient(
-          88% 271%,
-          rgba(255, 255, 255, 0.25) 0%,
-          rgba(254, 254, 254, 0.25) 1%,
-          rgba(0, 0, 0, 0.25) 100%
-        ),
-        radial-gradient(
-          50% 100%,
-          rgba(255, 255, 255, 0.3) 0%,
-          rgba(0, 0, 0, 0.3) 100%
-        );
-      background-blend-mode: normal, lighten, soft-light;
-      padding: 16px 0px 16px 16px;
-      display: flex;
-      img {
-        border-radius: 4px;
-        margin-right: 12px;
-      }
-      .right {
+      background: url("@/assets/images/adv6.png") center;
+      cursor: pointer;
+      > div {
+        padding: 16px 0px 16px 16px;
+        backdrop-filter: blur(20px);
+        height: 100%;
         display: flex;
-        flex-direction: column;
-        .box {
-          border: 1px solid #815e30;
-          color: #815e30;
-          border-radius: 30px;
-          width: 104px;
-          height: 30px;
+        img {
+          border-radius: 4px;
+          margin-right: 12px;
+        }
+        .right {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 20px 0 20px 0px;
-        }
-        h1 {
-          color: #fff;
-          font-size: 18px;
-          margin-bottom: 12px;
-        }
-        div {
-          &:nth-child(2) {
-            color: #beb8b9;
+          flex-direction: column;
+          .box {
+            border: 1px solid #815e30;
+            color: #815e30;
+            border-radius: 30px;
+            width: 104px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 20px 0px;
+          }
+          h1 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 12px;
+          }
+          div {
+            &:nth-child(2) {
+              color: #beb8b9;
+            }
           }
         }
       }
@@ -242,7 +255,7 @@ onMounted(() => {
           z-index: 2;
           cursor: default;
           background-color: #fff;
-          box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+          box-shadow: rgb(0 0 0 / 30%) 0px 0px 8px;
           .all,
           .detail {
             padding: 20px 20px 0 20px;
@@ -251,7 +264,7 @@ onMounted(() => {
             height: 58px;
             border-bottom: 1px solid #e5e5e5;
             color: #373737;
-            span {
+            a {
               cursor: pointer;
               &:hover {
                 color: #38b9c9;
@@ -315,6 +328,7 @@ onMounted(() => {
     }
     .ul-mode {
       li {
+        width: 19%;
         margin-bottom: 40px;
         .a-mode1 {
           margin-bottom: 8px;

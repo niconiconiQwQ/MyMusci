@@ -2,7 +2,7 @@
   <div class="footer">
     <audio controls="controls" class="audio" :src="url" ref="audio"></audio>
     <div class="song-info">
-      <a href="#" class="cover">
+      <a href="#" class="cover" @click="goLyric(id)">
         <img v-lazy="picUrl" alt="" :src="picUrl" />
         <div class="mask"><i class="iconfont icon-shang"></i></div>
       </a>
@@ -90,10 +90,12 @@ import { ref, onBeforeMount, onMounted, watch } from "vue";
 import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatSecond } from "@/utils/Format/format";
+import { useRouter } from "vue-router";
 const songDetailStore = songDetail();
 const { url, id, ar, alia, name, fee, picUrl } = storeToRefs(songDetailStore);
 const pre = () => {};
 const next = () => {};
+const router = useRouter();
 // 定义audio的状态
 const duration = ref(0); //持续时间
 const currentTime = ref(0); //当前时间
@@ -188,6 +190,14 @@ watch(
     audio.value.volume = volumn.value;
   }
 );
+const goLyric = (id) => {
+  router.push({
+    path: "/lyric",
+    query: {
+      id,
+    },
+  });
+};
 onBeforeMount(() => {});
 onMounted(() => {
   //挂在完初始化一些数据
@@ -199,8 +209,6 @@ onMounted(() => {
     currentTime.value = audio.value.currentTime;
     volumn.value = audio.value.volume;
     paused.value = true;
-    // console.log(picUrl.value);
-    console.log(picUrl.value);
   });
   // 监听音频播放进度;更新进度条
   audio.value.addEventListener("timeupdate", (e) => {

@@ -38,7 +38,7 @@ const params = ref({});
 newAlbumSongStore.getNewAlbum();
 const select = (area) => {
   params.value.area = area;
-  newAblumSongStore.getNewAblum(params.value);
+  newAlbumSongStore.getNewAlbum(params.value);
 };
 const goAlbum = (id) => {
   router.push({

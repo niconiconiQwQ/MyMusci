@@ -33,6 +33,7 @@ import {
   reqAlbum,
   reqAlbumDynamic,
   reqNewSongs,
+  reqHotPlayList,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -87,6 +88,7 @@ export const palyListTag = defineStore("palyListTag", {
       hotTags: [], // 热门分类
       sub: [],
       categories: {},
+      playlists: [],
     };
   },
   getters: {
@@ -140,6 +142,18 @@ export const palyListTag = defineStore("palyListTag", {
         }
       } catch (error) {
         console.log(error.message, "获取所有sub歌单分类失败了");
+      }
+    },
+    // 获取歌单 ( 网友精选碟 )
+    async getHotPlayList(options) {
+      try {
+        let { data } = await reqHotPlayList(options);
+        if (data.code == 200) {
+          // console.log(data);
+          this.playlists = data.playlists;
+        }
+      } catch (error) {
+        console.log(error.message, "获取获取歌单 ( 网友精选碟 ) error");
       }
     },
   },
