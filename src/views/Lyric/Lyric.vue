@@ -1,53 +1,105 @@
 <template>
-  <!-- <div v-for="item in formatedLyric">
-    <span>时间：{{ item[0] }}</span
-    ><span>歌词{{ item[1] }}</span>
-  </div> -->
-  <div class="lyric ctn-mode">
+  <div class="ctn-mode lyric">
     <div class="content">
       <div class="left">
-        <img src="@/assets/images/avatar2.png" alt="" />
+        <div class="out">
+          <div class="inner">
+            <img src="@/assets/images/avatar2.png" alt="" />
+          </div>
+        </div>
       </div>
       <div class="center">
-        <!-- <div class="song_info__lyric">
-          <div class="song_info__lyric_box">
-            <div class="song_info__lyric_inner">
-              <p v-for="index in 20" :key="index">
-                <span>但愿但愿但愿但愿</span>
-              </p>
-            </div>
-          </div>
-          <div class="ctrl"></div>
-        </div> -->
         <div class="title">なきむしacoustic ver. （Cover 沢井美空）</div>
         <div class="art">拉面儿-2016</div>
         <div class="album">2V-ALK</div>
         <div class="lyricContent">
-          <div class="lyricInner">
-            <div class="lyricPane">
-              <p v-for="index in 30">中使用了正则表达式及忽略大</p>
+          <div class="lyricInner" ref="lyricInner">
+            <div class="lyricPane" ref="lyricPane">
+              <p v-for="(item, index) in createLrcObj(lrc).ms" :key="item.t">
+                {{ item.c }}
+              </p>
+            </div>
+            <div class="jspVerticalBar">
+              <div class="jspTrack" ref="track">
+                <div class="jspDrag" ref="drag"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="right">xx</div>
+      <div class="right">
+        <div class="simi">
+          <div class="title">喜欢这首歌的人也听</div>
+          <ul>
+            <li v-for="item in simiSongs" :key="item.id">
+              <a href="#">
+                <img v-lazy="item.album.picUrl" alt="" />
+                <span>{{ item.name }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <button @click="scroll" style="border: 1px solid #000">点我滚动</button>
+
+    <div class="comment-box">
+      <Comment :hotComments="10" :comments="5"></Comment>
     </div>
   </div>
 </template>
 <script setup>
-// import { ref, onMounted, onBeforeMount, defineProps, watch } from "vue";
-// import { useRouter, useRoute } from "vue-router";
-// import { songDetail } from "@/store/playlist";
-// import { storeToRefs } from "pinia";
-// const songDetailStore = songDetail();
-// const { formatedLyric } = storeToRefs(songDetailStore);
-// const route = useRoute(),
-//   router = useRouter();
-// songDetailStore.getLyric(route.query.id);
-// onBeforeMount(() => {
-//   // console.log(formatedLyric.value);
-// });
-// onMounted(() => {});
+import Comment from "@/components/common/Comment";
+import { ref, onMounted, onBeforeMount, defineProps, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { songDetail } from "@/store/playlist";
+import { storeToRefs } from "pinia";
+import { createLrcObj } from "./lyric";
+const songDetailStore = songDetail();
+const { lrc, simiSongs, refAudio } = storeToRefs(songDetailStore);
+const route = useRoute(),
+  router = useRouter();
+const lyricPane = ref();
+const lyricInner = ref();
+const track = ref();
+const drag = ref();
+let paneH = ref(0); // 歌词面板的高
+let innerH = ref(0); // 歌词显示的区域
+let dragH = ref(0); // 滚动条的高
+let trackH = ref(0); // 滚动槽的高
+// 获取一些数据
+songDetailStore.getLyric(547971231);
+songDetailStore.getSimiSong(547971231);
+const scroll = () => {
+  let top = 0; // 歌词面板滑动的距离
+  let topRace = 0; // 歌词面板划出距离的比例
+  let dragMargin = 0; // 滚动条距离顶端
+  let maxTop = paneH.value - innerH.value; // 歌词面板最大滑动的距离
+  setInterval(() => {
+    // 设限
+    if (maxTop > -top) {
+      top -= 30;
+      topRace = Math.abs(top / maxTop).toFixed(3);
+      if (topRace > 1) topRace = 1;
+      console.log(topRace * 100 + "%");
+      lyricPane.value.style.top = top + "px";
+      dragMargin = ((trackH.value - dragH.value) * topRace).toFixed(3);
+      drag.value.style.marginTop = dragMargin + "px";
+      console.log(lyricPane.value.offsetTop);
+    }
+  }, 1000);
+};
+onBeforeMount(() => {});
+onMounted(() => {
+  trackH.value = track.value.offsetHeight;
+  paneH.value = lyricPane.value.offsetHeight;
+  innerH.value = lyricInner.value.offsetHeight;
+  let race = (innerH.value / paneH.value).toFixed(3);
+  drag.value.style.height = race * 100 + "%";
+  dragH.value = drag.value.offsetHeight;
+  lyricPane.value.style.top = 0 + "px";
+  console.log(createLrcObj(lrc.value));
+});
 </script>
 <style lang="scss" scoped>
 .ctn-mode {
@@ -55,9 +107,21 @@
     display: flex;
     .left {
       flex: 2;
-      background-color: rgb(208, 154, 154);
+      display: flex;
+      align-items: center;
+      .out {
+        padding: 20px;
+        background-color: #e1e1e1;
+        border-radius: 50%;
+        .inner {
+          padding: 20px;
+          border-radius: 50%;
+          background-color: #2f3032;
+        }
+      }
       img {
         width: 100%;
+        border-radius: 50%;
       }
     }
     .center {
@@ -75,31 +139,54 @@
         margin-bottom: 30px;
       }
       .lyricContent {
+        display: flex;
         outline: 0;
         height: 410px;
         margin-top: 17px;
         overflow: hidden;
-        font-size: 15px;
-        color: #fff;
-        line-height: 30px;
-        // overflow: hidden;
-        // position: relative;
-        background-color: rgb(228, 153, 153);
+        font-size: 1.5rem;
+        color: #646464;
         .lyricInner {
-          position: absolute;
+          margin: auto;
           position: relative;
-          width: 370px;
-          background-color: rgb(112, 96, 96);
+          width: 90%;
+          height: 100%;
           .lyricPane {
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition-duration: 600ms; /*滚动速度*/
             p {
-              // width: 420px;
-              height: 34px;
-              font-size: 15px;
+              text-align: center;
+              height: 40px;
+              line-height: 40px;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
-              opacity: 0.6;
-              display: flex;
+              // opacity: 0.6;
+              // display: flex;
+              &.active {
+                color: #303030;
+                font-size: 1.6rem;
+              }
+            }
+          }
+          .jspVerticalBar {
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 1.5%;
+            height: 100%;
+            .jspTrack {
+              width: 100%;
+              height: 100%;
+              .jspDrag {
+                width: 100%;
+                height: 10%;
+                background-color: #d7dada;
+                border-radius: 8px 8px 8px 8px;
+              }
             }
           }
         }
@@ -119,10 +206,42 @@
       //   }
     }
     .right {
+      display: flex;
       flex: 3;
-      height: 600px;
-      background-color: #ccc;
+      // height: 600px;
+      .simi {
+        margin: auto;
+        width: 100%;
+        .title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+        ul {
+          li {
+            height: 50px;
+            a {
+              cursor: default;
+              display: block;
+              height: 100%;
+              padding: 5px;
+              img {
+                height: 100%;
+                border-radius: 4px;
+                margin-right: 8px;
+              }
+            }
+            &:hover {
+              background-color: #eff1f1;
+            }
+          }
+        }
+      }
     }
+  }
+  .comment {
+    margin: 40px auto;
+    width: 70%;
   }
 }
 </style>

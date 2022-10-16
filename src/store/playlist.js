@@ -9,13 +9,13 @@ import {
   reqSongDetail,
   reqLyric,
   reqSongComment,
+  reqSimiSong,
 } from "@/api/index";
 import dayjs from "dayjs";
 import {
   formatNumber,
   formatTxt,
   formatPlayTime,
-  formatLyric,
 } from "@/utils/Format/format";
 // 推荐歌单仓库
 export const RecommendPalyList = defineStore("playList", {
@@ -146,6 +146,8 @@ export const songDetail = defineStore("song", {
       songDetail: { al: [] },
       lrc: "",
       tlyric: {},
+      simiSongs: [],
+      refAudio:{},
     };
   },
   actions: {
@@ -182,7 +184,7 @@ export const songDetail = defineStore("song", {
         console.log("获取歌词", error.message);
       }
     },
-    // 获取歌曲评论
+    // 获取歌曲评论===lno
     async getSongComment(id, options) {
       try {
         let { data } = await reqSongComment(id, options);
@@ -190,6 +192,17 @@ export const songDetail = defineStore("song", {
         }
       } catch (error) {
         console.log("获取歌曲评论", error.message);
+      }
+    },
+    // 获取相似音乐  ===no
+    async getSimiSong(id) {
+      try {
+        let { data } = await reqSimiSong(id);
+        if (data.code == 200) {
+          this.simiSongs = data.songs;
+        }
+      } catch (error) {
+        console.log("获取相似音乐", error.message);
       }
     },
   },
@@ -202,6 +215,5 @@ export const songDetail = defineStore("song", {
     alia: (state) => state.songDetail.alia || "", // 副标题
     fee: (state) => state.songDetail.fee || 0, // 0为免费 1为vip歌曲
     picUrl: (state) => state.songDetail.al.picUrl || "", // 歌曲的封面
-    formatedLyric: (state) => formatLyric(state.lrc),
   },
 });

@@ -92,7 +92,8 @@ import { storeToRefs } from "pinia";
 import { formatSecond } from "@/utils/Format/format";
 import { useRouter } from "vue-router";
 const songDetailStore = songDetail();
-const { url, id, ar, alia, name, fee, picUrl } = storeToRefs(songDetailStore);
+const { url, id, ar, alia, name, fee, picUrl, refAudio } =
+  storeToRefs(songDetailStore);
 const pre = () => {};
 const next = () => {};
 const router = useRouter();
@@ -193,9 +194,6 @@ watch(
 const goLyric = (id) => {
   router.push({
     path: "/lyric",
-    query: {
-      id,
-    },
   });
 };
 onBeforeMount(() => {});
@@ -216,6 +214,8 @@ onMounted(() => {
       (audio.value.currentTime / audio.value.duration).toFixed(4) * 100 + "%";
     currentTime.value = audio.value.currentTime;
   });
+  // 把这个audioDOM元素挂到仓库里去
+  refAudio.value = audio.value;
 });
 </script>
 
