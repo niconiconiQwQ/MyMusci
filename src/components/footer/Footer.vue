@@ -122,7 +122,6 @@ const togglePlay = () => {
   } else {
     // 播放
     audio.value.play();
-
     paused.value = false;
   }
 };
@@ -180,7 +179,6 @@ const dragTime = (e) => {
   // 控制边界
   if (currentTime.value < 0) currentTime.value = 0;
   if (currentTime.value > 1) currentTime.value = 1;
-  console.log(currentTime.value, "点击");
   fillTime.value.style.width = currentTime.value * 100 + "%";
   audio.value.currentTime = audio.value.duration * currentTime.value;
 };
@@ -194,6 +192,9 @@ watch(
 const goLyric = (id) => {
   router.push({
     path: "/lyric",
+    query: {
+      id,
+    },
   });
 };
 onBeforeMount(() => {});
@@ -216,6 +217,10 @@ onMounted(() => {
   });
   // 把这个audioDOM元素挂到仓库里去
   refAudio.value = audio.value;
+  // 监听歌曲播放结束
+  refAudio.value.addEventListener("ended", () => {
+    paused.value = true;
+  });
 });
 </script>
 

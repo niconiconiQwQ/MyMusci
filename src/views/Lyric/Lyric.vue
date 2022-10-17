@@ -4,18 +4,22 @@
       <div class="left">
         <div class="out">
           <div class="inner">
-            <img src="@/assets/images/avatar2.png" alt="" />
+            <img :src="picUrl" alt="" ref="img" />
           </div>
         </div>
       </div>
       <div class="center">
-        <div class="title">なきむしacoustic ver. （Cover 沢井美空）</div>
-        <div class="art">拉面儿-2016</div>
+        <div class="title">{{ name }}</div>
+        <div class="art">
+          <a href="#" v-for="item in ar" :key="item.id"
+            >{{ item.name }}&nbsp;</a
+          >
+        </div>
         <div class="album">2V-ALK</div>
         <div class="lyricContent">
           <div class="lyricInner" ref="lyricInner">
             <div class="lyricPane" ref="lyricPane">
-              <p v-for="(item, index) in createLrcObj(lrc).ms" :key="item.t">
+              <p v-for="(item, index) in lrc.ms" :key="item.t">
                 {{ item.c }}
               </p>
             </div>
@@ -41,64 +45,136 @@
         </div>
       </div>
     </div>
-    <button @click="scroll" style="border: 1px solid #000">点我滚动</button>
-
     <div class="comment-box">
-      <Comment :hotComments="10" :comments="5"></Comment>
+      <Comment :hotComments="hotComments" :comments="comments"></Comment>
     </div>
   </div>
 </template>
 <script setup>
 import Comment from "@/components/common/Comment";
-import { ref, onMounted, onBeforeMount, defineProps, watch } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeMount,
+  onUpdated,
+  onBeforeUnmount,
+  defineProps,
+  watch,
+  nextTick,
+} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { createLrcObj } from "./lyric";
 const songDetailStore = songDetail();
-const { lrc, simiSongs, refAudio } = storeToRefs(songDetailStore);
+const { lrc, simiSongs, refAudio, picUrl, name, ar, hotComments, comments } =
+  storeToRefs(songDetailStore);
 const route = useRoute(),
   router = useRouter();
-const lyricPane = ref();
-const lyricInner = ref();
-const track = ref();
-const drag = ref();
-let paneH = ref(0); // 歌词面板的高
-let innerH = ref(0); // 歌词显示的区域
-let dragH = ref(0); // 滚动条的高
-let trackH = ref(0); // 滚动槽的高
+// 获取一些必要DOM
+const lyricPane = ref(),
+  lyricInner = ref(),
+  track = ref(),
+  drag = ref(),
+  img = ref(),
+  ps = ref();
+// 定义必要DOM的高度
+const paneH = ref(0), // 歌词面板的高
+  innerH = ref(0), // 歌词可见的区域的高
+  dragH = ref(0), // 滚动条的高
+  trackH = ref(0), // 滚动槽的高
+  over = ref(0);
 // 获取一些数据
-songDetailStore.getLyric(547971231);
-songDetailStore.getSimiSong(547971231);
-const scroll = () => {
-  let top = 0; // 歌词面板滑动的距离
-  let topRace = 0; // 歌词面板划出距离的比例
-  let dragMargin = 0; // 滚动条距离顶端
-  let maxTop = paneH.value - innerH.value; // 歌词面板最大滑动的距离
-  setInterval(() => {
-    // 设限
-    if (maxTop > -top) {
-      top -= 30;
-      topRace = Math.abs(top / maxTop).toFixed(3);
-      if (topRace > 1) topRace = 1;
-      console.log(topRace * 100 + "%");
-      lyricPane.value.style.top = top + "px";
-      dragMargin = ((trackH.value - dragH.value) * topRace).toFixed(3);
-      drag.value.style.marginTop = dragMargin + "px";
-      console.log(lyricPane.value.offsetTop);
-    }
-  }, 1000);
-};
-onBeforeMount(() => {});
-onMounted(() => {
+songDetailStore.getSongComment(route.query.id);
+songDetailStore.getLyric(route.query.id);
+songDetailStore.getSimiSong(route.query.id);
+// 初始化 歌词面板,歌词可见面板,滚动槽,滚动条的高以及获取一些DOM元素
+const initData = () => {
+  //获取必要元素的高
   trackH.value = track.value.offsetHeight;
   paneH.value = lyricPane.value.offsetHeight;
   innerH.value = lyricInner.value.offsetHeight;
-  let race = (innerH.value / paneH.value).toFixed(3);
-  drag.value.style.height = race * 100 + "%";
+  drag.value.style.height =
+    (innerH.value / (paneH.value - 0.5 * innerH.value)).toFixed(3) * 100 + "%";
+  // 获取DOM元素
+  ps.value = lyricPane.value.getElementsByTagName("p"); //歌词数组DOM
+};
+//监听audio的 timeupdate
+const lineNo = ref(0); //当前行
+const C_pos = ref(5); //C位
+const offset = ref(-40); //滚动距离（应等于行高）
+// 高亮显示歌词当前行及文字滚动控制，行号为 lineNo
+const lineHigh = () => {
+  ps.value = lyricPane.value.getElementsByTagName("p");
+  if (lineNo.value > 0) {
+    ps.value[lineNo.value - 1].classList.remove("lineHigh"); //去掉上一行的高亮样式
+  }
+  ps.value[lineNo.value].classList.add("lineHigh"); //高亮显示当前行
+  // 文字滚动  整体向上滚动一行高度
+  if (lineNo.value > C_pos.value) {
+    over.value = (lineNo.value - C_pos.value) * offset.value;
+    lyricPane.value.style.transform = `translateY(${over.value}px)`;
+  }
+};
+watch(
+  () => over.value,
+  () => {
+    let topRace = 0; // 歌词面板划出距离的比例
+    let distance = 0; // 歌词滑动的距离
+    let maxTop = paneH.value - innerH.value * 0.5; // 歌词面板最大滑动的距离
+    console.log(maxTop, "---", -over.value, dragH.value);
+    if (maxTop > -over.value) {
+      topRace = Math.abs((over.value / maxTop).toFixed(3));
+      if (topRace > 1) topRace = 1;
+      distance = (trackH.value - dragH.value) * topRace;
+      console.log(topRace, "scroll", over.value, "distance", distance);
+      drag.value.style.transform = `translateY(${distance}px)`;
+    }
+  }
+);
+//滚回到开头，用于播放结束时
+const goback = () => {
+  lyricPane.value.querySelector(".lineHigh").classList.remove("lineHigh");
+  lyricPane.value.style.transform = "translateY(0)";
+  lineNo.value = 0;
+};
+onBeforeMount(() => {});
+// 控制文字与音频播放同步
+const match = () => {
+  // 很奇怪，为什么歌词一下有一下为空，所有多加了一个判断
+  if (lrc.value.ms != undefined) {
+    if (lineNo.value == lrc.value.ms.length) return;
+    let curTime = refAudio.value.currentTime; //播放器时间
+    if (parseFloat(lrc.value.ms[lineNo.value].t) <= curTime) {
+      lineHigh(); //高亮当前行
+      lineNo.value++;
+    }
+  }
+};
+const pause = () => {
+  // 把图片静止
+  img.value.classList.remove("rotate360");
+};
+const play = () => {
+  // 把图片旋转
+  img.value.classList.add("rotate360");
+};
+onMounted(() => {
+  initData();
+  //监听播放器的timeupdate事件，实现文字与音频播放同步
+  refAudio.value.addEventListener("timeupdate", match);
+  refAudio.value.addEventListener("ended", goback);
+  refAudio.value.addEventListener("pause", pause);
+  refAudio.value.addEventListener("play", play);
+  console.log(drag.value.offsetHeight, track.value.offsetHeight);
+});
+onBeforeUnmount(() => {
+  refAudio.value.removeEventListener("timeupdate", match);
+  refAudio.value.removeEventListener("ended", goback);
+});
+onUpdated(() => {
   dragH.value = drag.value.offsetHeight;
-  lyricPane.value.style.top = 0 + "px";
-  console.log(createLrcObj(lrc.value));
+  console.log(dragH.value);
 });
 </script>
 <style lang="scss" scoped>
@@ -119,9 +195,18 @@ onMounted(() => {
           background-color: #2f3032;
         }
       }
+      @keyframes rotate360 {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
       img {
         width: 100%;
         border-radius: 50%;
+        &.rotate360 {
+          animation: rotate360 10s linear infinite;
+        }
       }
     }
     .center {
@@ -141,7 +226,7 @@ onMounted(() => {
       .lyricContent {
         display: flex;
         outline: 0;
-        height: 410px;
+        height: 400px;
         margin-top: 17px;
         overflow: hidden;
         font-size: 1.5rem;
@@ -164,11 +249,10 @@ onMounted(() => {
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
-              // opacity: 0.6;
-              // display: flex;
-              &.active {
-                color: #303030;
+              &.lineHigh {
+                color: #3a4d9f80;
                 font-size: 1.6rem;
+                font-weight: 600;
               }
             }
           }
@@ -181,11 +265,16 @@ onMounted(() => {
             .jspTrack {
               width: 100%;
               height: 100%;
+              position: relative;
               .jspDrag {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 100%;
-                height: 10%;
+                // height: 10%;
                 background-color: #d7dada;
                 border-radius: 8px 8px 8px 8px;
+                transition-duration: 500ms; /*滚动速度*/
               }
             }
           }

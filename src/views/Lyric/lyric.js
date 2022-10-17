@@ -69,7 +69,7 @@ function lineHigh(b)  //次函数加一个参数，里面有一部分要这样�
 // };
 // 格式化歌词
 export const createLrcObj = (lrc = "") => {
-  if (lrc.length == 0) return;
+  if (lrc.length == 0) return {};
   // 把LRC歌词解析为JS对象
   // 初始化对象
   let oLRC = {

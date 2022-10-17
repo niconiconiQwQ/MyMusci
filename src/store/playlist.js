@@ -16,6 +16,7 @@ import {
   formatNumber,
   formatTxt,
   formatPlayTime,
+  createLrcObj,
 } from "@/utils/Format/format";
 // 推荐歌单仓库
 export const RecommendPalyList = defineStore("playList", {
@@ -144,10 +145,12 @@ export const songDetail = defineStore("song", {
     return {
       data: {},
       songDetail: { al: [] },
-      lrc: "",
-      tlyric: {},
+      lrc: {},
+      // tlyric: {},
       simiSongs: [],
-      refAudio:{},
+      refAudio: {},
+      hotComments: [],
+      comments:[],
     };
   },
   actions: {
@@ -178,17 +181,19 @@ export const songDetail = defineStore("song", {
       try {
         let { data } = await reqLyric(id);
         if (data.code == 200) {
-          this.lrc = data.lrc.lyric;
+          this.lrc = createLrcObj(data.lrc.lyric);
         }
       } catch (error) {
         console.log("获取歌词", error.message);
       }
     },
-    // 获取歌曲评论===lno
+    // 获取歌曲评论===no
     async getSongComment(id, options) {
       try {
         let { data } = await reqSongComment(id, options);
         if (data.code == 200) {
+          this.hotComments = data.hotComments;
+          this.comments = data.comments;
         }
       } catch (error) {
         console.log("获取歌曲评论", error.message);
@@ -211,7 +216,7 @@ export const songDetail = defineStore("song", {
     id: (state) => state.songDetail.id || 0, // 歌曲id
     time: (state) => formatPlayTime(state.songDetail.dt || 0), // 歌曲时间
     name: (state) => state.songDetail.name || "", //歌名
-    ar: (state) => state.songDetail.ar || "", // 作者
+    ar: (state) => state.songDetail.ar || [], // 作者
     alia: (state) => state.songDetail.alia || "", // 副标题
     fee: (state) => state.songDetail.fee || 0, // 0为免费 1为vip歌曲
     picUrl: (state) => state.songDetail.al.picUrl || "", // 歌曲的封面
