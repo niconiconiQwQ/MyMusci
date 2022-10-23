@@ -11,6 +11,8 @@
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import Main from "@/components/main/Main";
+// 初始化样式
+import "@/assets/css/reset.scss";
 </script>
 <style lang="scss" scoped>
 .body {
@@ -33,7 +35,6 @@ import Main from "@/components/main/Main";
     border-radius: 2rem;
     overflow: hidden;
     background-color: var(--greyLight-1);
-    // box-shadow: 6px 6px 9px #9d9db6, -18px -18px 37px #ffffed;
     box-shadow: 0.8rem 0.8rem 1.4rem var(--greyLight-2),
       -0.2rem -0.2rem 1.8rem var(--white);
   }

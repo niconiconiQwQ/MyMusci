@@ -7,7 +7,6 @@ import {
   reqPersonalized,
   reqMV,
   reqLatestMusic,
-  reqDjRecommend,
   reqBanners,
   reqUserDetail,
   reqFolloweds,
@@ -34,6 +33,11 @@ import {
   reqAlbumDynamic,
   reqNewSongs,
   reqHotPlayList,
+  reqQrKey,
+  reqQrCreate,
+  reqQrCheck,
+  reqPhoneLogin,
+  reqLoginStatus,
 } from "@/api/index";
 import { province, city } from "@/utils/area";
 // 首页仓库
@@ -271,27 +275,6 @@ export const Latest = defineStore("latestMusic", {
   },
   getters: {
     nineList: (state) => state.list.slice(0, 9),
-  },
-});
-// 推荐电台仓库
-export const DjRecommend = defineStore("djRecommend", {
-  state: () => {
-    return {
-      DjList: [],
-    };
-  },
-  actions: {
-    // 获取dj
-    async getDjList() {
-      try {
-        let { data } = await reqDjRecommend();
-        if (data.code == 200) {
-          this.DjList = data.data || [];
-        }
-      } catch (error) {
-        console.log(error.message, "请求推荐电台 error");
-      }
-    },
   },
 });
 // 用户详情仓库
@@ -629,5 +612,77 @@ export const album = defineStore("album", {
     publishTime: (state) => state.albumDetail.publishTime,
     description: (state) => state.albumDetail.description,
     artistName: (state) => state.albumDetail.artist.name,
+  },
+});
+// 登录注册仓库
+export const login = defineStore("login", {
+  state: () => {
+    return {
+      unikey: "", // 二维码生成的 key 字符串
+      qrimg: "",
+      cookie: "",
+      loginStatus: {},
+    };
+  },
+  actions: {
+    // 手机号密码登录
+    async getPhoneLogin() {
+      try {
+        let { data } = await reqPhoneLogin();
+        if (data.code == 200) {
+          this.cookie = data.data.cookie;
+        }
+      } catch (error) {
+        console.log(error.message, "请求手机登录 error");
+      }
+    },
+    // 获取二维码生成的key
+    async getQrKey() {
+      try {
+        let { data } = await reqQrKey();
+        if (data.code == 200) {
+          this.unikey = data.unikey;
+        }
+      } catch (error) {
+        console.log(error.message, "请求二维码生成的key error");
+      }
+    },
+    // 获取二维码生成的key
+    async getQrKey() {
+      try {
+        let { data } = await reqQrKey();
+        if (data.code == 200) {
+          this.unikey = data.unikey;
+        }
+      } catch (error) {
+        console.log(error.message, "请求二维码生成的key error");
+      }
+    },
+    // 获取二维码生成接口
+    async getQrCreate() {
+      try {
+        let { data } = await reqQrCreate();
+        if (data.code == 200) {
+          this.qrimg = data.data.qrimg;
+        }
+      } catch (error) {
+        console.log(error.message, "请求二维码生成的key error");
+      }
+    },
+    // 获取登录状态
+    async getLoginStatus(cookie) {
+      try {
+        let { data } = await reqLoginStatus(cookie);
+        if (data.code == 200) {
+          // this.qrimg = data.data.qrimg;
+          this.loginStatus = data.data;
+        }
+      } catch (error) {
+        console.log(error.message, "请求二维码生成的key error");
+      }
+    },
+  },
+  getters: {
+    name: (state) => state.albumDetail.name,
   },
 });

@@ -129,6 +129,9 @@ import "@/assets/images/22_close.png";
 import "@/assets/images/33_close.png";
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { login } from "@/store/index";
+import { storeToRefs } from "pinia";
+const loginStore = login();
 /* 样式 */
 const left = ref(null);
 const isActive = ref(true);
@@ -160,15 +163,19 @@ const showPassword = () => {
 /* 控制表单的数据 */
 const userAccount = ref("");
 const password = ref("");
-const login = () => {
+const userLogin = () => {
   if (!isChecked.value) {
     return alert("请先勾选协议");
   }
-  if (userAccount.value == "123" && password.value == "123") {
-    return alert("登录成功");
-  }
+  let timer;
+  let timestamp = Date.now();
+  const cookie = localStorage.getItem("cookie");
+  loginStore.getLoginStatus(cookie); // 检查登录状态,做xxx校验
+  loginStore.getQrKey(); // 获取二维码的key
+  // .................
 };
 const userFocus = () => {};
+/*  */
 onBeforeMount(() => {});
 onMounted(() => {
   console.log(userAccount.value);

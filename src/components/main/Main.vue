@@ -1,5 +1,5 @@
 <template>
-  <div class="center">
+  <div class="center" id="main">
     <SideBar></SideBar>
     <router-view v-slot="{ Component }">
       <transition

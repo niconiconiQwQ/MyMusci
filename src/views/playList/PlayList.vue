@@ -149,6 +149,7 @@ onMounted(() => {});
 .playlist {
   color: #373737;
   font-size: 12px;
+  overflow-x: hidden;
   .head {
     margin-bottom: 36px;
     display: flex;

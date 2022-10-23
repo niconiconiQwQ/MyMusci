@@ -16,13 +16,6 @@ export const reqList = () => {
     method: "get",
   });
 };
-// 请求 推荐电台
-export const reqDjRecommend = () => {
-  return requests({
-    url: "/dj/personalize/recommend",
-    method: "get",
-  });
-};
 /* ============================歌手相关====================== */
 // 请求歌手分类列表
 export const reqArtistList = ({
@@ -533,6 +526,87 @@ export const reqNewSongs = (type = 0) => {
   return requests({
     url: "/top/song",
     params: { type },
+    method: "get",
+  });
+};
+/* ===================================登录注册相关========================== */
+// 手机密码登录 ===no
+export const reqPhoneLogin = (phone, password) => {
+  return requests({
+    url: "/login/cellphone",
+    params: {
+      phone,
+      password,
+    },
+    method: "post",
+  });
+};
+// 1. 二维码 key 生成接口 ===no
+export const reqQrKey = () => {
+  return requests({
+    url: "/login/qr/key",
+    method: "get",
+    timerstamp: Date.now(),
+  });
+};
+// 2. 二维码生成接口 ===no
+export const reqQrCreate = (key) => {
+  return requests({
+    url: "/login/qr/key",
+    params: {
+      key,
+      qrimg: true,
+      timerstamp: Date.now(),
+    },
+    method: "get",
+  });
+};
+// 3. 二维码检测扫码状态接口 ===no
+export const reqQrCheck = (key) => {
+  return requests({
+    url: "/login/qr/check",
+    params: {
+      key,
+      timerstamp: Date.now(),
+    },
+    method: "get",
+  });
+};
+// 4. 发送验证码
+export const reqSendCaptcha = (phone) => {
+  return requests({
+    url: "/captcha/sent",
+    params: {
+      phone,
+    },
+    method: "get",
+  });
+};
+// 5. 验证验证码
+export const reqCheckCaptcha = (phone, captcha) => {
+  return requests({
+    url: "/captcha/verify",
+    params: {
+      phone,
+      captcha,
+    },
+    method: "get",
+  });
+};
+// 6. 登录状态
+export const reqLoginStatus = (cookie) => {
+  return requests({
+    url: `/login/status?timerstamp=${Date.now()}`,
+    method: "post",
+    data: {
+      cookie,
+    },
+  });
+};
+// 7. 退出登录
+export const reqLogOut = () => {
+  return requests({
+    url: "/logout",
     method: "get",
   });
 };

@@ -3,14 +3,10 @@
   <Banner></Banner>
   <!-- 推荐模块 -->
   <Recommend></Recommend>
-  <!-- 热门播客模块 -->
-  <Hot></Hot>
   <!-- 独家放送模块 -->
   <Exclusive></Exclusive>
   <!-- 最新音乐模块 -->
   <Latest></Latest>
-  <!-- 主题播客模块 -->
-  <Theme></Theme>
   <!-- 推荐MV -->
   <MV></MV>
   <!-- 听听模块 -->
@@ -20,10 +16,8 @@
 <script setup>
 import Banner from "@/views/container/personalized/fragment/Banner";
 import Recommend from "@/views/container/personalized/fragment/Recommend";
-import Hot from "@/views/container/personalized/fragment/Hot";
 import Exclusive from "@/views/container/personalized/fragment/Exclusive";
 import Latest from "@/views/container/personalized/fragment/Latest";
-import Theme from "@/views/container/personalized/fragment/Theme";
 import MV from "@/views/container/personalized/fragment/MV";
 import Listen from "@/views/container/personalized/fragment/Listen";
 </script>
