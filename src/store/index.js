@@ -52,7 +52,7 @@ export const home = defineStore("home", {
       try {
         let { data } = await reqBanners();
         if (data.code == 200) {
-          this.banners = datga.banners;
+          this.banners = data.banners;
         }
       } catch (error) {
         console.log(error.message, "请求首页轮播图error");
@@ -622,15 +622,22 @@ export const login = defineStore("login", {
       qrimg: "",
       cookie: "",
       loginStatus: {},
+      token: "",
+      profile,
     };
   },
   actions: {
     // 手机号密码登录
-    async getPhoneLogin() {
+    async getPhoneLogin(phone, password) {
       try {
-        let { data } = await reqPhoneLogin();
+        let { data } = await reqPhoneLogin(phone, password);
         if (data.code == 200) {
-          this.cookie = data.data.cookie;
+          this.cookie = data.cookie;
+          this.token = data.token;
+          this.profile = data.profile;
+
+        } else if (data.code == 502) {
+          console.log(data.msg);
         }
       } catch (error) {
         console.log(error.message, "请求手机登录 error");

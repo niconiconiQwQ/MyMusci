@@ -7,7 +7,6 @@
           <img src="@/assets/images/code.png" />
           <span></span>
         </div>
-
         <p>请使用<a href="">网易云客户端</a></p>
         <p>扫码登录或扫码下载APP</p>
       </div>
@@ -16,16 +15,18 @@
       <div class="mid">
         <div class="login-type">
           <a href="#" @click="passwordLogin"
-            ><h1 :class="{ active: isActive }">密码登录</h1></a
+            ><h1 :class="{ active: isPasswordLogin }">密码登录</h1></a
           >
           <a href="#" @click="shortMsgLogin"
-            ><h1 class="msg" :class="{ active: !isActive }">短信登录</h1></a
+            ><h1 class="msg" :class="{ active: !isPasswordLogin }">
+              短信登录
+            </h1></a
           >
         </div>
         <!--  form表单 -->
         <form>
           <!-- 账号 -->
-          <div class="form-control fuser" v-if="isActive">
+          <div class="form-control fuser">
             <input
               type="text"
               required
@@ -33,25 +34,21 @@
               class=""
               @focus="userFocus"
               ref="userInput"
-              v-model.trim.lazy="userAccount"
+              v-model.trim="form.phone"
             />
-            <label>
+            <label v-if="isPasswordLogin">
               <span style="transition-delay: 0ms">账</span>
               <span style="transition-delay: 100ms">号</span>
             </label>
-          </div>
-          <!-- 短信账号 -->
-          <div class="form-control fuser" v-else>
-            <input type="text" required autocomplete />
-            <label>
+            <label v-else>
               <span style="transition-delay: 0ms">手</span>
               <span style="transition-delay: 50ms">机</span>
               <span style="transition-delay: 100ms">号</span>
             </label>
-            <a href="#" class="getCode">获取验证码</a>
+            <a href="#" class="getCode" v-if="!isPasswordLogin">获取验证码</a>
           </div>
-          <!-- 密码 -->
-          <div class="form-control fpass" v-if="isActive">
+          <!-- 密码 / 验证码 -->
+          <div class="form-control fpass">
             <input
               type="password"
               required
@@ -59,13 +56,18 @@
               @focus="changeImg"
               @blur="back"
               ref="passInput"
-              v-model="password"
+              v-model.trim="form.password"
             />
-            <label>
+            <label v-if="isPasswordLogin">
               <span style="transition-delay: 0ms">密</span>
               <span style="transition-delay: 100ms">码</span>
             </label>
-            <div class="eye-and-forget">
+            <label v-else>
+              <span style="transition-delay: 0ms">验</span>
+              <span style="transition-delay: 50ms">证</span>
+              <span style="transition-delay: 100ms">码</span>
+            </label>
+            <div class="eye-and-forget" v-if="isPasswordLogin">
               <span
                 class="eye iconfont icon-password-not-view"
                 :class="{ 'icon-password-visible': isOpen }"
@@ -73,22 +75,6 @@
               ></span>
               <a href="#">忘记密码?</a>
             </div>
-          </div>
-          <!-- 短信验证码 -->
-          <div class="form-control fpass" v-else>
-            <input
-              type="password"
-              required
-              autocomplete
-              @focus="changeImg"
-              @blur="back"
-              ref="passInput"
-            />
-            <label>
-              <span style="transition-delay: 0ms">验</span>
-              <span style="transition-delay: 50ms">证</span>
-              <span style="transition-delay: 100ms">码</span>
-            </label>
           </div>
           <div class="btns">
             <button class="btn login" @click.prevent="login">登录</button>
@@ -112,7 +98,7 @@
             </ul>
           </div>
           <div class="agree">
-            <input type="checkbox" v-model="isChecked" />
+            <input type="checkbox" v-model="form.isChecked" />
             <span
               >同意<a href="">《服务条款》</a>
               <a href="">《隐私政策》</a>
@@ -127,27 +113,34 @@
 <script setup>
 import "@/assets/images/22_close.png";
 import "@/assets/images/33_close.png";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { login } from "@/store/index";
+import { login as Login } from "@/store/index";
 import { storeToRefs } from "pinia";
-const loginStore = login();
+import { reqPhoneLogin } from "@/api/index";
+const loginStore = Login();
+/* 数据 */
+const form = reactive({
+  phone: "",
+  password: "",
+  shortMessage: "",
+  isChecked: false,
+});
 /* 样式 */
 const left = ref(null);
-const isActive = ref(true);
+const isPasswordLogin = ref(true);
 const isOpen = ref(false);
 const passInput = ref(null);
 const userInput = ref(null);
-const isChecked = ref(false);
 const changeImg = () => {
   left.value.style.backgroundImage = `url("https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login/img/22_close.0efad8c4.png"),
       url("https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login/img/33_close.eea03c39.png")`;
 };
 const passwordLogin = () => {
-  isActive.value = true;
+  isPasswordLogin.value = true;
 };
 const shortMsgLogin = () => {
-  isActive.value = false;
+  isPasswordLogin.value = false;
 };
 const back = () => {
   left.value.style = "";
@@ -160,13 +153,7 @@ const showPassword = () => {
     passInput.value.type = "password";
   }
 };
-/* 控制表单的数据 */
-const userAccount = ref("");
-const password = ref("");
 const userLogin = () => {
-  if (!isChecked.value) {
-    return alert("请先勾选协议");
-  }
   let timer;
   let timestamp = Date.now();
   const cookie = localStorage.getItem("cookie");
@@ -175,11 +162,30 @@ const userLogin = () => {
   // .................
 };
 const userFocus = () => {};
-/*  */
-onBeforeMount(() => {});
-onMounted(() => {
-  console.log(userAccount.value);
-});
+/* 登录操作 */
+const login = async () => {
+  // 首先要点同意
+  if (!form.isChecked) return alert("没勾选同意");
+  // 验证是密码登录还是短信登录
+  if (isPasswordLogin.value) {
+    // 密码登录；验证手机号和密码;
+    // 假如做了很多校验,我要发请求了
+    let {data} = await reqPhoneLogin(form.phone, form.password);
+    if (data.code == 200) {
+      loginStore.$patch((state) => {
+        state.cookie = data.cookie;
+      state.token = data.token;
+      state.profile = data.profile;
+      })
+    } else if (data.code == 502) {
+      console.log(data.msg);
+    }
+  } else {
+    // 是短信登录; 验证手机号和短信
+  }
+};
+// 登录成功后
+const loginSuccess = () => {};
 </script>
 <style lang="scss" scoped>
 .login-container {

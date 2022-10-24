@@ -3,7 +3,9 @@
     <!-- 顶部标题导航组件 -->
     <TopNav></TopNav>
     <Personalized></Personalized>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -13,5 +15,4 @@ import TopNav from "@/views/container/topNav/TopNav";
 import Personalized from "@/views/container/personalized/Personalized.vue";
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

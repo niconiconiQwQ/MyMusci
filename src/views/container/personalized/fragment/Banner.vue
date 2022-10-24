@@ -4,10 +4,21 @@
       <div class="slider-list">
         <div
           :class="['slider-item', setItemClass(index)]"
-          v-for="(item, index) of list"
+          v-for="(item, index) of banners"
           :key="index"
         >
-          <img :src="item" />
+          <a href="#" class="img-box"
+            ><img :src="item.imageUrl" />
+            <div
+              class="tag"
+              :style="{
+                backgroundColor:
+                  item.titleColor == 'blue' ? '#cc4a4a' : '#4a79cc',
+              }"
+            >
+              {{ item.typeTitle }}
+            </div></a
+          >
         </div>
         <span @click="prev" class="arrow arrow-left" v-show="isShow">
           <i class="icon iconfont icon-left"></i
@@ -18,7 +29,7 @@
       </div>
       <div class="dots">
         <span
-          v-for="(item, index) of list"
+          v-for="(item, index) of banners"
           :key="index"
           :style="setDotActiveStyl(index)"
           @mouseover="currentIndex = index"
@@ -28,23 +39,16 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { home } from "@/store/index";
+import { storeToRefs } from "pinia";
 const homeStore = home();
-// 准备图片列表 这里不require, 图片就加载不出来
-let list = reactive([
-  require("@/assets/images/adv1.png"),
-  require("@/assets/images/adv2.png"),
-  require("@/assets/images/adv3.png"),
-  require("@/assets/images/adv4.png"),
-  require("@/assets/images/adv5.png"),
-  require("@/assets/images/adv6.png"),
-]);
+const { banners } = storeToRefs(homeStore);
 let isShow = ref(false);
 let timer = null;
 // 当前图片索引
 let currentIndex = ref(0);
-let listLength = computed(() => list.length - 1);
+let listLength = computed(() => banners.value.length - 1);
 const setItemClass = (i) => {
   const prev =
     currentIndex.value == 0 ? listLength.value : currentIndex.value - 1;
@@ -87,6 +91,11 @@ const setDotActiveStyl = (i) => {
     return { backgroundColor: "#D33A31" };
   }
 };
+// 发请求，捞数据
+homeStore.getBanners();
+onBeforeMount(() => {
+  console.log(homeStore.banners);
+});
 </script>
 <style lang="scss" scoped>
 .swiper {
@@ -114,7 +123,23 @@ const setDotActiveStyl = (i) => {
     overflow: hidden;
     cursor: pointer;
   }
+  .slider-item .img-box {
+    position: relative;
+    .tag {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 20px;
+      line-height: 20px;
+      padding: 0px 10px;
+      color: #fff;
+      border-radius: 8px 0px 8px 0px;
+    }
+  }
   .slider-item img {
+    // position: absolute;
+    top: 0;
+    left: 0;
     display: block;
     width: 100%;
     height: 100%;
