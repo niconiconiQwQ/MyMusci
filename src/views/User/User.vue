@@ -15,8 +15,9 @@
               <div class="lv">Lv{{ level }}</div>
             </div>
             <div class="edit">
-              <span class="iconfont icon-xiepinglun"></span
-              ><span>编辑个人信息</span>
+              <span class="iconfont icon-xiepinglun"></span>
+              <!-- 这里要根据是自己还是其他人来动态 -->
+              <span>编辑个人信息</span>
             </div>
           </div>
         </div>

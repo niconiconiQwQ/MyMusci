@@ -8,8 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Comment: typeof import('./src/components/common/Comment.vue')['default']
-    ElForm: typeof import('element-plus/es')['ElForm']
-    ElInput: typeof import('element-plus/es')['ElInput']
     Email: typeof import('./src/components/header/Email.vue')['default']
     Follow: typeof import('./src/components/common/follow.vue')['default']
     Footer: typeof import('./src/components/footer/Footer.vue')['default']

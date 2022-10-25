@@ -31,16 +31,17 @@
     <!-- 麦克风图标 -->
     <div class="listen iconfont icon-microphone"></div>
     <!-- 我的头像 -->
-    <div class="avatar">
-      <router-link to="/user">
-        <img src="@/assets/images/avatar2.png" alt="" />
-      </router-link>
-    </div>
+    <a class="avatar" @click="goUser(profile.userId)">
+      <img v-if="isLogin" :src="profile.avatarUrl" alt="" />
+      <img v-else src="@/assets/images/avatar3.png" alt="" />
+    </a>
     <!-- 昵称，会员 -->
-    <div class="info" @click.stop="infoShow">
-      <div class="center">
-        <a href="javascript:;" class="name">凉宫柚希</a>
-        <img src="@/assets/images/vip.png" alt="" />
+    <div class="info">
+      <div class="center" @click.stop="loginOrShowInfo">
+        <a href="javascript:;" class="name">{{
+          isLogin ? profile.nickname : "未登录"
+        }}</a>
+        <img src="@/assets/images/vip.png" alt="" v-if="isLogin" />
         <span class="iconfont icon-up"></span>
       </div>
       <div class="myinfo" v-show="isInfoShow" @click.stop="">
@@ -71,9 +72,13 @@ import Info from "@/components/header/Info";
 import Email from "@/components/header/Email";
 import Skin from "@/components/header/Skin";
 import SearchList from "@/components/header/SearchList";
+import { login } from "@/store/index";
 import { ref, onMounted, watch, nextTick, onUpdated } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Search } from "@/store/index";
+import { storeToRefs } from "pinia";
+const loginStore = login();
+const { isLogin, profile } = storeToRefs(loginStore);
 const SearchStore = Search();
 const router = useRouter();
 const route = useRoute();
@@ -93,11 +98,30 @@ watch(
   }
 );
 SearchStore.getDefault();
-const infoShow = () => {
-  isInfoShow.value = !isInfoShow.value;
+// 登录或展示信息
+const loginOrShowInfo = () => {
+  // 登录了就让信息面板显示或隐藏；没登录就跳转到登录页面
+  if (isLogin.value) {
+    isInfoShow.value = !isInfoShow.value;
+    return;
+  }
+  router.push("/login");
 };
+// 显示或隐藏消息
 const emailShow = () => {
   isEmailShow.value = !isEmailShow.value;
+};
+//
+const goUser = (id) => {
+  if (!isLogin.value) {
+    router.push("/login");
+  }
+  router.push({
+    path: "/user",
+    query: {
+      id,
+    },
+  });
 };
 const gohome = () => {
   router.push("/");
@@ -246,13 +270,14 @@ const lostSearch = () => {
   // 头像
   .avatar {
     width: 34px;
+    height: 100%;
     overflow: hidden;
     border-radius: 50%;
     margin-right: 4px;
-    a {
-      img {
-        width: 100%;
-      }
+    cursor: pointer;
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
   // 个人信息 头像 名字 会员

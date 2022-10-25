@@ -115,10 +115,15 @@ import "@/assets/images/22_close.png";
 import "@/assets/images/33_close.png";
 import { ref, onMounted, onBeforeMount, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { login as Login } from "@/store/index";
+import { login as Login, user } from "@/store/index";
 import { storeToRefs } from "pinia";
 import { reqPhoneLogin } from "@/api/index";
-const loginStore = Login();
+import { handleCookie } from "@/utils/storage";
+const route = useRoute(),
+  router = useRouter();
+const loginStore = Login(),
+  userStore = user();
+const { isLogin } = storeToRefs(loginStore);
 /* 数据 */
 const form = reactive({
   phone: "",
@@ -169,23 +174,34 @@ const login = async () => {
   // 验证是密码登录还是短信登录
   if (isPasswordLogin.value) {
     // 密码登录；验证手机号和密码;
-    // 假如做了很多校验,我要发请求了
-    let {data} = await reqPhoneLogin(form.phone, form.password);
+    // 假如做了很多校验,要发请求了
+    let { data } = await reqPhoneLogin(form.phone, form.password);
     if (data.code == 200) {
       loginStore.$patch((state) => {
-        state.cookie = data.cookie;
-      state.token = data.token;
-      state.profile = data.profile;
-      })
+        // 仓库里存了信息
+        loginStore.cookie = data.cookie;
+        loginStore.token = data.token;
+        loginStore.profile = data.profile;
+      });
+      // 把 cookie持久化；这个cookie在需要登录权限的接口会用到；
+      handleCookie("set", data.cookie);
+      localStorage.setItem("profile", JSON.stringify(data.profile));
+      // 登录成功之后要做的事
+      loginSuccess();
     } else if (data.code == 502) {
-      console.log(data.msg);
+      alert(data.msg);
     }
   } else {
     // 是短信登录; 验证手机号和短信
   }
 };
 // 登录成功后
-const loginSuccess = () => {};
+const loginSuccess = () => {
+  // 把登录状态置为true
+  isLogin.value = true;
+  //路由跳转到首页;
+  router.push("/");
+};
 </script>
 <style lang="scss" scoped>
 .login-container {

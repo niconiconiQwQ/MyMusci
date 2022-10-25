@@ -13,6 +13,9 @@ import Footer from "@/components/footer/Footer";
 import Main from "@/components/main/Main";
 // 初始化样式
 import "@/assets/css/reset.scss";
+import { login } from "@/store/index";
+const loginSotre = login();
+loginSotre.getStorage();
 </script>
 <style lang="scss" scoped>
 .body {

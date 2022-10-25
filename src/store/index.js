@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import { handleCookie } from "@/utils/storage";
+import { province, city } from "@/utils/area";
 import {
   reqTopList,
   reqHotPlayListTag,
@@ -39,7 +41,6 @@ import {
   reqPhoneLogin,
   reqLoginStatus,
 } from "@/api/index";
-import { province, city } from "@/utils/area";
 // 首页仓库
 export const home = defineStore("home", {
   state: () => {
@@ -614,7 +615,7 @@ export const album = defineStore("album", {
     artistName: (state) => state.albumDetail.artist.name,
   },
 });
-// 登录注册仓库
+// 登录注册仓库和个人信息仓库
 export const login = defineStore("login", {
   state: () => {
     return {
@@ -623,7 +624,8 @@ export const login = defineStore("login", {
       cookie: "",
       loginStatus: {},
       token: "",
-      profile,
+      profile: "",
+      isLogin: false,
     };
   },
   actions: {
@@ -635,7 +637,6 @@ export const login = defineStore("login", {
           this.cookie = data.cookie;
           this.token = data.token;
           this.profile = data.profile;
-
         } else if (data.code == 502) {
           console.log(data.msg);
         }
@@ -688,8 +689,42 @@ export const login = defineStore("login", {
         console.log(error.message, "请求二维码生成的key error");
       }
     },
+    // 本地获取必要数据
+    getStorage() {
+      console.log("调用了");
+      console.log(handleCookie("get"));
+      // 没有获取到 cookie
+      if (handleCookie("get")) {
+        this.isLogin = true;
+        this.cookie = handleCookie("get");
+        this.profile = JSON.parse(localStorage.getItem("profile"));
+        return;
+      }
+    },
   },
   getters: {
     name: (state) => state.albumDetail.name,
+  },
+});
+// 个人信息仓库
+export const user = defineStore("User", {
+  state: () => {
+    return {};
+  },
+  actions: {
+    // 手机号密码登录
+    // async getPhoneLogin(phone, password) {
+    //   try {
+    //     let { data } = await reqPhoneLogin(phone, password);
+    //     if (data.code == 200) {
+    //     } else if (data.code == 502) {
+    //     }
+    //   } catch (error) {
+    //     console.log(error.message, "请求手机登录 error");
+    //   }
+    // },
+  },
+  getters: {
+    // name: (state) => state.albumDetail.name,
   },
 });
