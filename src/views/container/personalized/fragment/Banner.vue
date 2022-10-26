@@ -69,7 +69,6 @@ const prev = () => {
   currentIndex.value == 0
     ? (currentIndex.value = listLength.value)
     : currentIndex.value--;
-  console.log(currentIndex.value);
 };
 const next = () => {
   currentIndex.value == listLength.value
@@ -93,9 +92,7 @@ const setDotActiveStyl = (i) => {
 };
 // 发请求，捞数据
 homeStore.getBanners();
-onBeforeMount(() => {
-  console.log(homeStore.banners);
-});
+onBeforeMount(() => {});
 </script>
 <style lang="scss" scoped>
 .swiper {

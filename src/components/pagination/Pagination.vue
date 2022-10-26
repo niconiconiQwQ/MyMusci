@@ -39,6 +39,9 @@
 
     <button style="margin-left: 30px">共 {{ total }} 条</button>
   </div>
+  <div class="pagi">
+    <el-pagination background layout="prev, pager, next" :total="100" small />
+  </div>
 </template>
 
 <script setup>
@@ -114,5 +117,27 @@ const startNumAndEndNum = () => {
   .active {
     background: skyblue;
   }
+}
+.pagi {
+  .el-pagination {
+    justify-content: center;
+
+    :deep(.el-pager) {
+      .number {
+        background-color: transparent;
+        border: 1px solid #e5e5e5;
+      }
+      li:not(.is-disabled).is-active {
+        background-color: #38b2a8;
+        color: var(--el-color-white);
+        font-weight: 700;
+      }
+    }
+  }
+  // .el-pagination.is-background :deep(.el-pager) li:not(.is-disabled).is-active {
+  //   background-color: #38b2a8;
+  //   color: var(--el-color-white);
+  //   font-weight: 700;
+  // }
 }
 </style>

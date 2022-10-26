@@ -272,10 +272,10 @@ export const reqFollows = (uid, { limit = 20, offset = 0 } = {}) => {
   });
 };
 // 请求用户歌单
-export const reqUserPlayList = (uid, { limit = 19, offset = 0 } = {}) => {
+export const reqUserPlayList = (uid, { limit, offset, timestamp } = {}) => {
   return requests({
     url: "/user/playlist",
-    params: { uid, limit, offset },
+    params: { uid, limit, offset, timestamp },
     method: "get",
   });
 };

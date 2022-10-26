@@ -626,6 +626,7 @@ export const login = defineStore("login", {
       token: "",
       profile: "",
       isLogin: false,
+      playList: [], // 我的歌单
     };
   },
   actions: {
@@ -691,9 +692,7 @@ export const login = defineStore("login", {
     },
     // 本地获取必要数据
     getStorage() {
-      console.log("调用了");
-      console.log(handleCookie("get"));
-      // 没有获取到 cookie
+      // 获取到 cookie
       if (handleCookie("get")) {
         this.isLogin = true;
         this.cookie = handleCookie("get");
@@ -701,30 +700,22 @@ export const login = defineStore("login", {
         return;
       }
     },
+    // 获取自己的歌单
+    async getMyPlayList(id, options) {
+      try {
+        let { data } = await reqUserPlayList(id, options);
+        if (data.code == 200) {
+          this.playList = data.playlist;
+        }
+      } catch (error) {
+        console.log(error.message, "请求我的歌单 error");
+      }
+    },
   },
   getters: {
-    name: (state) => state.albumDetail.name,
-  },
-});
-// 个人信息仓库
-export const user = defineStore("User", {
-  state: () => {
-    return {};
-  },
-  actions: {
-    // 手机号密码登录
-    // async getPhoneLogin(phone, password) {
-    //   try {
-    //     let { data } = await reqPhoneLogin(phone, password);
-    //     if (data.code == 200) {
-    //     } else if (data.code == 502) {
-    //     }
-    //   } catch (error) {
-    //     console.log(error.message, "请求手机登录 error");
-    //   }
-    // },
-  },
-  getters: {
-    // name: (state) => state.albumDetail.name,
+    createdPlayList: (state) =>
+      state.playList.filter((item) => !item.subscribed),
+    collectPlayList: (state) =>
+      state.playList.filter((item) => item.subscribed),
   },
 });
