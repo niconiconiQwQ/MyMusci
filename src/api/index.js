@@ -141,7 +141,7 @@ export const reqPlayListDetail = (id) => {
   });
 };
 // 请求歌单中的歌曲
-export const reqSongs = (id, { limit = 10, offset = 0 } = {}) => {
+export const reqSongs = (id, { limit = 50, offset = 0 } = {}) => {
   return requests({
     url: "/playlist/track/all",
     params: {

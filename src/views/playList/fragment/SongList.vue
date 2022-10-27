@@ -12,7 +12,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="(item, index) in playListStore.songs"
+          v-for="(item, index) in songList"
           :key="item.id"
           :class="{ bgc: index % 2 }"
           @dblclick="play(item.id)"
@@ -52,23 +52,12 @@
   </div>
 </template>
 <script setup>
-import {
-  ref,
-  onMounted,
-  onBeforeMount,
-  nextTick,
-  watch,
-  watchEffect,
-} from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { playList, songDetail } from "@/store/playlist";
+import { useRouter } from "vue-router";
+import { songDetail } from "@/store/playlist";
 import { formatIndex, formatPlayTime } from "@/utils/Format/format";
-const props = defineProps(["PlayListId"]);
-const route = useRoute();
+const props = defineProps(["songList"]);
 const router = useRouter();
-const playListStore = playList();
 const songDetailStore = songDetail();
-const playListId = ref(props.PlayListId);
 const play = (id) => {
   // 获取id之后发请求，捞数据 url
   songDetailStore.getSongUrl(id, "standard");
@@ -92,10 +81,6 @@ const gotoAblum = (ablumId) => {
   // });
   console.log(ablumId);
 };
-onBeforeMount(() => {
-  playListStore.getSongs(props.PlayListId);
-});
-onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .song-list {
@@ -114,7 +99,6 @@ onMounted(() => {});
           display: flex;
           align-items: center;
           overflow: hidden;
-
           span {
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -129,6 +113,7 @@ onMounted(() => {});
         .w3,
         .w4 {
           flex: 3;
+          width: 0;
         }
         .w3 {
           flex: 2;

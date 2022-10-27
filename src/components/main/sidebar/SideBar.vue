@@ -15,10 +15,10 @@
       <h5>我的音乐</h5>
       <ul class="ul-mode1-1">
         <li>
-          <router-link to="/playList"
+          <a to="/playList" href="#" @click="goMyFond"
             ><span class="iconfont icon-zan"></span><span>我喜欢的音乐</span
             ><span class="iconfont icon-zanxuanzhong"></span
-          ></router-link>
+          ></a>
         </li>
         <li>
           <a href=""
@@ -51,9 +51,13 @@
       </ul>
     </div>
     <!-- 创建的歌单 -->
-    <div class="created" @click="showCreate">
+    <div class="created" @click="showPlayList('create')">
       <div class="title">
-        <span>创建的歌单</span><span class="iconfont icon-up"></span>
+        <span>创建的歌单</span
+        ><span
+          class="iconfont icon-up"
+          :class="{ 'is-rotate': isCreateShow }"
+        ></span>
         <span>+</span>
       </div>
       <ul class="ul-mode1-1" v-show="isCreateShow">
@@ -70,10 +74,13 @@
       </ul>
     </div>
     <!-- 收藏的歌单 -->
-    <div class="collected" @click="showCollect">
+    <div class="collected" @click="showPlayList('collect')">
       <div class="title">
         <span>收藏的歌单</span>
-        <span class="iconfont icon-up"></span>
+        <span
+          class="iconfont icon-up"
+          :class="{ 'is-rotate': !isCollectShow }"
+        ></span>
         <span></span>
       </div>
       <ul class="ul-mode1-1" v-show="isCollectShow">
@@ -101,15 +108,19 @@ import router from "@/router";
 const playListStore = playList();
 const playListMenu = ref([]);
 const loginStore = login();
-const { isLogin, profile, createdPlayList, collectPlayList } =
+const { isLogin, profile, createdPlayList, collectPlayList, myFondListId } =
   storeToRefs(loginStore);
+const { hasMore, offset } = storeToRefs(playListStore);
 const isCreateShow = ref(true);
 const isCollectShow = ref(true);
-const showCreate = () => {
-  isCreateShow.value = !isCreateShow.value;
-};
-const showCollect = () => {
-  isCollectShow.value = !isCollectShow.value;
+// 展示创建或收藏的歌单
+const showPlayList = (type) => {
+  // 把那个箭头旋转一下
+  if (type === "create") {
+    isCreateShow.value = !isCreateShow.value;
+  } else if (type === "collect") {
+    isCollectShow.value = !isCollectShow.value;
+  }
 };
 // 发请求拿数据
 const getPlayList = async () => {
@@ -124,6 +135,8 @@ const goPlayList = (id) => {
   playListStore.getPlayListDetail(id);
   playListStore.getSongs(id);
   playListStore.getComment(id);
+  hasMore.value = true;
+  offset.value = 0;
   router.push({
     path: "/playlist",
     query: {
@@ -137,6 +150,15 @@ onBeforeMount(() => {
 onMounted(() => {
   console.log(playListMenu.value);
 });
+// 跳转到
+const goMyFond = () => {
+  router.push({
+    path: "/playlist",
+    query: {
+      id: myFondListId.value,
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -144,7 +166,6 @@ onMounted(() => {
 .ul-mode1-1 {
   display: flex;
   flex-direction: column;
-  // justify-content: space-around;
   color: var(--sidebar-color);
   li {
     height: 36px;
@@ -178,6 +199,10 @@ onMounted(() => {
     align-items: center;
     .iconfont {
       font-size: 2.4rem;
+      transform: rotate(90deg);
+      &.is-rotate {
+        transform: rotate(0deg);
+      }
     }
     span {
       &:nth-child(3) {

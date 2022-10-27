@@ -717,5 +717,6 @@ export const login = defineStore("login", {
       state.playList.filter((item) => !item.subscribed),
     collectPlayList: (state) =>
       state.playList.filter((item) => item.subscribed),
+    myFondListId: (state) => state.playList[0].id,
   },
 });

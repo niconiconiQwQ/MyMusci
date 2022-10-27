@@ -57,6 +57,10 @@ export const playList = defineStore("playList", {
       comments: [],
       // 歌单收藏者
       subscribers: [],
+      // 有无更多歌曲
+      hasMore: true,
+      // 偏移量
+      offset: 0,
     };
   },
   actions: {
@@ -150,7 +154,7 @@ export const songDetail = defineStore("song", {
       simiSongs: [],
       refAudio: {},
       hotComments: [],
-      comments:[],
+      comments: [],
     };
   },
   actions: {
