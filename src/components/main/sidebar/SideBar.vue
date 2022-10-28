@@ -199,7 +199,7 @@ const goMyFond = () => {
     align-items: center;
     .iconfont {
       font-size: 2.4rem;
-      transform: rotate(90deg);
+      transform: rotate(-90deg);
       &.is-rotate {
         transform: rotate(0deg);
       }

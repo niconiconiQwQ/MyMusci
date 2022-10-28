@@ -8,6 +8,7 @@ import {
   reqArtistTopSong,
   reqArtistAlbum,
   reqAlbum,
+  reqSimiArtist,
 } from "@/api/index";
 // 歌手列表的仓库
 export const artistListStore = defineStore("artistList", {
@@ -31,7 +32,8 @@ export const artistListStore = defineStore("artistList", {
       songs: [],
       // 某歌手的专辑
       hotAlbums: [],
-
+      // 某歌手的相似歌手
+      simiArtists: [],
     };
   },
   getters: {
@@ -149,6 +151,17 @@ export const artistListStore = defineStore("artistList", {
         }
       } catch (error) {
         console.log(error.message, "请求专辑10首歌 error");
+      }
+    },
+    // 请求相似歌手
+    async getSimiArtist(id) {
+      try {
+        let { data } = await reqSimiArtist(id);
+        if (data.code == 200) {
+          this.simiArtists = data.artists;
+        }
+      } catch (error) {
+        console.log(error.message, "请求相似歌手 error");
       }
     },
   },

@@ -98,6 +98,18 @@ export const reqArtistAlbum = (id, limit = 20) => {
     method: "get",
   });
 };
+// 请求相似歌手
+export const reqSimiArtist = (id) => {
+  return requests({
+    url: "/simi/artist",
+    method: "get",
+    params: {
+      id,
+      cookie:
+        "MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/eapi/feedback;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/weapi/feedback;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/wapi/feedback;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/wapi/clientlog;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/neapi/feedback;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/api/clientlog;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/weapi/feedback;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/neapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/neapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/weapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/weapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/eapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/eapi/feedback;;__remember_me=true; Max-Age=1296000; Expires=Wed, 09 Nov 2022 12:31:11 GMT; Path=/;;__csrf=6f90fe00e991baad9be5374e33987144; Max-Age=1296010; Expires=Wed, 09 Nov 2022 12:31:21 GMT; Path=/;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/api/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/neapi/feedback;;MUSIC_SNS=; Max-Age=0; Expires=Tue, 25 Oct 2022 12:31:11 GMT; Path=/;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/api/feedback;;MUSIC_U=6ab8b348ed7c49b265a3039aff106aea9fe98b2b5eff4ea29f3a4eb6529afda8993166e004087dd38ae7e4856452dbcc96353d4bd4ee878be7e4a22688f94b73b43adb1f74255295a89fe7c55eac81f3; Max-Age=1296000; Expires=Wed, 09 Nov 2022 12:31:11 GMT; Path=/;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/wapi/clientlog;;MUSIC_R_T=1491833014926; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/wapi/feedback;;MUSIC_A_T=1491832863278; Max-Age=2147483647; Expires=Sun, 12 Nov 2090 15:45:18 GMT; Path=/api/feedback;",
+    },
+  });
+};
 /* ===========================歌单相关======================== */
 // 请求歌单排行榜
 export const reqTopList = () => {

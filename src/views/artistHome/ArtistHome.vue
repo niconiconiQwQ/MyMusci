@@ -61,21 +61,26 @@ const { cover, name, imageDesc, fans, musicSize, albumSize, mvSize, id } =
   storeToRefs(ArtistListStore);
 const router = useRouter();
 const route = useRoute();
+// 监听路由query的id参数变化，重新发起请求捞数据
 watch(
-  () => route.params.id,
-  async (newId) => {
+  () => route.query.id,
+  (newId) => {
     // userData.value = await fetchUser(newId)
     // 带着新的id重新发起请求
     console.log(newId);
+    initReqData();
   }
 );
-onBeforeMount(() => {
+const initReqData = () => {
   // 存一下歌手id
   ArtistListStore.id = route.query.id;
   // 发起请求获取歌手详情
-  ArtistListStore.getDetail(id.value);
+  ArtistListStore.getDetail(route.query.id);
   // 发起请求获取歌手粉丝数
-  ArtistListStore.getFans(id.value);
+  ArtistListStore.getFans(route.query.id);
+};
+onBeforeMount(() => {
+  initReqData();
 });
 onMounted(() => {});
 </script>

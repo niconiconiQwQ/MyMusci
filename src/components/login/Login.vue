@@ -113,6 +113,7 @@
 <script setup>
 import "@/assets/images/22_close.png";
 import "@/assets/images/33_close.png";
+import { setAllCookies } from "@/utils/storage";
 import { ref, onMounted, onBeforeMount, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { login as Login, user } from "@/store/index";
@@ -121,8 +122,7 @@ import { reqPhoneLogin } from "@/api/index";
 import { handleCookie } from "@/utils/storage";
 const route = useRoute(),
   router = useRouter();
-const loginStore = Login(),
-  userStore = user();
+const loginStore = Login();
 const { isLogin } = storeToRefs(loginStore);
 /* 数据 */
 const form = reactive({
@@ -185,6 +185,7 @@ const login = async () => {
       });
       // 把 cookie持久化；这个cookie在需要登录权限的接口会用到；
       handleCookie("set", data.cookie);
+      setAllCookies(data.cookie);
       localStorage.setItem("profile", JSON.stringify(data.profile));
       // 登录成功之后要做的事
       loginSuccess();
@@ -202,6 +203,7 @@ const loginSuccess = () => {
   //路由跳转到首页;
   router.push("/");
 };
+onBeforeMount(() => {});
 </script>
 <style lang="scss" scoped>
 .login-container {
