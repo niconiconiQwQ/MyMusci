@@ -26,22 +26,22 @@
       <div class="manage">
         <div class="iconfont icon-24gl-shuffle"></div>
         <div class="iconfont icon-a-26Eshangyizhen" @click="pre"></div>
-        <div @click="togglePlay" class="play">
+        <div @click="isPlaying = !isPlaying" class="play">
           <i
             class="y iconfont"
-            :class="paused ? 'icon-a-26Hyoubofang' : 'icon-a-26Izanting'"
+            :class="isPlaying ? 'icon-a-26Izanting' : 'icon-a-26Hyoubofang'"
           ></i>
         </div>
         <div class="iconfont icon-a-26Fxiayizhen" @click="next"></div>
         <div class="iconfont word">词</div>
       </div>
       <div class="time-bar">
-        <span>{{ formatSecond(currentTime) }}</span>
+        <span>{{ formatSecond(audioStatus.currentTime) }}</span>
         <div class="progress" @click="dragTime($event)" ref="timeProgress">
           <div class="fill-time" ref="fillTime"></div>
           <div class="circle"></div>
         </div>
-        <span>{{ formatSecond(duration) }}</span>
+        <span>{{ formatSecond(audioStatus.duration) }}</span>
       </div>
     </div>
     <!-- 右侧一些图标 -->
@@ -86,22 +86,23 @@
   console.log(audio.value.play); // 当 paused 属性由 true 转换为 false 时触发 play 事件
   console.log(audio.value.timeupdate); // 当currentTime更新时会触发timeupdate事件。
 */
-import { ref, onBeforeMount, onMounted, watch } from "vue";
+import { ref, onBeforeMount, onMounted, watch, reactive } from "vue";
 import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatSecond } from "@/utils/Format/format";
 import { useRouter } from "vue-router";
 const songDetailStore = songDetail();
-const { url, id, ar, alia, name, fee, picUrl, refAudio } =
+const { url, id, ar, alia, name, fee, picUrl, refAudio, isPlaying } =
   storeToRefs(songDetailStore);
 const pre = () => {};
 const next = () => {};
 const router = useRouter();
-// 定义audio的状态
-const duration = ref(0); //持续时间
-const currentTime = ref(0); //当前时间
-const volumn = ref(0.3); // 音量
-const paused = ref(true);
+// 定义audio的状态, 搞成一个对象
+const audioStatus = reactive({
+  duration: 0,
+  currentTime: 0,
+  volumn: 0.1,
+});
 // 获取dom
 const audio = ref(null);
 const vProgress = ref(null);
@@ -112,32 +113,29 @@ const timeProgress = ref(null);
 let progressLong = ref(0);
 // 控制音频播放/暂停
 const togglePlay = () => {
-  paused.value = !paused.value;
-  if (paused.value) {
-    // 暂停播放
+  // 播放
+  if (isPlaying.value) {
+    audio.value.play();
+  } else {
     audio.value.pause();
-    paused.value = true;
     // 取消监听
     audio.value.removeEventListener("timeupdate", (e) => {});
-  } else {
-    // 播放
-    audio.value.play();
-    paused.value = false;
   }
 };
+
 // 点击音量槽控制音频音量 ok
 const ctrlVolumn = (e) => {
   // 计算出音量
-  volumn.value =
+  audioStatus.volumn =
     1 -
     (
       (e.pageY - vProgress.value.getBoundingClientRect().top) /
       progressLong.value
     ).toFixed(4);
   // 控制边界
-  if (volumn.value > 1) volumn.value = 1;
-  if (volumn.value < 0) volumn.value = 0;
-  fillVolumn.value.style.height = volumn.value * 100 + "%";
+  if (audioStatus.volumn > 1) audioStatus.volumn = 1;
+  if (audioStatus.volumn < 0) audioStatus.volumn = 0;
+  fillVolumn.value.style.height = audioStatus.volumn * 100 + "%";
 };
 // 拖动圆圈实现音量控制 ok
 const dragVolumn = (e) => {
@@ -152,15 +150,15 @@ const dragVolumn = (e) => {
           progressLong.value
         ).toFixed(4)) *
       100;
-    volumn.value = (
+    audioStatus.volumn = (
       1 -
       (event.clientY - vProgress.value.getBoundingClientRect().top) /
         progressLong.value
     ).toFixed(4);
     // 控制边界
-    if (volumn.value > 1) volumn.value = 1;
-    if (volumn.value < 0) volumn.value = 0;
-    fillVolumn.value.style.height = volumn.value * 100 + "%";
+    if (audioStatus.volumn > 1) audioStatus.volumn = 1;
+    if (audioStatus.volumn < 0) audioStatus.volumn = 0;
+    fillVolumn.value.style.height = audioStatus.volumn * 100 + "%";
   };
   // 监听鼠标松开
   document.onmouseup = function () {
@@ -172,23 +170,32 @@ const dragVolumn = (e) => {
 };
 // 点击进度条控制播放时间
 const dragTime = (e) => {
-  currentTime.value = (
+  audioStatus.currentTime = (
     (e.clientX - fillTime.value.getBoundingClientRect().left) /
     timeProgress.value.offsetWidth
   ).toFixed(4);
   // 控制边界
-  if (currentTime.value < 0) currentTime.value = 0;
-  if (currentTime.value > 1) currentTime.value = 1;
-  fillTime.value.style.width = currentTime.value * 100 + "%";
-  audio.value.currentTime = audio.value.duration * currentTime.value;
+  if (audioStatus.currentTime < 0) audioStatus.currentTime = 0;
+  if (audioStatus.currentTime > 1) audioStatus.currentTime = 1;
+  fillTime.value.style.width = audioStatus.currentTime * 100 + "%";
+  audio.value.currentTime = audio.value.duration * audioStatus.currentTime;
 };
 // 侦听音量长度,控制真实audio的音量
 watch(
-  () => volumn.value,
+  () => audioStatus.volumn,
   (nawVal, oldVal) => {
-    audio.value.volume = volumn.value;
+    audio.value.volume = audioStatus.volumn;
   }
 );
+// // 点击切换音乐的播放状态,状态改变会被监听
+watch(
+  () => isPlaying.value,
+  (newVal) => {
+    console.log(newVal);
+    togglePlay();
+  }
+);
+// 侦听audio的状态是否暂停
 const goLyric = (id) => {
   router.push({
     path: "/lyric",
@@ -197,29 +204,32 @@ const goLyric = (id) => {
     },
   });
 };
-onBeforeMount(() => {});
+
+onBeforeMount(() => {
+  console.log(isPlaying.value);
+});
 onMounted(() => {
   //挂在完初始化一些数据
   progressLong.value = vProgress.value.offsetHeight;
   // 挂载完后 就监听audio的加载第一帧
   audio.value.addEventListener("loadeddata", (event) => {
     fillTime.value.style.width = "0%";
-    duration.value = audio.value.duration;
-    currentTime.value = audio.value.currentTime;
-    volumn.value = audio.value.volume;
-    paused.value = true;
+    audioStatus.duration = audio.value.duration;
+    audioStatus.currentTime = audio.value.currentTime;
+    audioStatus.volumn = audio.value.volume;
+    isPlaying.value = true;
   });
   // 监听音频播放进度;更新进度条
   audio.value.addEventListener("timeupdate", (e) => {
     fillTime.value.style.width =
       (audio.value.currentTime / audio.value.duration).toFixed(4) * 100 + "%";
-    currentTime.value = audio.value.currentTime;
+    audioStatus.currentTime = audio.value.currentTime;
   });
   // 把这个audioDOM元素挂到仓库里去
   refAudio.value = audio.value;
   // 监听歌曲播放结束
   refAudio.value.addEventListener("ended", () => {
-    paused.value = true;
+    isPlaying.value = true;
   });
 });
 </script>

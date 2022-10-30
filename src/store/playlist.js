@@ -155,6 +155,7 @@ export const songDetail = defineStore("song", {
       refAudio: {},
       hotComments: [],
       comments: [],
+      isPlaying: false, // 是否在播放
     };
   },
   actions: {

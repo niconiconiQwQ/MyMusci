@@ -29,10 +29,10 @@
             <span>
               <a
                 class="pointer"
-                v-for="ar in item.ar"
+                v-for="(ar, index) in item.ar"
                 :key="ar.id"
                 @click="gotoArtist(ar.id)"
-                >{{ ar.name }}&nbsp;</a
+                >{{ ar.name }}<i v-if="item.ar.length - 1 !== index"> / </i></a
               >
             </span>
           </td>
@@ -52,6 +52,7 @@
   </div>
 </template>
 <script setup>
+import { nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { songDetail } from "@/store/playlist";
 import { formatIndex, formatPlayTime } from "@/utils/Format/format";
@@ -63,6 +64,7 @@ const play = (id) => {
   songDetailStore.getSongUrl(id, "standard");
   // 捞歌曲详情
   songDetailStore.getSongDetail(id);
+  // 怎么去立即播放音乐
 };
 // 跳转到某个歌手页面
 const gotoArtist = (ArtistId = -1) => {
