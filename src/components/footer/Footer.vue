@@ -86,7 +86,7 @@
   console.log(audio.value.play); // 当 paused 属性由 true 转换为 false 时触发 play 事件
   console.log(audio.value.timeupdate); // 当currentTime更新时会触发timeupdate事件。
 */
-import { ref, onBeforeMount, onMounted, watch, reactive } from "vue";
+import { ref, onBeforeMount, onMounted, watch, reactive, nextTick } from "vue";
 import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatSecond } from "@/utils/Format/format";
@@ -191,7 +191,6 @@ watch(
 watch(
   () => isPlaying.value,
   (newVal) => {
-    console.log(newVal);
     togglePlay();
   }
 );

@@ -1,5 +1,6 @@
 // 当前模块：为 API 进行统一管理
 // 引入封装的axios
+import cookie from "cookiejs";
 import requests from "./request";
 /* =========================其他======================== */
 // 请求首页banner--没渲染 ====no
@@ -250,6 +251,17 @@ export const reqSimiSong = (id) => {
     url: "/simi/song",
     params: { id },
     method: "get",
+  });
+};
+// 喜欢音乐
+export const likeSong = (id) => {
+  return requests({
+    url: "/like",
+    method: "get",
+    params: {
+      id,
+      cookie: localStorage.getItem("cookie"),
+    },
   });
 };
 /* ==========================用户信息相关====================== */
@@ -620,5 +632,21 @@ export const reqLogOut = () => {
   return requests({
     url: "/logout",
     method: "get",
+  });
+};
+
+/* ================================其他 */
+// 发送/删除评论
+export const reqSendComment = ({ t, type, id, content, commentId } = {}) => {
+  return requests({
+    url: "/comment",
+    method: "get",
+    params: {
+      t, //1 发送, 2 回复
+      type, //0: 歌曲 1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频 6: 动态
+      id,
+      content,
+      commentId,
+    },
   });
 };

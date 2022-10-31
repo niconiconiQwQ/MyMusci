@@ -75,7 +75,7 @@
             <a href="#" @click="goPlayList(item.id)">
               <div class="num">
                 <span class="iconfont icon-bofang"></span
-                ><span>{{ item.playCount }}</span>
+                ><span>{{ formatNumber(item.playCount) }}</span>
               </div>
               <div class="play iconfont icon-play"></div>
               <img v-lazy="item.coverImgUrl" alt=""
@@ -96,6 +96,7 @@
 </template>
 
 <script setup>
+import { formatNumber } from "@/utils/Format/format";
 import Pagination from "@/components/pagination/Pagination";
 import { ref, onBeforeMount, onMounted } from "vue";
 import { userDetail } from "@/store/index";
@@ -332,7 +333,6 @@ onMounted(() => {});
     }
   }
   .content {
-    height: 73%;
     width: 100%;
     margin: 30px 0px 80px 0px;
     .nav {

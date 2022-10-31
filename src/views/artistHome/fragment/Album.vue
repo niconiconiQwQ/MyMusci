@@ -1,9 +1,7 @@
 <template>
   <div class="album">
     <div class="left">
-      <a href="#">
-        <img v-lazy="props.blurPicUrl" src="@/assets/images/m3.jpg" alt="" />
-      </a>
+      <img src="@/assets/images/top50.png" alt="" />
     </div>
     <div class="right">
       <div class="ctrl">

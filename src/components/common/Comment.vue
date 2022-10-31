@@ -3,7 +3,8 @@
     <!-- 发送评论部分 -->
     <div class="send">
       <div class="text">
-        <textarea name="" id="" v-model="LastNum"></textarea><span>{{}}22</span>
+        <textarea name="" id="" v-model="commentText"></textarea
+        ><span>{{ 140 - commentText.length }}</span>
       </div>
       <div class="ctrl">
         <div class="select">
@@ -11,7 +12,7 @@
           <span class="at">@</span>
           <span class="mark">#</span>
         </div>
-        <a class="btn">评论</a>
+        <a class="btn" @click="commment()">评论</a>
       </div>
     </div>
     <!-- 热门评论 -->
@@ -35,11 +36,11 @@
                 </div>
                 <div class="right">
                   <span class="report">举报</span>
-                  <span class="iconfont icon-dianzan"
+                  <span class="iconfont icon-dianzan" @click="like"
                     ><i>{{ item.likedCount }}</i></span
                   >
-                  <span class="iconfont icon-fenxiang"></span>
-                  <span class="iconfont icon-jianyi"></span>
+                  <span class="iconfont icon-fenxiang" @click="share"></span>
+                  <span class="iconfont icon-jianyi" @click="commment"></span>
                 </div>
               </div>
             </div>
@@ -87,10 +88,34 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import { reqSendComment } from "@/api/index";
+import { useRouter } from "vue-router";
 import Pagination from "@/components/pagination/Pagination";
 import { formatTime } from "@/utils/Format/format";
+const router = useRouter();
 const props = defineProps(["hotComments", "comments"]);
-let LastNum = ref("");
+let commentText = ref("");
+// 跳到个人首页
+const goUser = (id) => {
+  router.push({
+    path: "/user",
+    query: { id },
+  });
+};
+// 点赞功能======no
+const like = () => {
+  console.log("点赞");
+};
+// 评论功能======no
+const commment = async () => {
+  // 获取了评论的内容，要发送请求
+  // let res = await reqSendComment();
+  // 获取当前是哪种资源
+  console.log(props.id);
+  // console.log(commentText.value);
+};
+// 分享功能======no
+const share = () => {};
 </script>
 <style lang="scss" scoped>
 .comment {

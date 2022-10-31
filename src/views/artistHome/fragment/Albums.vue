@@ -44,13 +44,16 @@ ArtistListStore.getArtistAlbum(ArtistListStore.id);
   > ul {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     li {
       width: 18%;
       margin-bottom: 20px;
+      margin-right: 2%;
       a {
+        display: block;
         width: 100%;
+        height: 186px;
         img {
+          height: 100%;
           width: 100%;
         }
       }

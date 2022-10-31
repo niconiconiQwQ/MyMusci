@@ -57,19 +57,17 @@
             <span>歌曲: {{ trackCount }}</span
             ><span>播放: {{ formatNumber(playCount) }}</span>
           </li>
-          <li class="brief" ref="brief">
-            <i class="iconfont icon-up" @click="showDesc" ref="i"></i>
-            <p>简介:</p>
+          <li>
+            <div class="cur">
+              <details>
+                <summary>简介:</summary>
+                <p class="row" v-for="(item, index) in description">
+                  {{ item }}
+                </p>
+              </details>
+            </div>
           </li>
-          <!-- <li class="row" v-for="item in playListStore.description">
-            {{ item }}
-          </li> -->
         </ul>
-        <div class="cur">
-          <p class="row" v-for="item in description">
-            {{ item }}
-          </p>
-        </div>
       </div>
     </div>
     <div class="nav-mode">
@@ -78,7 +76,7 @@
           <router-link to="/playlist/songlist">歌曲列表</router-link>
         </li>
         <li>
-          <router-link to="/playlist/comment"
+          <router-link to="/playlist/comment" type="2" id="route.query.id"
             >评论({{ playListStore.commentCount }})</router-link
           >
         </li>

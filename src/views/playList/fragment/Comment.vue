@@ -1,5 +1,9 @@
 <template>
-  <Comment :hotComments="hotComments" :comments="comments"></Comment>
+  <Comment
+    :hotComments="hotComments"
+    :comments="comments"
+    :id="props.PlayListId"
+  ></Comment>
 </template>
 <script setup>
 import Comment from "@/components/common/Comment";
