@@ -83,14 +83,15 @@
       </ul>
     </div>
     <div v-else class="none">还没有评论, 快来抢沙发</div>
-    <Pagination v-if="comments > 0"></Pagination>
+    <!-- <Pagination v-if="comments > 0"></Pagination> -->
+    <!-- <el-pagination :total="" :current-page="" :page-size="" @current-change="" layout=""></el-pagination> -->
+    <el-pagination background layout="prev, pager, next" :total="100" small />
   </div>
 </template>
 <script setup>
 import { ref } from "vue";
 import { reqSendComment } from "@/api/index";
 import { useRouter } from "vue-router";
-import Pagination from "@/components/pagination/Pagination";
 import { formatTime } from "@/utils/Format/format";
 const router = useRouter();
 const props = defineProps(["hotComments", "comments"]);

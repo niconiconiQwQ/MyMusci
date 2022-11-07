@@ -1,0 +1,13 @@
+// 分页器的样式覆盖
+.el-pagination {
+  justify-content: center;
+}
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .el-pager li {
+  background-color: transparent !important;
+  border: 1px solid #e5e5e5 !important;
+}
+.el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+  background-color: #38b2a8 !important;
+}

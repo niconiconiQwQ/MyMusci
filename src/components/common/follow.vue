@@ -34,11 +34,10 @@
         </div>
       </li>
     </ul>
-    <PaginationVue></PaginationVue>
+    <el-pagination background layout="prev, pager, next" :total="100" small />
   </div>
 </template>
 <script setup>
-import PaginationVue from "@/components/pagination/Pagination.vue";
 import { ref, onMounted, onBeforeMount, onUpdated } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";

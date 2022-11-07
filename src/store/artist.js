@@ -34,6 +34,8 @@ export const artistListStore = defineStore("artistList", {
       hotAlbums: [],
       // 某歌手的相似歌手
       simiArtists: [],
+      // 更多
+      hasMore: true,
     };
   },
   getters: {
@@ -59,6 +61,7 @@ export const artistListStore = defineStore("artistList", {
         let { data } = await reqArtistList(params);
         if (data.code == 200) {
           this.artistsList = data.artists;
+          this.hasMore = data.more;
         }
       } catch (error) {
         console.log(error.message, "请求歌手列表error");

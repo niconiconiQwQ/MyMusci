@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { handleCookie } from "@/utils/storage";
 import { province, city } from "@/utils/area";
 import {
-  reqTopList,
   reqHotPlayListTag,
   reqSubPlayListTag,
   reqList,
@@ -62,30 +61,6 @@ export const home = defineStore("home", {
   },
   getters: {},
 });
-// 排行榜列表数据仓库
-export const topList = defineStore("topList", {
-  state: () => {
-    return {
-      list: [],
-    };
-  },
-  actions: {
-    async getTopList() {
-      try {
-        let { data } = await reqTopList();
-        if (data.code == 200) {
-          this.list = data.list || [];
-        }
-      } catch (error) {
-        console.log(error.message, "请求歌单排行榜error");
-      }
-    },
-  },
-  getters: {
-    officialList: (state) => state.list.slice(0, 4),
-    globalList: (state) => state.list.slice(4),
-  },
-});
 // 歌单分类仓库
 export const palyListTag = defineStore("palyListTag", {
   state: () => {
@@ -94,6 +69,7 @@ export const palyListTag = defineStore("palyListTag", {
       sub: [],
       categories: {},
       playlists: [],
+      total: 0,
     };
   },
   getters: {
@@ -154,8 +130,8 @@ export const palyListTag = defineStore("palyListTag", {
       try {
         let { data } = await reqHotPlayList(options);
         if (data.code == 200) {
-          // console.log(data);
           this.playlists = data.playlists;
+          this.total = data.total;
         }
       } catch (error) {
         console.log(error.message, "获取获取歌单 ( 网友精选碟 ) error");

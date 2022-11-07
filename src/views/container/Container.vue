@@ -10,8 +10,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
-import TopNav from "@/views/container/topNav/TopNav";
+import TopNav from "@/components/topNav/TopNav";
 import Personalized from "@/views/container/personalized/Personalized.vue";
 </script>
 

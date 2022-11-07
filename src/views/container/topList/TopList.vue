@@ -4,11 +4,7 @@
     <TopNav></TopNav>
     <h1>官方榜</h1>
     <ul class="official">
-      <li
-        class="list-item"
-        v-for="item in TopListStore.officialList"
-        :key="item.id"
-      >
+      <li class="list-item" v-for="item in officialList" :key="item.id">
         <a class="a-mode1 left" @click="goPlayList(item.id)"
           ><img v-lazy="item.coverImgUrl" alt="" />
           <div class="play-mode iconfont icon-play"></div>
@@ -17,26 +13,34 @@
           <ul>
             <li
               :class="{ odd: index % 2 != 0 }"
-              v-for="index in 5"
-              :key="index"
+              v-for="(songItem, index) in item.songs"
+              :key="item.id"
+              @dblclick="play(songItem.id)"
             >
               <div class="song">
                 <span>{{ index }}</span
-                ><span>557 %</span><span>无数</span>
+                ><span>{{ songItem.name }}</span>
               </div>
-              <div class="artist">薛之谦</div>
+              <div class="artist">
+                <span v-for="(arItem, index) in songItem.ar" :key="arItem.id"
+                  >{{ arItem.name
+                  }}<i v-if="index !== songItem.ar.length - 1">/ </i></span
+                >
+              </div>
             </li>
           </ul>
           <div class="end">
-            <a><span>查看全部</span><i class="iconfont icon-right"></i></a>
+            <a href="#" @click="goPlayList(item.id)"
+              ><span>查看全部</span><i class="iconfont icon-right"></i
+            ></a>
           </div>
         </div>
       </li>
     </ul>
     <h1>全球榜</h1>
     <ul class="ul-mode">
-      <li class="item" v-for="item in TopListStore.globalList" :key="item.id">
-        <a href="" class="a-mode1" @click="goPlayList(item.id)">
+      <li class="item" v-for="item in globalList" :key="item.id">
+        <a href="#" class="a-mode1" @click="goPlayList(item.id)">
           <div class="num-mode">
             <span class="iconfont icon-bofang"></span
             ><span>{{ formatNumber(item.playCount) }}</span>
@@ -47,25 +51,45 @@
         <span class="name">{{ item.name }}</span>
       </li>
     </ul>
-    <ul>
-      <li></li>
-    </ul>
   </div>
 </template>
-
 <script setup>
+import { reqTopList, reqSongs } from "@/api/index";
+import { onBeforeMount, ref } from "vue";
 import { formatNumber } from "@/utils/Format/format";
-import { onBeforeMount, onMounted, onUpdated } from "vue";
-import TopNav from "@/views/container/topNav/TopNav";
-import { topList } from "@/store/index";
-import { useRoute, useRouter } from "vue-router";
-// 调用后，得到实例化小仓库
-const TopListStore = topList();
-const route = useRoute();
+import TopNav from "@/components/topNav/TopNav";
+import { useRouter } from "vue-router";
+import { songDetail } from "@/store/playlist";
+import { storeToRefs } from "pinia";
+const songDetailStore = songDetail();
+const { isPlaying } = storeToRefs(songDetailStore);
 const router = useRouter();
-onBeforeMount(() => {
-  TopListStore.getTopList();
-});
+// 定义初始数据
+const officialList = ref([]),
+  globalList = ref([]);
+// 获取4个官方歌单 id ；循环发请求，各个歌单的前5首歌;
+const getSongs = () => {
+  officialList.value.forEach(async (item, index) => {
+    // 发起 歌单歌曲请求,并将返回的 promise存入 arr
+    let { data } = await reqSongs(item.id, { limit: 5 });
+    officialList.value[index].songs = data.songs;
+  });
+};
+// 获取 官方 和 全球榜数据
+const getInitInfo = async () => {
+  try {
+    let { data } = await reqTopList();
+    if (data.code == 200) {
+      officialList.value = data.list.slice(0, 4);
+      globalList.value = data.list.slice(4);
+    }
+  } catch (error) {
+    console.log(error.message, "请求歌单排行榜error");
+  }
+  // 再获取 官方榜每个歌单的前5首歌
+  getSongs();
+};
+// 跳转到 歌单页面
 const goPlayList = (id) => {
   router.push({
     path: "/playlist",
@@ -74,10 +98,21 @@ const goPlayList = (id) => {
     },
   });
 };
-onMounted(() => {});
-onUpdated(() => {});
+// 双击播放歌曲
+const play = (id) => {
+  isPlaying.value = false;
+  // 双击之后去更新歌曲的数据
+  songDetailStore.getSongDetail(id);
+  songDetailStore.getSongUrl(id);
+  setTimeout(() => {
+    isPlaying.value = true;
+  }, 2000);
+};
+onBeforeMount(() => {
+  // 挂载之前获取初始化数据
+  getInitInfo();
+});
 </script>
-
 <style lang="scss" scoped>
 .toplist {
   h1 {
@@ -131,10 +166,10 @@ onUpdated(() => {});
             }
             .song {
               span {
-                &:nth-child(2) {
+                &:nth-child(1) {
                   padding: 0 10px;
                 }
-                &:nth-child(3) {
+                &:nth-child(2) {
                   color: #363636;
                 }
               }

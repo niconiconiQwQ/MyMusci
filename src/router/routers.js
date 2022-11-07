@@ -8,11 +8,6 @@ export default [
   {
     path: "/main",
     children: [
-      // 专属定制
-      {
-        path: "customized",
-        component: () => import("@/views/container/customized/Customized.vue"),
-      },
       // 歌单
       {
         path: "playlists",

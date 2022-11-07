@@ -89,7 +89,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount, watch } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList } from "@/store/playlist";
 import { storeToRefs } from "pinia";
@@ -118,9 +118,6 @@ const {
 } = storeToRefs(playListStore);
 const router = useRouter();
 const route = useRoute();
-const isShowDesc = ref(false);
-const brief = ref(null);
-const i = ref(null);
 const PlayListId = ref(route.query.id);
 const goUser = (id) => {
   router.push({
@@ -130,23 +127,9 @@ const goUser = (id) => {
     },
   });
 };
-const showDesc = () => {
-  isShowDesc.value = !isShowDesc.value;
-  if (isShowDesc.value) {
-    // brief.value.style.overflow = "hidden";
-    // console.log(isShowDesc.value, "真的啊");
-    i.value.style.transform = "rotate(0deg)";
-  } else {
-    // brief.value.style.overflow = "";
-    // console.log(isShowDesc.value, "假的");
-    i.value.style.transform = "";
-  }
-};
 // 歌单初始化一些捞数据
 playListStore.getSongs(route.query.id);
 playListStore.getPlayListDetail(route.query.id);
-onBeforeMount(() => {});
-onMounted(() => {});
 // 处理滚动加载更多
 const handleScroll = async () => {
   if (hasMore.value) {

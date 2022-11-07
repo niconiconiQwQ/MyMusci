@@ -86,18 +86,12 @@
         </ul>
       </div>
     </div>
-    <Pagination
-      :pageNo="pageNo"
-      :pageSize="pageSize"
-      :total="total"
-      :continues="continues"
-    ></Pagination>
+    <el-pagination background layout="prev, pager, next" :total="100" small />
   </div>
 </template>
 
 <script setup>
 import { formatNumber } from "@/utils/Format/format";
-import Pagination from "@/components/pagination/Pagination";
 import { ref, onBeforeMount, onMounted } from "vue";
 import { userDetail } from "@/store/index";
 import { useRoute, useRouter } from "vue-router";

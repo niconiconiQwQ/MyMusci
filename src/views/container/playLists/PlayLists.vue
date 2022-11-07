@@ -5,13 +5,13 @@
     <div class="content">
       <div class="head" ref="head">
         <div>
-          <img v-lazy="playlists[0].coverImgUrl" alt="" />
+          <img :src="playlists[0] ? playlists[0].coverImgUrl : m3" alt="" />
           <div class="right">
             <div class="box">
               <span class="iconfont icon-huangjinhuiyuan0101-copy"></span
               ><span>精品歌单</span>
             </div>
-            <h1>{{ playlists[0].name }}</h1>
+            <h1>{{ playlists[0] ? playlists[0].name : "" }}</h1>
             <div>另类迷幻的空灵音律</div>
           </div>
         </div>
@@ -118,25 +118,29 @@
           <span>{{ item.name }}</span>
         </li>
       </ul>
-      <Pagination
-        :pageNo="5"
-        :pageSize="20"
-        :total="1000"
-        :continues="5"
-      ></Pagination>
+      <el-pagination
+        background
+        small
+        layout="prev, pager, next"
+        :total="total"
+        v-model:current-page="currentPage"
+        :page-size="30"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import TopNav from "@/views/container/topNav/TopNav";
-import Pagination from "@/components/pagination/Pagination";
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+// 导入
+import TopNav from "@/components/topNav/TopNav";
+import { ref, onMounted, reactive, watch, onBeforeMount, nextTick } from "vue";
+import { useRouter } from "vue-router";
 import { palyListTag } from "@/store/index";
 import { storeToRefs } from "pinia";
 import { formatNumber } from "@/utils/Format/format";
+import m3 from "@/assets/images/m3.jpg";
 const palyListStore = palyListTag();
+const router = useRouter();
 const {
   playlists,
   hotTags,
@@ -145,13 +149,17 @@ const {
   category2,
   category3,
   category4,
+  total,
 } = storeToRefs(palyListStore);
-const router = useRouter();
+// 当前页
+const currentPage = ref(1);
 const isShowTags = ref(false);
-const params = ref({ cat: "ACG" });
+const params = reactive({ cat: "ACG" });
+// 选择新标签
 const select = (cat) => {
-  params.value.cat = cat;
-  palyListStore.getHotPlayList(params.value);
+  params.cat = cat;
+  palyListStore.getHotPlayList(params);
+  currentPage.value = 1;
   isShowTags.value = false;
 };
 const goPlayList = (id) => {
@@ -170,6 +178,17 @@ const showTags = () => {
 palyListStore.getHotPlayListTag();
 palyListStore.getSubPlayListTag();
 palyListStore.getHotPlayList();
+// 监听分页器当前页的变化，发送新的请求
+watch(
+  () => currentPage.value,
+  (current) => {
+    palyListStore.getHotPlayList({
+      offset: (current - 1) * 30,
+      cat: params.cat,
+    });
+  }
+);
+onBeforeMount(() => {});
 onMounted(() => {
   document.addEventListener("click", () => {
     isShowTags.value = false;
@@ -348,6 +367,9 @@ onMounted(() => {
           }
         }
       }
+    }
+    .el-pagination {
+      margin-bottom: 20px;
     }
   }
 }

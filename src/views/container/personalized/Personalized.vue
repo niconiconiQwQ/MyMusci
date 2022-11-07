@@ -9,8 +9,6 @@
   <Latest></Latest>
   <!-- 推荐MV -->
   <MV></MV>
-  <!-- 听听模块 -->
-  <Listen></Listen>
 </template>
 
 <script setup>
@@ -19,7 +17,6 @@ import Recommend from "@/views/container/personalized/fragment/Recommend";
 import Exclusive from "@/views/container/personalized/fragment/Exclusive";
 import Latest from "@/views/container/personalized/fragment/Latest";
 import MV from "@/views/container/personalized/fragment/MV";
-import Listen from "@/views/container/personalized/fragment/Listen";
 </script>
 
 <style lang="scss" scoped>

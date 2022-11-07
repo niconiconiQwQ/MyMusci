@@ -1,5 +1,5 @@
 <template>
-  <div class="artist ctn-mode">
+  <div class="artist ctn-mode" ref="box" @scroll="handleScroll">
     <!-- 顶部标题导航组件 -->
     <TopNav></TopNav>
     <!-- 筛选类型 -->
@@ -59,17 +59,21 @@
         </div>
       </li>
     </ul>
+    <el-backtop :right="100" :bottom="100" />
   </div>
 </template>
 
 <script setup>
-import TopNav from "@/views/container/topNav/TopNav";
-import { ref, onBeforeMount, computed } from "vue";
+import TopNav from "@/components/topNav/TopNav";
+import { ref, reactive, watch, onMounted } from "vue";
 import { artistListStore } from "@/store/artist";
+import { storeToRefs } from "pinia";
 const ArtistListStore = artistListStore();
-let areaList = ["全部", "华语", "欧美", "日本", "韩国", "其他"];
-let typeList = ["全部", "男歌手", "女歌手", "乐队组合"];
-let letterList = [
+const { hasMore } = storeToRefs(ArtistListStore);
+// 定义一些选项数据
+const areaList = ["全部", "华语", "欧美", "日本", "韩国", "其他"];
+const typeList = ["全部", "男歌手", "女歌手", "乐队组合"];
+const letterList = [
   "热门",
   "A",
   "B",
@@ -98,83 +102,103 @@ let letterList = [
   "Z",
   "#",
 ];
-let initial = ref();
-let type = ref();
-let area = ref();
-let initialActive = ref(0);
-let typeActive = ref(0);
-let areaActive = ref(0);
-let params = computed(() => ({
-  type: type.value,
-  area: area.value,
-  initial: initial.value,
-}));
+// 获取DOM
+const box = ref(null);
+// 处理滚动加载更多
+const handleScroll = async () => {
+  if (hasMore.value) {
+    // 计算出是否滚动到了底部
+    if (
+      box.value.scrollTop + box.value.clientHeight >=
+      box.value.scrollHeight
+    ) {
+      console.log(box.value.scrollHeight);
+      offset.value += 20; // 这个20为偏移量
+      // 触发请求加载更多的数据;请求回来的数据应该追加到仓库里
+      // let { data } = await reqSongs(route.query.id, { offset: offset.value });
+      // if (data.songs.length == 0) {
+      //   hasMore.value = false;
+      //   alert("没有了");
+      //   return;
+      // }
+      // if (data.code === 200) {
+      //   songs.value.push(...data.songs);
+      // }
+    }
+  }
+};
+// const throttleHanl
+// 请求的参数
+const params = reactive({
+  type: -1,
+  initial: -1,
+  area: -1,
+});
+// 标记哪个标签高亮用的
+const initialActive = ref(0),
+  typeActive = ref(0),
+  areaActive = ref(0);
 // 点击 语种的回调
 const choiceArea = (item, index) => {
   areaActive.value = index;
-  let areaNum = -1;
   switch (item) {
     case "全部":
-      areaNum = -1;
+      params.area = -1;
       break;
     case "华语":
-      areaNum = 7;
+      params.area = 7;
       break;
     case "欧美":
-      areaNum = 96;
+      params.area = 96;
       break;
     case "日本":
-      areaNum = 8;
+      params.area = 8;
       break;
     case "韩国":
-      areaNum = 16;
+      params.area = 16;
       break;
     case "其他":
-      areaNum = 0;
+      params.area = 0;
       break;
   }
-  area.value = areaNum;
-  console.log(params.value);
-  ArtistListStore.getArtist(params.value);
 };
 // 点击 分类的回调
 const choiceType = (item, index) => {
   typeActive.value = index;
-  let typeNum = -1;
   switch (item) {
     case "全部":
-      typeNum = -1;
+      params.type = -1;
       break;
     case "男歌手":
-      typeNum = 1;
+      params.type = 1;
       break;
     case "女歌手":
-      typeNum = 2;
+      params.type = 2;
       break;
     case "乐队组合":
-      typeNum = 3;
+      params.type = 3;
       break;
   }
-  type.value = typeNum;
-  console.log(params.value);
-  // 发请求
-  ArtistListStore.getArtist(params.value);
 };
 //点击 筛选的回调
 const choiceInitial = (item, index) => {
   initialActive.value = index;
   if (item == "热门") {
-    initial.value = -1;
+    params.initial = -1;
   } else if (item == "#") {
-    initial.value = 0;
+    params.initial = 0;
   } else {
-    initial.value = item.toLowerCase();
+    params.initial = item.toLowerCase();
   }
-  console.log(params.value);
-  ArtistListStore.getArtist(params.value);
 };
-onBeforeMount(() => {
-  ArtistListStore.getArtist(params.value);
+// 侦听参数的变化重新发请求
+watch(params, () => {
+  ArtistListStore.getArtist(params);
+});
+// 发请求，初始化数据
+ArtistListStore.getArtist(params);
+onMounted(() => {
+  // 监听
 });
 </script>
 

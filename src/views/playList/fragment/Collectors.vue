@@ -16,13 +16,12 @@
         </div>
       </li>
     </ul>
-    <Pagination></Pagination>
+    <el-pagination background layout="prev, pager, next" :total="100" small />
   </div>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeMount, defineProps } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import Pagination from "@/components/pagination/Pagination";
 import { playList } from "@/store/playlist";
 
 import router from "@/router";

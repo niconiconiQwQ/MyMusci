@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import TopNav from "@/views/container/topNav/TopNav";
+import TopNav from "@/components/topNav/TopNav";
 </script>
 
 <style lang="scss" scoped>
