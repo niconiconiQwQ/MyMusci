@@ -83,9 +83,6 @@
       </ul>
     </div>
     <div v-else class="none">还没有评论, 快来抢沙发</div>
-    <!-- <Pagination v-if="comments > 0"></Pagination> -->
-    <!-- <el-pagination :total="" :current-page="" :page-size="" @current-change="" layout=""></el-pagination> -->
-    <el-pagination background layout="prev, pager, next" :total="100" small />
   </div>
 </template>
 <script setup>
@@ -120,6 +117,7 @@ const share = () => {};
 </script>
 <style lang="scss" scoped>
 .comment {
+  margin-bottom: 30px;
   .send {
     margin-bottom: 20px;
     .text {

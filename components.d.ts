@@ -8,7 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Comment: typeof import('./src/components/common/Comment.vue')['default']
-    ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     Email: typeof import('./src/components/header/Email.vue')['default']
     Follow: typeof import('./src/components/common/follow.vue')['default']
@@ -24,5 +23,8 @@ declare module '@vue/runtime-core' {
     Skin: typeof import('./src/components/header/Skin.vue')['default']
     TopNav: typeof import('./src/components/topNav/TopNav.vue')['default']
     UserComment: typeof import('./src/components/usercomment/UserComment.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
   }
 }

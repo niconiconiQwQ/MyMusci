@@ -60,8 +60,14 @@ export const artistListStore = defineStore("artistList", {
       try {
         let { data } = await reqArtistList(params);
         if (data.code == 200) {
-          this.artistsList = data.artists;
-          this.hasMore = data.more;
+          // 如果offset不为 0 或 undefined ,则追加数组，否则覆盖数组
+          if (params.offset > 0) {
+            this.artistsList = [...this.artistsList, ...data.artists];
+            this.hasMore = data.more;
+          } else {
+            this.artistsList = data.artists;
+            this.hasMore = data.more;
+          }
         }
       } catch (error) {
         console.log(error.message, "请求歌手列表error");

@@ -20,7 +20,7 @@ export const reqList = () => {
 /* ============================歌手相关====================== */
 // 请求歌手分类列表
 export const reqArtistList = ({
-  limit = 20,
+  limit = 40,
   offset = 0,
   type = -1,
   initial = -1,
@@ -166,22 +166,25 @@ export const reqSongs = (id, { limit = 50, offset = 0 } = {}) => {
   });
 };
 // 请求歌单评论
-export const reqComment = (id) => {
+export const reqComment = (id, { limit = 20, offset = 0 } = {}) => {
   return requests({
     url: "/comment/playlist",
     params: {
       id,
+      limit,
+      offset,
     },
     method: "get",
   });
 };
 // 请求歌单收藏者
-export const reqCollectors = (id, limit = 0) => {
+export const reqCollectors = (id, { limit = 30, offset = 0 } = {}) => {
   return requests({
     url: "/playlist/subscribers",
     params: {
       id,
       limit,
+      offset,
     },
     method: "get",
   });
@@ -296,7 +299,10 @@ export const reqFollows = (uid, { limit = 20, offset = 0 } = {}) => {
   });
 };
 // 请求用户歌单
-export const reqUserPlayList = (uid, { limit, offset, timestamp } = {}) => {
+export const reqUserPlayList = (
+  uid,
+  { limit = 29, offset = 0, timestamp = Date.parse(new Date()) } = {}
+) => {
   return requests({
     url: "/user/playlist",
     params: { uid, limit, offset, timestamp },

@@ -1,5 +1,5 @@
 <template>
-  <div class="artist ctn-mode" ref="box" @scroll="handleScroll">
+  <div class="artist ctn-mode" ref="box" @scroll="handleScroll" id="MyBox">
     <!-- 顶部标题导航组件 -->
     <TopNav></TopNav>
     <!-- 筛选类型 -->
@@ -59,11 +59,11 @@
         </div>
       </li>
     </ul>
-    <el-backtop :right="100" :bottom="100" />
   </div>
 </template>
 
 <script setup>
+import { reqArtistList } from "@/api/index";
 import TopNav from "@/components/topNav/TopNav";
 import { ref, reactive, watch, onMounted } from "vue";
 import { artistListStore } from "@/store/artist";
@@ -104,35 +104,13 @@ const letterList = [
 ];
 // 获取DOM
 const box = ref(null);
-// 处理滚动加载更多
-const handleScroll = async () => {
-  if (hasMore.value) {
-    // 计算出是否滚动到了底部
-    if (
-      box.value.scrollTop + box.value.clientHeight >=
-      box.value.scrollHeight
-    ) {
-      console.log(box.value.scrollHeight);
-      offset.value += 20; // 这个20为偏移量
-      // 触发请求加载更多的数据;请求回来的数据应该追加到仓库里
-      // let { data } = await reqSongs(route.query.id, { offset: offset.value });
-      // if (data.songs.length == 0) {
-      //   hasMore.value = false;
-      //   alert("没有了");
-      //   return;
-      // }
-      // if (data.code === 200) {
-      //   songs.value.push(...data.songs);
-      // }
-    }
-  }
-};
 // const throttleHanl
 // 请求的参数
 const params = reactive({
   type: -1,
   initial: -1,
   area: -1,
+  offset: 0,
 });
 // 标记哪个标签高亮用的
 const initialActive = ref(0),
@@ -141,6 +119,7 @@ const initialActive = ref(0),
 // 点击 语种的回调
 const choiceArea = (item, index) => {
   areaActive.value = index;
+  params.offset = 0;
   switch (item) {
     case "全部":
       params.area = -1;
@@ -165,6 +144,7 @@ const choiceArea = (item, index) => {
 // 点击 分类的回调
 const choiceType = (item, index) => {
   typeActive.value = index;
+  params.offset = 0;
   switch (item) {
     case "全部":
       params.type = -1;
@@ -182,6 +162,7 @@ const choiceType = (item, index) => {
 };
 //点击 筛选的回调
 const choiceInitial = (item, index) => {
+  params.offset = 0;
   initialActive.value = index;
   if (item == "热门") {
     params.initial = -1;
@@ -191,9 +172,23 @@ const choiceInitial = (item, index) => {
     params.initial = item.toLowerCase();
   }
 };
+// 处理滚动加载更多
+const handleScroll = async () => {
+  if (hasMore.value) {
+    // 计算出是否滚动到了底部
+    if (
+      box.value.scrollTop + box.value.clientHeight >=
+      box.value.scrollHeight
+    ) {
+      params.offset += 40; // 这个40为偏移量
+    }
+  }
+};
 // 侦听参数的变化重新发请求
 watch(params, () => {
-  ArtistListStore.getArtist(params);
+  if (hasMore.value) {
+    ArtistListStore.getArtist(params);
+  }
 });
 // 发请求，初始化数据
 ArtistListStore.getArtist(params);

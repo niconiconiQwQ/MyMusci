@@ -280,19 +280,6 @@ onUpdated(() => {
           }
         }
       }
-      // &::-webkit-scrollbar {
-      //     width: 6px;
-      //   }
-      //   &::-webkit-scrollbar-track {
-      //     border-radius: 10px;
-      //     background-color: transparent; /*滚动条的背景颜色*/
-      //   }
-      //   &::-webkit-scrollbar-thumb {
-      //     border-radius: 3px; /*滚动条圆角*/
-      //     -webkit-border-radius: 3px; /*兼容圆角属性*/
-      //     background-color: #c3c3c3; /*滚动条颜色*/
-      //     background-image: #e0e0e0;
-      //   }
     }
     .right {
       display: flex;

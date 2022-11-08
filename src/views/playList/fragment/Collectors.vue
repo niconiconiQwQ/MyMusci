@@ -16,17 +16,27 @@
         </div>
       </li>
     </ul>
-    <el-pagination background layout="prev, pager, next" :total="100" small />
+    <el-pagination
+      background
+      small
+      layout="prev, pager, next"
+      :total="subscribersTotal"
+      v-model:current-page="currentPage"
+      :page-size="30"
+    />
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount, defineProps } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { defineProps, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { playList } from "@/store/playlist";
-
-import router from "@/router";
-const props = defineProps(["PlayListId"]);
+import { storeToRefs } from "pinia";
 const playListStore = playList();
+const offset = ref(0);
+const currentPage = ref(1);
+const { subscribersTotal } = storeToRefs(playListStore);
+const router = useRouter();
+const props = defineProps(["PlayListId"]);
 const goUser = (id) => {
   router.push({
     path: "/user",
@@ -35,10 +45,16 @@ const goUser = (id) => {
     },
   });
 };
-onBeforeMount(() => {
-  playListStore.getColletors(props.PlayListId, 30);
-});
-onMounted(() => {});
+// 请求初始化数据
+playListStore.getColletors(props.PlayListId);
+// 侦听分页器，重新请求收藏者
+watch(
+  () => currentPage.value,
+  (page) => {
+    offset.value = (page - 1) * 30;
+    playListStore.getColletors(props.PlayListId, { offset: offset.value });
+  }
+);
 </script>
 <style lang="scss" scoped>
 .collectors {
@@ -46,7 +62,7 @@ onMounted(() => {});
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     li {
       display: flex;
       width: 45%;
@@ -92,6 +108,9 @@ onMounted(() => {});
         }
       }
     }
+  }
+  .el-pagination {
+    margin-bottom: 30px;
   }
 }
 </style>

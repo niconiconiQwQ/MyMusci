@@ -129,11 +129,10 @@
     </div>
   </div>
 </template>
-
 <script setup>
 // 导入
 import TopNav from "@/components/topNav/TopNav";
-import { ref, onMounted, reactive, watch, onBeforeMount, nextTick } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import { useRouter } from "vue-router";
 import { palyListTag } from "@/store/index";
 import { storeToRefs } from "pinia";
@@ -188,7 +187,6 @@ watch(
     });
   }
 );
-onBeforeMount(() => {});
 onMounted(() => {
   document.addEventListener("click", () => {
     isShowTags.value = false;

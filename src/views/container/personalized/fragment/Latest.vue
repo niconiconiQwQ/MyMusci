@@ -5,8 +5,13 @@
       <span class="iconfont icon-right"></span
     ></a>
     <ul class="ul-mode">
-      <li class="item" v-for="item in LatestSotre.nineList" :key="item.id">
-        <a href="" class="a-mode1">
+      <li
+        class="item"
+        v-for="item in LatestSotre.nineList"
+        :key="item.id"
+        @dblclick="dbClickPlay(item.id)"
+      >
+        <a href="#" class="a-mode1">
           <div class="play-mode iconfont icon-play"></div>
           <img v-lazy="item.picUrl" alt=""
         /></a>
@@ -24,13 +29,13 @@
   </div>
 </template>
 <script setup>
-import { onMounted, onBeforeMount } from "vue";
+import play from "@/utils/play";
 import { Latest } from "@/store/index";
 const LatestSotre = Latest();
-onMounted(() => {});
-onBeforeMount(() => {
-  LatestSotre.getLatestList();
-});
+const dbClickPlay = (id) => {
+  play(id);
+};
+LatestSotre.getLatestList();
 </script>
 <style lang="scss" scoped>
 .msg-mode1 {

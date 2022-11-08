@@ -9,20 +9,25 @@
         <a href="#" @click="select(8)">日本</a>
       </div>
       <div class="ctrl">
-        <a href=""
+        <a href="#"
           ><span class="iconfont icon-play1"></span><span>播放全部</span></a
         >
-        <a href=""
+        <a href="#"
           ><span class="iconfont icon-shoucangjia"></span
           ><span>收藏全部</span></a
         >
       </div>
     </div>
     <ul class="song-list">
-      <li class="song-item" v-for="(item, index) in newSongs" :key="item.id">
+      <li
+        class="song-item"
+        v-for="(item, index) in newSongs"
+        :key="item.id"
+        @dblclick="dbClickPlay(item.id)"
+      >
         <div class="song-msg">
           <span class="index">{{ formatIndex(index + 1) }}</span>
-          <a href="#" class="a-mode1" @click="play(item.id)"
+          <a href="#" class="a-mode1"
             ><img v-lazy="item.album.picUrl" alt=""
           /></a>
           <span class="song-name">{{ item.name }}</span>
@@ -31,10 +36,11 @@
         <div class="creater">
           <a
             href="#"
-            v-for="art in item.artists"
+            v-for="(art, index) in item.artists"
             :key="art.id"
             @click="goArt(art.id)"
-            >{{ art.name }}&nbsp;</a
+            >{{ art.name
+            }}<i v-if="index !== item.artists.length - 1"> / </i></a
           >
         </div>
         <div class="time">{{ formatPlayTime(item.duration) }}</div>
@@ -43,19 +49,16 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount, defineProps, watch } from "vue";
+import play from "@/utils/play";
 import { useRouter, useRoute } from "vue-router";
 import { newAlbumSong } from "@/store/index";
-import { songDetail } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatIndex, formatPlayTime } from "@/utils/Format/format";
 const newAlbumSongStore = newAlbumSong();
-const songDetailStore = songDetail();
 const { newSongs } = storeToRefs(newAlbumSongStore);
-// 播放音乐
-const play = (id) => {
-  songDetailStore.getSongUrl(id);
-  songDetailStore.getSongDetail(id);
+// 双击播放歌曲
+const dbClickPlay = (id) => {
+  play(id);
 };
 const goArt = (id) => {
   router.push({
@@ -71,8 +74,6 @@ newAlbumSongStore.getNewSongs();
 const select = (type) => {
   newAlbumSongStore.getNewSongs(type);
 };
-onBeforeMount(() => {});
-onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 .latestSongs {

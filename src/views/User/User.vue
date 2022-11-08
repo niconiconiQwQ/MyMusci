@@ -61,14 +61,9 @@
       </div>
     </div>
     <div class="content">
-      <ul class="nav">
-        <li class="active">
-          <a href="#">创建的歌单({{ playlistCount }})</a>
-        </li>
-        <li><a href="#">收藏的歌单</a></li>
-        <li><a href="#">收藏的播客</a></li>
-        <li><a href="#">创建的音乐专栏</a></li>
-      </ul>
+      <h3 class="nav">
+        <a href="#">创建的歌单({{ playlistCount }})</a>
+      </h3>
       <div class="main">
         <ul>
           <li class="item" v-for="item in playList" :key="item.id">
@@ -86,18 +81,26 @@
         </ul>
       </div>
     </div>
-    <el-pagination background layout="prev, pager, next" :total="100" small />
+    <el-pagination
+      background
+      small
+      layout="prev, pager, next"
+      :total="1000"
+      v-model:current-page="currentPage"
+      :page-size="30"
+    ></el-pagination>
   </div>
 </template>
 
 <script setup>
 import { formatNumber } from "@/utils/Format/format";
-import { ref, onBeforeMount, onMounted } from "vue";
+import { ref, watch } from "vue";
 import { userDetail } from "@/store/index";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 const router = useRouter();
 const route = useRoute();
+const currentPage = ref(1);
 const userDetailStore = userDetail();
 const {
   avatarUrl,
@@ -111,8 +114,8 @@ const {
   city,
   signature,
   playlistCount,
-  listenSongs,
   playList,
+  hasMore,
 } = storeToRefs(userDetailStore);
 const goEvent = (id) => {
   // router.push({
@@ -149,20 +152,21 @@ const goPlayList = (id) => {
     },
   });
 };
-let pageNo = ref(5);
-let pageSize = ref(10);
-let total = ref(1000);
-let continues = ref(5);
 const uid = ref(route.query.id);
-onBeforeMount(() => {
-  // 发起请求捞用户的详情
-  userDetailStore.getUserDetail(uid.value);
-  // 捞用户歌单的歌单
-  userDetailStore.getUserPlayList(uid.value);
-});
-onMounted(() => {});
+// 发起请求捞用户的详情
+userDetailStore.getUserDetail(uid.value);
+// 捞用户歌单的歌单
+userDetailStore.getUserPlayList(uid.value);
+// 监听分页器当前页的变化，发送新的请求
+watch(
+  () => currentPage.value,
+  (current) => {
+    userDetailStore.getUserPlayList(uid.value, {
+      offset: (current - 1) * 30,
+    });
+  }
+);
 </script>
-
 <style lang="scss" scoped>
 .a-mode1 {
   position: relative;
@@ -328,28 +332,13 @@ onMounted(() => {});
   }
   .content {
     width: 100%;
-    margin: 30px 0px 80px 0px;
+    margin-top: 30px;
     .nav {
       width: 100%;
-      display: flex;
-      align-items: center;
       color: #373737;
+      font-weight: 700;
+      font-size: 20px;
       margin-bottom: 10px;
-      li {
-        margin-right: 20px;
-        &.active {
-          color: #373737;
-          font-weight: 700;
-          font-size: 20px;
-        }
-        a {
-          &:hover {
-            &:hover {
-              color: #000;
-            }
-          }
-        }
-      }
     }
     .main {
       height: 100%;
@@ -358,11 +347,11 @@ onMounted(() => {});
         height: 100%;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
         li {
           width: 19%;
           height: 170px;
           margin-bottom: 86px;
+          margin-right: 1%;
           a {
             @extend .a-mode1;
             width: 100%;
@@ -390,6 +379,9 @@ onMounted(() => {});
         }
       }
     }
+  }
+  .el-pagination {
+    margin-bottom: 20px;
   }
 }
 </style>

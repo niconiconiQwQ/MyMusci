@@ -16,7 +16,7 @@
             v-for="(item, index) in props.songs"
             :key="item.id"
             :class="{ bgc: index % 2 }"
-            @dblclick="play(item.id)"
+            @dblclick="dbClickPlay(item.id)"
           >
             <td class="w w1">
               <span>{{ formatIndex(index + 1) }}</span>
@@ -38,12 +38,10 @@
 <script setup>
 import { defineProps } from "vue";
 import { formatPlayTime, formatIndex } from "@/utils/Format/format";
-import { songDetail } from "@/store/playlist";
-const songDetailStore = songDetail();
-const play = (id) => {
-  // 获取id之后发请求，捞数据 url
-  songDetailStore.getSongUrl(id, "standard");
-  songDetailStore.getSongDetail(id);
+import play from "@/utils/play";
+// 双击播放
+const dbClickPlay = (id) => {
+  play(id);
 };
 const props = defineProps(["songs", "title"]);
 </script>

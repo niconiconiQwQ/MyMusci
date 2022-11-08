@@ -15,7 +15,7 @@
               :class="{ odd: index % 2 != 0 }"
               v-for="(songItem, index) in item.songs"
               :key="item.id"
-              @dblclick="play(songItem.id)"
+              @dblclick="dbClickPlay(songItem.id)"
             >
               <div class="song">
                 <span>{{ index }}</span
@@ -59,10 +59,7 @@ import { onBeforeMount, ref } from "vue";
 import { formatNumber } from "@/utils/Format/format";
 import TopNav from "@/components/topNav/TopNav";
 import { useRouter } from "vue-router";
-import { songDetail } from "@/store/playlist";
-import { storeToRefs } from "pinia";
-const songDetailStore = songDetail();
-const { isPlaying } = storeToRefs(songDetailStore);
+import play from "@/utils/play";
 const router = useRouter();
 // 定义初始数据
 const officialList = ref([]),
@@ -98,16 +95,10 @@ const goPlayList = (id) => {
     },
   });
 };
-// 双击播放歌曲
-const play = (id) => {
-  isPlaying.value = false;
-  // 双击之后去更新歌曲的数据
-  songDetailStore.getSongDetail(id);
-  songDetailStore.getSongUrl(id);
-  setTimeout(() => {
-    isPlaying.value = true;
-  }, 2000);
+const dbClickPlay = (id) => {
+  play(id);
 };
+
 onBeforeMount(() => {
   // 挂载之前获取初始化数据
   getInitInfo();

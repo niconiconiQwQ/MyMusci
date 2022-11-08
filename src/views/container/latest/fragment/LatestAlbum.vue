@@ -16,7 +16,7 @@
     <ul class="ul-mode">
       <li v-for="item in newAlbum">
         <a href="#" class="a-mode1 play-hover" @click="goAlbum(item.id)"
-          ><img v-lazy="item.blurPicUrl" alt="" />
+          ><img :src="item.blurPicUrl" alt="" />
           <div class="play-mode iconfont icon-play"></div>
         </a>
         <div class="name">{{ item.name }}</div>

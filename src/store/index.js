@@ -264,6 +264,7 @@ export const userDetail = defineStore("userDetail", {
       followedsList: [], // 用户粉丝列表
       followList: [], // 关注列表
       playList: [],
+      hasMore: true,
     };
   },
   actions: {
@@ -308,6 +309,7 @@ export const userDetail = defineStore("userDetail", {
         let { data } = await reqUserPlayList(id, options);
         if (data.code == 200) {
           this.playList = data.playlist;
+          this.hasMore = data.more;
         }
       } catch (error) {
         console.log(error.message, "请求用户歌单 error");
@@ -522,7 +524,7 @@ export const newAlbumSong = defineStore("new", {
       try {
         let { data } = await reqNewSongs(type);
         if (data.code == 200) {
-          this.newSongs = data.data.slice(0, 20);
+          this.newSongs = data.data.slice(0, 50);
         }
       } catch (error) {
         console.log(error.message, "请求新歌速递 error");

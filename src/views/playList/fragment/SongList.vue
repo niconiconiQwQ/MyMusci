@@ -12,10 +12,10 @@
       </thead>
       <tbody>
         <tr
-          v-for="(item, index) in songList"
+          v-for="(item, index) in songs"
           :key="item.id"
           :class="{ bgc: index % 2, isSelect: index == songIndex }"
-          @dblclick.stop="play(item.id, index)"
+          @dblclick.stop="dbClickPlay(item.id, index)"
         >
           <td class="w w1">
             <span
@@ -55,30 +55,25 @@
   </div>
 </template>
 <script setup>
+import { reqSongs } from "@/api/index.js";
+import { ref, onMounted, onBeforeMount, onUnmounted, nextTick } from "vue";
 import axios from "axios";
+import play from "@/utils/play";
+import { playList } from "@/store/playlist";
 import { reqSongUrl, likeSong } from "@/api/index";
-import { useRouter } from "vue-router";
-import { songDetail } from "@/store/playlist";
+import { useRouter, useRoute } from "vue-router";
 import { formatIndex, formatPlayTime } from "@/utils/Format/format";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
-const props = defineProps(["songList"]);
-const router = useRouter();
-const songDetailStore = songDetail();
-const { isPlaying } = storeToRefs(songDetailStore);
+const props = defineProps(["boxDom"]);
+const playListStore = playList();
+const { songs, hasMore, offset } = storeToRefs(playListStore);
+const router = useRouter(),
+  route = useRoute();
 const songIndex = ref(-1);
 // 控制音乐播放
-const play = (id, index) => {
+const dbClickPlay = (id, index) => {
   songIndex.value = index;
-  // 获取id之后发请求，捞数据 url
-  songDetailStore.getSongUrl(id, "standard");
-  // 捞歌曲详情
-  songDetailStore.getSongDetail(id);
-  // 去通知播放音乐
-  isPlaying.value = false;
-  setTimeout(() => {
-    isPlaying.value = true;
-  }, 1000);
+  play(id);
 };
 // 跳转到某个歌手页面
 const gotoArtist = (ArtistId = -1) => {
@@ -141,6 +136,41 @@ const addToFond = async (id) => {
     });
   }
 };
+// onBeforeMount(() => {
+//   // 在第一次组件挂载之前，要做初始化
+//   hasMore.value = true;
+// });
+const scroll = async () => {
+  if (hasMore.value) {
+    // 计算出是否滚动到了底部
+    if (
+      props.boxDom.scrollTop + props.boxDom.clientHeight >=
+      props.boxDom.scrollHeight
+    ) {
+      offset.value += 50; // 这个50为偏移量
+      // 触发请求加载更多的数据;请求回来的数据应该追加到仓库里
+      let { data } = await reqSongs(route.query.id, {
+        offset: offset.value,
+      });
+      if (data.songs.length == 0) {
+        hasMore.value = false;
+        console.log("没有更多了");
+        return;
+      }
+      if (data.code === 200) {
+        songs.value.push(...data.songs);
+      }
+    }
+  }
+};
+onMounted(() => {
+  nextTick(() => {
+    props.boxDom.addEventListener("scroll", scroll);
+  });
+});
+onUnmounted(() => {
+  props.boxDom.removeEventListener("scroll", scroll);
+});
 </script>
 <style lang="scss" scoped>
 .song-list {

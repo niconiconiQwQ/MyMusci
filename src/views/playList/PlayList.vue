@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist ctn-mode" ref="box" @scroll="handleScroll">
+  <div class="playlist ctn-mode" ref="box">
     <div class="head">
       <div class="left">
         <img :src="coverImgUrl" />
@@ -85,16 +85,15 @@
         </li>
       </ul>
     </div>
-    <router-view :PlayListId="PlayListId" :songList="songs"></router-view>
+    <router-view :PlayListId="PlayListId" :boxDom="box"></router-view>
   </div>
 </template>
 <script setup>
-import { ref, onBeforeMount, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { playList } from "@/store/playlist";
 import { storeToRefs } from "pinia";
 import { formatNumber } from "@/utils/Format/format";
-import { reqSongs } from "@/api/index";
 // 获取DOM
 const box = ref();
 // 定义一些数据
@@ -112,9 +111,6 @@ const {
   trackCount,
   playCount,
   description,
-  songs,
-  hasMore,
-  offset,
 } = storeToRefs(playListStore);
 const router = useRouter();
 const route = useRoute();
@@ -130,39 +126,12 @@ const goUser = (id) => {
 // 歌单初始化一些捞数据
 playListStore.getSongs(route.query.id);
 playListStore.getPlayListDetail(route.query.id);
-// 处理滚动加载更多
-const handleScroll = async () => {
-  if (hasMore.value) {
-    // 计算出是否滚动到了底部
-    if (
-      box.value.scrollTop + box.value.clientHeight >=
-      box.value.scrollHeight
-    ) {
-      offset.value += 50; // 这个50为偏移量
-      // 触发请求加载更多的数据;请求回来的数据应该追加到仓库里
-      let { data } = await reqSongs(route.query.id, { offset: offset.value });
-      if (data.songs.length == 0) {
-        hasMore.value = false;
-        console.log("没有更多了");
-        return;
-      }
-      if (data.code === 200) {
-        songs.value.push(...data.songs);
-      }
-    }
-  }
-};
 watch(
-  // 这里侦听路由的变化(切换歌单的时候让scrollTop复原)
   () => route.fullPath,
   () => {
     box.value.scrollTop = 0;
   }
 );
-onBeforeMount(() => {
-  // 在第一次组件挂载之前，要做初始化
-  hasMore.value = true;
-});
 </script>
 <style lang="scss" scoped>
 .playlist {

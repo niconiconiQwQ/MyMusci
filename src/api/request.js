@@ -1,8 +1,10 @@
+import { nextTick } from "vue";
 // 对 axios 进行二次封装
 import axios from "axios";
 /* 引入进度条 以及 样式*/
 import nProgress from "nprogress"; // 含start / done方法控制进度条开始/结束
 import "nprogress/nprogress.css";
+import { showLoading, hideLoading } from "@/utils/loading";
 // 引入全局状态
 import store from "@/store/index";
 // 利用axios对象的方法create，创建一个axios实例
@@ -14,6 +16,7 @@ const requests = axios.create({
 });
 // 请求拦截器
 requests.interceptors.request.use((config) => {
+  showLoading();
   nProgress.start();
   // config: 配置对象，对象里包含 headers 请求头属性
   if (false) {
@@ -33,6 +36,9 @@ requests.interceptors.response.use(
     // 成功: 服务器响应的数据回来后，响应拦截器可以检测到，可以做一些事情
     // promise.resolved(res);
     nProgress.done();
+    setTimeout(() => {
+      hideLoading();
+    }, 1300);
     return res;
   },
   (error) => {

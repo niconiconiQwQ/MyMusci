@@ -55,8 +55,12 @@ export const playList = defineStore("playList", {
       hotComments: [],
       // 普通评论
       comments: [],
+      // 评论总数
+      commentTotal: 0,
       // 歌单收藏者
       subscribers: [],
+      // 歌单收藏者总数
+      subscribersTotal: 0,
       // 有无更多歌曲
       hasMore: true,
       // 偏移量
@@ -98,23 +102,27 @@ export const playList = defineStore("playList", {
       }
     },
     // 请求歌单的评论
-    async getComment(id) {
+    async getComment(id, options) {
       try {
-        let { data } = await reqComment(id);
+        let { data } = await reqComment(id, options);
         if (data.code == 200) {
-          this.hotComments = data.hotComments.splice(0, 5);
-          this.comments = data.comments.splice(0, 10);
+          this.commentTotal = data.total;
+          this.hotComments = data.hotComments
+            ? data.hotComments.splice(0, 5)
+            : [];
+          this.comments = data.comments;
         }
       } catch (error) {
         console.log(error.message, "请求歌单评论error");
       }
     },
     // 请求歌单的收藏者
-    async getColletors(id, limit) {
+    async getColletors(id, options) {
       try {
-        let { data } = await reqCollectors(id, limit);
+        let { data } = await reqCollectors(id, options);
         if (data.code == 200) {
           this.subscribers = data.subscribers;
+          this.subscribersTotal = data.total;
         }
       } catch (error) {
         console.log(error.message, "请求歌单收藏者 error");
